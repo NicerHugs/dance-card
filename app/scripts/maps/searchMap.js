@@ -32,6 +32,6 @@
         console.log('the browser didnt support geolocation');
       }
     );
-  }
+  };
 
 })();

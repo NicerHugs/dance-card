@@ -7,6 +7,10 @@ var $ = require('gulp-load-plugins')();
 var rimraf = require('rimraf');
 var exec = require('child_process').exec;
 var prompt = require('gulp-prompt');
+var handlebars = require('gulp-handlebars');
+var wrap = require('gulp-wrap');
+var declare = require('gulp-declare');
+var concat = require('gulp-concat');
 
 gulp.task('styles', function () {
   return gulp.src('app/styles/main.scss')
@@ -48,6 +52,30 @@ gulp.task('extras', function () {
     .pipe(gulp.dest('dist'));
 });
 
+gulp.task('templates', function() {
+  // Load templates from the app/templates/ folder relative to where gulp was executed
+  gulp.src('app/templates/**/*.hbs')
+    // Compile each Handlebars template source file to a template function
+    .pipe(handlebars())
+    // Wrap each template function in a call to Handlebars.template
+    .pipe(wrap('Handlebars.template(<%= contents %>)'))
+    // Declare template functions as properties and sub-properties of DanceCard.templates
+    .pipe(declare({
+      namespace: 'DanceCard.templates',
+      noRedeclare: true, // Avoid duplicate declarations
+      processName: function(filePath) {
+        // Allow nesting based on path using gulp-declare's processNameByPath()
+        // You can remove this option completely if you aren't using nested folders
+        // Drop the app/templates/ folder from the namespace path by removing it from the filePath
+        // return declare.processNameByPath(filePath.replace('app/templates/', ''));
+      }
+    }))
+    // Concatenate down to a single file
+    .pipe(concat('templates.js'))
+    // Write the output into the dist folder
+    .pipe(gulp.dest('app/scripts/'));
+});
+
 gulp.task('clean', function (cb) {
   return $.cache.clearAll(cb, function() {
     return rimraf('.tmp', function () {
@@ -74,7 +102,7 @@ gulp.task('connect', function () {
     });
 });
 
-gulp.task('serve', ['connect', 'styles'], function () {
+gulp.task('serve', ['connect', 'templates', 'styles'], function () {
   require('opn')('http://localhost:9000');
 });
 
@@ -93,7 +121,7 @@ gulp.task('wiredep', function () {
     .pipe(gulp.dest('app'));
 });
 
-gulp.task('watch', ['connect', 'serve'], function () {
+gulp.task('watch', ['connect','templates', 'serve'], function () {
   $.livereload.listen();
 
   // watch for changes
@@ -101,14 +129,16 @@ gulp.task('watch', ['connect', 'serve'], function () {
     'app/*.html',
     '.tmp/styles/**/*.css',
     'app/scripts/**/*.js',
-    'app/images/**/*'
+    'app/images/**/*',
+    'app/templates/**/*.hbs'
   ]).on('change', $.livereload.changed);
 
+  gulp.watch('app/templates/**/*.hbs', ['templates']);
   gulp.watch('app/styles/**/*.scss', ['styles']);
   gulp.watch('bower.json', ['wiredep']);
 });
 
-gulp.task('build', ['html', 'images', 'fonts', 'extras'], function () {
+gulp.task('build', ['html', 'templates', 'images', 'fonts', 'extras'], function () {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
