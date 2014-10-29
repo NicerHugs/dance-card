@@ -6,7 +6,7 @@
     template: DanceCard.templates.index,
     render: function() {
       this.$el.html(this.template());
-      DanceCard.locDateSearchQuery()
+      DanceCard.locDateSearchQuery(25, 10)
       .done(function(collection) {
         DanceCard.renderSearchMap(collection);
       });

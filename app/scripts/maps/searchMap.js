@@ -10,13 +10,30 @@
 
     _.each(queryResults.models, function(result) {
       console.log(result);
+      var contentString = '<div id="content">'+
+        '<div id="siteNotice">'+
+        '</div>'+
+        '<h1 id="firstHeading" class="firstHeading">'+
+        result.attributes.name + '</h1>'+
+        '<div id="bodyContent">'+
+        '<p>'+ result.attributes.startDate + result.attributes.startTime +'</p>'+
+        '<p>'+ result.attributes.description +'</p>'+
+        '<p>'+ result.attributes.fullAddress +'</p>'+
+        '</div>'+
+        '</div>';
+      var infowindow = new google.maps.InfoWindow({
+        content: contentString
+      });
       var position = {
         lat: result.attributes.point._latitude,
         lng: result.attributes.point._longitude
         };
-      var market = new google.maps.Marker({
+      var marker = new google.maps.Marker({
         map: map,
         position: position
+      });
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.open(map,marker);
       });
     });
   }
