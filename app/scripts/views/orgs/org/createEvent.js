@@ -32,12 +32,20 @@
     },
     createEvent: function(e) {
       e.preventDefault();
+      var name = $('.event-name-input').val();
       var startDate = new Date($('.event-start-date-input').val());
       var startTime = $('.event-start-time-input').val();
+      var dateString = startDate.toDateString().split(' ').join('_');
+      var idName = name.replace(/[^\w\d\s]/g, '');
+      var id = idName.split(' ').join('_') + '_' + dateString;
+      console.log(id);
       this.model.set({
+        urlId: id,
+        name: name,
         startDate: startDate,
         startTime: startTime
       });
+      console.log(this.model);
       this.model.save();
     }
   });
