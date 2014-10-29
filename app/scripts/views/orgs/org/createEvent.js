@@ -12,6 +12,11 @@
     },
     createEvent: function(e) {
       e.preventDefault();
+      var address = $('.event-address-input').val();
+      var zipcode = +$('.event-zipcode-input').val();
+      this.model.set({address: address, zipcode: zipcode});
+      console.log(this.model);
+      this.model.save();
     }
   });
 
