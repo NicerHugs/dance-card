@@ -8,7 +8,7 @@
       DanceCard.session.on('change', _.bind(this.render, this));
     },
     tagName: 'nav',
-    template: _.template($('#nav-template').text()),
+    template: DanceCard.templates.nav,
     render: function() {
       this.$el.html(this.template());
     }
