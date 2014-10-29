@@ -1,4 +1,5 @@
 (function() {
+  'use strict';
 
   DanceCard.Views.Index = DanceCard.Views.Base.extend({
     className: 'index',

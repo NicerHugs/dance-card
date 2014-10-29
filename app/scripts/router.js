@@ -10,60 +10,37 @@
         self.routesHit++;}, self);
     },
     routes: {
-      ''                     : 'index',
-      'login'                : 'login',
-      'logout'               : 'logout',
-      'register'             : 'register',
-      'events'               : 'events',
-      'events/:event'        : 'event', //dynamic
-      'events/:event/manage' : 'manageEvent',
-      'events/:event/RSVP'   : 'attendEvent',
-      'orgs'                 : 'orgs',
-      'orgs/:org'            : 'org',
-      'create-event'         : 'createEvent',
+      ''                       : 'index',
+      'login'                  : 'login',
+      'logout'                 : 'logout',
+      'register'               : 'register',
+      'orgs'                   : 'orgs',
+      'orgs/:org'              : 'org', //dynamic
+      'orgs/:org/create-event' : 'createEvent', //dynamic
+      'orgs/:org/:event'       : 'event', //dynamic
+      'orgs/:org/:event/manage': 'manageEvent', //dynamic
+      'orgs/:org/:event/RSVP'  : 'attendEvent', //dynamic
     },
 
     index: function() {
+      $('main').empty();
       new DanceCard.Views.Index({
-        $container: $('main'),
-      });
-    },
-    login: function() {
-      $('main').empty();
-      if (Parse.User.current()) {
-        this.navigate('', {trigger: true});
-      } else {
-        new DanceCard.Views.Login({
-          $container: $('main')
-        });
-      }
-    },
-    logout: function() {
-      $('main').empty();
-      if (Parse.User.current()){
-        Parse.User.logOut();
-        Anypic.session.set('user', Parse.User.current());
-        new DanceCard.Views.Logout({
-          $container: $('main')
-        });
-        new DanceCard.Views.Login({
-          $container: $('main')
-        });
-      } else {
-        this.navigate('login', {trigger: true});
-      }
-    },
-    signup: function() {
-      if (Parse.User.current()) {
-        this.navigate('', {trigger: true});
-      } else {
-        $('main').empty();
-        new DanceCard.Views.Signup({
         $container: $('main')
       });
-      }
+    },
+    orgs: function() {
+      $('main').empty();
+      new DanceCard.Views.Orgs({
+        $container: $('main')
+      });
+    },
+    createEvent: function() {
+      $('main').empty();
+      new DanceCard.Views.CreateEvent({
+        $container: $('main'),
+        model: new DanceCard.Models.Event()
+      });
     }
-
   });
 
 })();
