@@ -1,7 +1,7 @@
 (function() {
 
   DanceCard.Views.Index = DanceCard.Views.Base.extend({
-    tagName: 'index',
+    className: 'index',
     template: DanceCard.templates.index,
     render: function() {
       this.$el.html(this.template());
