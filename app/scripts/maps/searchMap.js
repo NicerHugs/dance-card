@@ -7,7 +7,6 @@
       center: userLocation
     };
     var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-    // var initialLocation;
 
     _.each(queryResults, function(result) {
       var position = {
@@ -21,7 +20,7 @@
     });
   }
 
-  function renderSearchMap(queryResults){
+  DanceCard.renderSearchMap = function(queryResults){
     navigator.geolocation.getCurrentPosition(
       function(position){
         var lat = position.coords.latitude;
@@ -34,7 +33,5 @@
       }
     );
   }
-
-  renderSearchMap([{location: { latitude: 34.397, longitude: -84.644}}]);
 
 })();

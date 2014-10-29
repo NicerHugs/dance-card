@@ -1,0 +1,20 @@
+(function() {
+  DanceCard.Views.Header = DanceCard.Views.Base.extend({
+    tagName: 'header',
+    render: function() {
+      this.$el.append('<h1><a href="#">Contra Dance Card</a></h1>');
+      this.navView = new DanceCard.Views.Nav({
+        $container: this.$el
+      });
+    },
+
+    events: {
+      'click h1' : 'viewIndex'
+    },
+
+    viewIndex: function(e) {
+      e.preventDefault();
+      DanceCard.router.navigate('/', {trigger: true})
+;    }
+  });
+})();
