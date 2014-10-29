@@ -86,6 +86,11 @@
 
 })();
 
+this["DanceCard"] = this["DanceCard"] || {};
+this["DanceCard"]["templates"] = this["DanceCard"]["templates"] || {};
+this["DanceCard"]["templates"]["index"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<h1>hi!</h1>\n<div id=\"map-canvas\"></div>\n";
+  },"useData":true});
 (function() {
   'use strict';
 
@@ -120,7 +125,7 @@
         console.log('the browser didnt support geolocation');
       }
     );
-  }
+  };
 
 })();
 
@@ -278,8 +283,7 @@
     tagName: 'index',
     template: DanceCard.templates.index,
     render: function() {
-      console.log(this.template);
-      Handlebars.compile(this.template);
+      this.$el.html(this.template());
       DanceCard.renderSearchMap([
         {location: { latitude: 34.397, longitude: -84.644}},
         {location: { latitude: 34.397, longitude: -83.644}}
