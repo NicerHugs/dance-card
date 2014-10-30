@@ -38,7 +38,7 @@
       e.preventDefault();
       if ($(e.target).val() === 'onetime') {
         this.model.set('recurring', false);
-        this.model.set('mulitDay', false);
+        this.model.set('multiDay', false);
         this.$el.html(DanceCard.templates.orgs.org.createEvent(this.model.toJSON()));
       } else {
         this.model.set('recurring', true);
@@ -88,17 +88,23 @@
     },
     createEvent: function(e) {
       e.preventDefault();
+      if (this.model.get('recurring')){
+        this.createRecurringEvent();
+      } else {
+        this.createOnetimeEvent();
+      }
+    },
+    createRecurringEvent: function() {
+
+    },
+    createOnetimeEvent: function() {
       var name = $('.event-name-input').val();
       var type = $('.event-type-input').val();
       var startDate,
           endDate,
           regLimit,
           genderBal;
-      if (this.model.get('recurring')) {
-
-      } else {
-        startDate = new Date($('.event-start-date-input').val());
-      }
+      startDate = new Date($('.event-start-date-input').val());
       var dateString = startDate.toDateString().split(' ').join('_');
       var startTime = $('.event-start-time-input').val();
       var endTime = $('.event-end-time-input').val();
@@ -117,7 +123,7 @@
       var preRegReq = $('.pre-reg-req-input').prop('checked');
       if (preRegReq) {
         regLimit = $('.reg-limit-input').val();
-        genderBal = $('.gender-bal-input').val();
+        genderBal = $('.gender-bal-input').prop('checked');
       }
       var notes = $('.notes-input').val();
       var idName = name.replace(/[^\w\d\s]/g, '');
@@ -140,12 +146,11 @@
       });
       this.model.set('venue.name', venueName);
       if (preRegReq) {
-        this.model.get('regInfo').set({
+        this.model.set('regInfo', {
           regLimit: regLimit,
           genderBal: genderBal
         });
       }
-      console.log(this.model);
       this.model.save();
     }
   });
