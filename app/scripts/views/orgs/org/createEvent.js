@@ -95,8 +95,65 @@
       }
     },
     createRecurringEvent: function() {
-
+      var self = this;
+      var name = $('.event-name-input').val();
+      var type = $('.event-type-input').val();
+      var startTime = $('.event-start-time-input').val();
+      var endTime = $('.event-end-time-input').val();
+      var venueName = $('.venue-name-input').val();
+      var price = $('.price-input').val();
+      var beginner = $('.beginner').prop('checked');
+      var workshopIncl = $('.workshop-incl').prop('checked');
+      var notes = $('.notes-input').val();
+      var idName = name.replace(/[^\w\d\s]/g, '');
+      var id = idName.split(' ').join('_') + '_' + 'recurring';
+      this.model.set({
+        urlId: id,
+        name: name,
+        type: type,
+        starTime: startTime,
+        endTime: endTime,
+        price: price,
+        beginnerFrdly: beginner,
+        workshopIncl: workshopIncl,
+        notes: notes
+      });
+      this.model.set('venue.name', venueName);
+      // this.model.save();
+      this.setStartDate(this.model)
+      .done(function(model, startDate) {
+        model.set('startDate', startDate);
+        self.buildRecurringEvents(model);//build the repeating events here
+      });
     },
+
+    buildRecurringEvents: function(model){
+      console.log('making lots of events for you now with this model:', model);
+    },
+
+    setStartDate: function(recurEventModel) {
+      var deferred = new $.Deferred();
+      var startDate = new Date(),
+          recurDay = +recurEventModel.get('weeklyRpt'),
+          endDate = new Date(),
+          diff;
+      endDate.setFullYear(endDate.getFullYear() + 1);
+      if (startDate.getDay() === recurDay) {
+        deferred.resolve(recurEventModel, startDate);
+      } else {
+        if (recurDay - startDate.getDay() > 0) {
+          diff = recurDay - startDate.getDay();
+          startDate.setDate(startDate.getDate() + diff);
+          deferred.resolve(recurEventModel, startDate);
+        } else {
+          diff = 7 + (recurDay - startDate.getDay());
+          startDate.setDate(startDate.getDate() + diff);
+          deferred.resolve(recurEventModel, startDate);
+        }
+      }
+      return deferred.promise();
+    },
+
     createOnetimeEvent: function() {
       var name = $('.event-name-input').val();
       var type = $('.event-type-input').val();

@@ -43,7 +43,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["chooseWkMo"] = Handlebars.templat
   return "<p>\n  This event occurs:\n</p>\n<button class=\"choose-wk-mo\" value=\"weekly\">Weekly</button>\n<button class=\"choose-wk-mo\" value=\"monthly\">Monthly</button>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseWkRpt"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<select class=\"weekly-option-input\">\n  <option value=\"monday\">on Monday</option>\n  <option value=\"tuesday\">on Tuesday</option>\n  <option value=\"wednesday\">on Wednesday</option>\n  <option value=\"thursday\">on Thursday</option>\n  <option value=\"friday\">on Friday</option>\n  <option value=\"saturday\">on Saturday</option>\n  <option value=\"sunday\">on Sunday</option>\n</select>\n\n<button class=\"choose-rpt\">Continue</button>\n";
+  return "<select class=\"weekly-option-input\">\n  <option value=\"1\">on Monday</option>\n  <option value=\"2\">on Tuesday</option>\n  <option value=\"3\">on Wednesday</option>\n  <option value=\"4\">on Thursday</option>\n  <option value=\"5\">on Friday</option>\n  <option value=\"6\">on Saturday</option>\n  <option value=\"0\">on Sunday</option>\n</select>\n\n<button class=\"choose-rpt\">Continue</button>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var stack1, buffer = "<div class=\"recurInfo\">\n";
