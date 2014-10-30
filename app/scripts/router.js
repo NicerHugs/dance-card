@@ -28,6 +28,13 @@
         $container: $('main')
       });
     },
+    register: function() {
+      $('main').empty();
+      new DanceCard.Views.Signup({
+        $container: $('main'),
+        model: new DanceCard.Models.User()
+      });
+    },
     orgs: function() {
       $('main').empty();
       new DanceCard.Views.Orgs({

@@ -14,7 +14,9 @@
         '<div id="siteNotice">'+
         '</div>'+
         '<h1 id="firstHeading" class="firstHeading">'+
-        '<a href="#/orgs/'+result.attributes.org+'/'+result.id+'">' + result.attributes.name + '</a></h1>'+
+        '<a href="#/orgs/'+
+        result.attributes.orgUrlId+'/'+result.attributes.urlId+'">'+
+        result.attributes.name + '</a></h1>'+
         '<div id="bodyContent">'+
         '<p>'+ result.attributes.startDate + result.attributes.startTime +'</p>'+
         '<p>'+ result.attributes.description +'</p>'+

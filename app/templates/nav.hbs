@@ -1,0 +1,14 @@
+{{#if Parse.User.current}}
+  <div class="left-nav">
+    <a href="#/orgs/org" class="manage">manage your events</a>
+    <a href="#/orgs/org/create" class="create">add an event</a>
+  </div>
+  <div class="right-nav">
+    <a href="#/logout" class="logout">logout</a>
+  </div>
+{{else}}
+  <div class="right-nav">
+    <a href="#/login" class="login">login</a>
+    <a href="#/register" class="signup">register</a>
+  </div>
+{{/if}}
