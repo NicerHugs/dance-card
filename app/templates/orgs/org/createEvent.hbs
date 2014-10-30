@@ -6,6 +6,9 @@
     This event occurs every {{weeklyRpt}}.
   {{/if}}
   <p>
+    Your event will run for one year by default.
+  </p>
+  <p>
     You can set bands, callers, musicians, and other special info for each event in this series after the series is created. Need to cancel an event in this series? You can do that all from the "manage my events" page.
   </p>
 </div>
@@ -35,8 +38,10 @@
   <input name="start-time" class="event-start-time-input" type="time">
 
 {{#unless recurring}}
-  <label name="end-date">End date</label>
-    <input name="end-date" class="event-end-date-input" type="date">
+  <label name="multi-day">Multi-day Event</label>
+    <input name="multi-day"class="multi-day-input" type="checkbox">
+    <div class="multi-day">
+    </div>
 {{/unless}}
 
 <label name="end-time">End time</label>
@@ -51,22 +56,22 @@
 
 {{#unless recurring}}
 <label name="band-name">Band Name</label>
-  <input type="text" name="band-name" placeholder="band name">
+  <input type="text" class="band-name-input" name="band-name" placeholder="band name">
 <label name="musicians">Musicians</label>
-  <textarea name="musicians" rows="8" cols="10" placeholder="musicians"></textarea>
+  <textarea name="musicians" class="musicians-input" rows="8" cols="10" placeholder="musicians"></textarea>
 
 <label name="caller">Caller</label>
-  <input type="text" name="caller" placeholder="caller">
+  <input type="text" class="caller-input" name="caller" placeholder="caller">
 {{/unless}}
 
 <label name="event-price">Price</label>
-  <input type="text" name="event-price" placeholder="price">
+  <input type="text" class="price-input" name="event-price" placeholder="price">
 
 <label name="beginner-friendly">Beginner Friendly</label>
-  <input type="checkbox" name="beginner-friendly">
+  <input type="checkbox" class="beginner" name="beginner-friendly">
 
 <label name="workshop-included">Workshop Included</label>
-  <input type="checkbox" name="workshop-included">
+  <input type="checkbox" class="workshop-incl" name="workshop-included">
 
 {{#unless recurring}}
   <label name="pre-reg-req">Pre-registration required</label>
@@ -78,4 +83,4 @@
 <label name="notes">Notes</label>
 <textarea name="note" placeholder="notes"></textarea>
 
-<input type="submit" value="create your event" disabled>
+<input type="submit" class="submit-event" value="create your event" disabled>
