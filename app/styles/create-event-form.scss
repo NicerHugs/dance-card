@@ -1,13 +1,15 @@
-label {
-  display: block;
-  float: left;
-  text-align: right;
-  width: 25%;
-}
+.new-event-form {
+  label {
+    display: block;
+    float: left;
+    text-align: right;
+    width: 25%;
+  }
 
-input,
-select,
-textarea {
-  margin-left: 25%;
-  width: 75%;
+  input,
+  select,
+  textarea {
+    margin-left: 25%;
+    width: 75%;
+  }
 }
