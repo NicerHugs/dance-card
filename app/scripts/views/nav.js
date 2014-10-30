@@ -5,12 +5,13 @@
       this.$container = options.$container;
       this.$container.append(this.el);
       this.render();
-      DanceCard.session.on('change', _.bind(this.render, this));
+      this.model.on('change', _.bind(this.render, this));
     },
     tagName: 'nav',
     template: DanceCard.templates.nav,
     render: function() {
-      this.$el.html(this.template());
+      console.log(this.model.toJSON());
+      this.$el.html(this.template(this.model.toJSON()));
     }
   });
 

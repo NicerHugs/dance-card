@@ -4,7 +4,8 @@
     render: function() {
       this.$el.append('<h1><a href="#">Contra Dance Card</a></h1>');
       this.navView = new DanceCard.Views.Nav({
-        $container: this.$el
+        $container: this.$el,
+        model: DanceCard.session
       });
     },
 

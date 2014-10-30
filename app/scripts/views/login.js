@@ -2,7 +2,7 @@
   DanceCard.Views.Login = DanceCard.Views.Base.extend({
     tagName: 'form',
     className: 'login-form',
-    template: _.template($('#login-template').text()),
+    template: DanceCard.templates.login,
     render: function() {
       this.$el.html(this.template());
     },
@@ -12,8 +12,8 @@
     login: function(e) {
       e.preventDefault();
       var self = this;
-      var email = this.$('.email').val();
-      var password = this.$('.password').val();
+      var email = this.$('.email-input').val();
+      var password = this.$('.password-input').val();
       Parse.User.logIn(email, password).then(
         function() {
           self.remove();
