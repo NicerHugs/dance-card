@@ -3,13 +3,57 @@
   DanceCard.Views.CreateEvent = DanceCard.Views.Base.extend({
     tagName: 'form',
     className: 'new-event-form',
-    template: DanceCard.templates.orgs.org.createEvent,
+    template: DanceCard.templates.orgs.org.chooseRecur,
     render: function() {
       this.$el.html(this.template());
     },
     events: {
-      'submit'                     : 'createEvent',
-      'keyup .event-zipcode-input' : 'getLocation'
+      'click .choose-recur'        : 'chooseRecur',
+      'click .choose-wk-mo'        : 'chooseWkMo',
+      'click .choose-rpt'          : 'chooseRpt',
+      'keyup .event-zipcode-input' : 'getLocation',
+      'click .submit-event'        : 'createEvent',
+      'click .pre-reg-req-input'   : 'regReq'
+    },
+    regReq: function() {
+      if (this.model.get('regReq')) {
+        this.model.set('regReq', false);
+        $('.reg-req').html('');
+      } else {
+        this.model.set('regReq', true);
+        $('.reg-req').html(DanceCard.templates.orgs.org._regReq);
+      }
+    },
+    chooseRecur: function(e) {
+      e.preventDefault();
+      if ($(e.target).val() === 'onetime') {
+        this.model.set('recurring', false);
+        this.$el.html(DanceCard.templates.orgs.org.createEvent(this.model.toJSON()));
+      } else {
+        this.model.set('recurring', true);
+        this.$el.html(DanceCard.templates.orgs.org.chooseWkMo);
+      }
+    },
+    chooseWkMo: function(e) {
+      e.preventDefault();
+      if ($(e.target).val() === 'weekly') {
+        this.model.set('recurMonthly', false);
+        this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
+      } else {
+        this.model.set('recurMonthly', true);
+        this.$el.append(DanceCard.templates.orgs.org.chooseMoRpt);
+        this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
+      }
+    },
+    chooseRpt: function(e) {
+      e.preventDefault();
+      var weeklyRpt = $('.weekly-option-input').val();
+      var monthlyRpt = $('.monthly-option-input').val() || null;
+      this.model.set('weeklyRpt', weeklyRpt);
+      if (monthlyRpt) {
+        this.model.set('monthlyRpt', monthlyRpt);
+      }
+      this.$el.html(DanceCard.templates.orgs.org.createEvent(this.model.toJSON()));
     },
     getLocation: function() {
       var self = this;

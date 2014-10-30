@@ -1,49 +1,19 @@
-<label name="recurring-event">Recurring Event</label>
-  <input name="recurring-event" class="recurring-event-input" type="checkbox">
-  <p class="recurring-event-notice">
-    selecting recurring event will auto-generate events for you on a weekly or monthly basis. If the event recurs annually, please do not select recurring.</p>
+{{#if recurring}}
+<div class="recurInfo">
+  {{#if recurMonthly}}
+    This event occurs on the {{monthlyRpt}} {{weeklyRpt}} of each month.
+  {{else}}
+    This event occurs every {{weeklyRpt}}.
+  {{/if}}
+  <p>
+    You can set bands, callers, musicians, and other special info for each event in this series after the series is created. Need to cancel an event in this series? You can do that all from the "manage my events" page.
   </p>
-<label name="recurring-schedule">Recurring Schedule</label>
-  <select class="recurring-option-input">
-    <option value="weekly" selected>Weekly</option>
-    <option value="monthly">Monthly</option>
-  </select>
-  <select class="weekly-option-input">
-    <option value="eachMonday">every Monday</option>
-    <option value="eachTuesday">every Tuesday</option>
-    <option value="eachWednesday">every Wednesday</option>
-    <option value="eachThursday">every Thursday</option>
-    <option value="eachFriday">every Friday</option>
-    <option value="eachSaturday">every Saturday</option>
-    <option value="eachSunday">every Sunday</option>
-  </select>
-  <select class="monthly-option-input">
-    <option value="first">every first week</option>
-    <option value="second">every second week</option>
-    <option value="third">every third week</option>
-    <option value="last">every last week</option>
-  </select>
-  <select class="monthly-day-option-input">
-    <option value="Monday">on Monday</option>
-    <option value="Tuesday">on Tuesday</option>
-    <option value="Wednesday">on Wednesday</option>
-    <option value="Thursday">on Thursday</option>
-    <option value="Friday">on Friday</option>
-    <option value="Saturday">on Saturday</option>
-    <option value="Sunday">on Sunday</option>
-  </select>
+</div>
+{{/if}}
+
 <label name="name">Event Name</label>
   <input name="name" class="event-name-input" type="text">
-<label name="start-date">Start date</label>
-  <input name="start-date" class="event-start-date-input" type="date">
-<label name="start-time">Start time</label>
-  <input name="start-time" class="event-start-time-input" type="time">
-<label name="end-date">End date</label>
-  <input name="end-date" class="event-end-date-input" type="date">
-<label name="end-time">End time</label>
-  <input name="end-time" class="event-end-time-input" type="time">
-<label name="venue-name">Venue Name</label>
-  <input name="venue-name" class="venue-name-input" type="text" placeholder="venue name">
+
 <label name="event-type">Event Type</label>
   <select class="event-type-input" name="event-type">
     <option value="contraDance" selected>Contra Dance</option>
@@ -55,26 +25,57 @@
     <option value="danceWeekend">Dance Weekend</option>
     <option value="callerWorkshop">Caller Workshop</option>
   </select>
+
+{{#unless recurring}}
+  <label name="start-date">Start date</label>
+    <input name="start-date" class="event-start-date-input" type="date">
+{{/unless}}
+
+<label name="start-time">Start time</label>
+  <input name="start-time" class="event-start-time-input" type="time">
+
+{{#unless recurring}}
+  <label name="end-date">End date</label>
+    <input name="end-date" class="event-end-date-input" type="date">
+{{/unless}}
+
+<label name="end-time">End time</label>
+  <input name="end-time" class="event-end-time-input" type="time">
+
+<label name="venue-name">Venue Name</label>
+  <input name="venue-name" class="venue-name-input" type="text" placeholder="venue name">
 <label name="address">Venue Address</label>
   <input name="address" class="event-address-input" type="text" placeholder="venue address">
 <label name="zipcode">Venue Zipcode</label>
   <input name="zipcode" class="event-zipcode-input"type="text" placeholder="venue zipcode">
-<label name="pre-reg-req">Pre-registration required</label>
-  <input type="checkbox" name="pre-reg-req">
-<label name="reg-limit">Registration Limit</label>
-  <input name="reg-limit" type="number">
-<label name="gender-bal">Lead/Follow Balanced</label>
-  <input type="checkbox" name="gender-bal">
+
+{{#unless recurring}}
 <label name="band-name">Band Name</label>
   <input type="text" name="band-name" placeholder="band name">
 <label name="musicians">Musicians</label>
   <textarea name="musicians" rows="8" cols="10" placeholder="musicians"></textarea>
+
 <label name="caller">Caller</label>
   <input type="text" name="caller" placeholder="caller">
+{{/unless}}
+
 <label name="event-price">Price</label>
   <input type="text" name="event-price" placeholder="price">
+
 <label name="beginner-friendly">Beginner Friendly</label>
   <input type="checkbox" name="beginner-friendly">
+
 <label name="workshop-included">Workshop Included</label>
   <input type="checkbox" name="workshop-included">
+
+{{#unless recurring}}
+  <label name="pre-reg-req">Pre-registration required</label>
+    <input type="checkbox" name="pre-reg-req" class="pre-reg-req-input">
+    <div class="reg-req">
+    </div>
+{{/unless}}
+
+<label name="notes">Notes</label>
+<textarea name="note" placeholder="notes"></textarea>
+
 <input type="submit" value="create your event" disabled>

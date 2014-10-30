@@ -62,7 +62,10 @@
       $('main').empty();
       new DanceCard.Views.CreateEvent({
         $container: $('main'),
-        model: new DanceCard.Models.Event()
+        model: new DanceCard.Models.Event({
+          org: Parse.User.current(),
+          orgUrlId: Parse.User.current().get('urlId')
+        })
       });
     }
   });
