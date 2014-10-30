@@ -34,6 +34,17 @@
         $container: $('main')
       });
     },
+    logout: function() {
+      Parse.User.logOut();
+      DanceCard.session.set('user', Parse.User.current());
+      $('main').empty();
+      new DanceCard.Views.Logout({
+        $container: $('main'),
+      });
+      new DanceCard.Views.Login({
+        $container: $('main')
+      });
+    },
     register: function() {
       $('main').empty();
       new DanceCard.Views.Register({

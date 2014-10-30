@@ -1,9 +1,12 @@
 (function() {
+  'use strict';
+
   DanceCard.Views.Logout = DanceCard.Views.Base.extend({
     className: 'logout-msg',
-    template: _.template($('#logout-template').text()),
+    template: DanceCard.templates.logout,
     render: function() {
       this.$el.html(this.template());
     }
   });
+
 })();
