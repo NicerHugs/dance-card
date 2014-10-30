@@ -30,7 +30,7 @@
     },
     register: function() {
       $('main').empty();
-      new DanceCard.Views.Signup({
+      new DanceCard.Views.Register({
         $container: $('main'),
         model: new DanceCard.Models.User()
       });
