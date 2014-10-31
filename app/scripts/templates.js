@@ -10,8 +10,13 @@ this["DanceCard"]["templates"]["logout"] = Handlebars.template({"compiler":[6,">
   return "<p>You have successfully logged out</p>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
-  return "  <div class=\"left-nav\">\n    <a href=\"#/orgs/org\" class=\"manage\">manage your events</a>\n    <a href=\"#/orgs/org/create-event\" class=\"create\">add an event</a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/logout\" class=\"logout\">logout</a>\n  </div>\n";
-  },"3":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "  <div class=\"left-nav\">\n    <a href=\"#/orgs/"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
+    + "\" class=\"manage\">manage your events</a>\n    <a href=\"#/orgs/"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
+    + "/create-event\" class=\"create\">add an event</a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/logout\" class=\"logout\">logout</a>\n  </div>\n";
+},"3":function(depth0,helpers,partials,data) {
   return "  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\">organizer login</a>\n    <a href=\"#/register\" class=\"signup\">register</a>\n  </div>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
@@ -96,7 +101,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"c
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "<h2>Welcome, "
+  return "<h2>Hi, "
     + escapeExpression(((helper = (helper = helpers.orgName || (depth0 != null ? depth0.orgName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgName","hash":{},"data":data}) : helper)))
-    + "</h2>\n";
+    + "!</h2>\n";
 },"useData":true});
