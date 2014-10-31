@@ -128,16 +128,65 @@
     },
 
     buildRecurringEvents: function(model){
-      console.log('making lots of events for you now with this model:', model);
+      var arrayOfDates = [];
+      var date = model.get('startDate');
+      _.times(52, function() {
+        arrayOfDates.push(date.setDate(date.getDate() + 7));
+      });
+      arrayOfDates = _.map(arrayOfDates, function(date){
+        return new Date(date);
+      });
+      if (model.get('recurMonthly')) {
+        var week = model.get('monthlyRpt');
+        if (week === 'first') {
+          arrayOfDates = _.filter(arrayOfDates, function(date) {
+            if (date.getDate() <= 7 && date.getDay() + date.getDate() <= 13) {
+              return date;
+            }
+          });
+        } else if (week === 'second') {
+          arrayOfDates = _.filter(arrayOfDates, function(date) {
+            if (date.getDate() >= 8 && date.getDate() <= 14 && date.getDay() + date.getDate() <= 20) {
+              return date;
+            }
+          });
+        } else if (week === 'third') {
+          arrayOfDates = _.filter(arrayOfDates, function(date) {
+            if (date.getDate() >= 15 && date.getDate() <= 21 && date.getDay() + date.getDate() <= 27) {
+              return date;
+            }
+          });
+        } else if (week === 'fourth') {
+          arrayOfDates = _.filter(arrayOfDates, function(date) {
+            if (date.getDate() >= 22 && date.getDate() <= 28 && date.getDay() + date.getDate() <= 34) {
+              return date;
+            }
+          });
+        } else if (week === 'last') {
+          arrayOfDates = _.filter(arrayOfDates, function(date) {
+            var month = date.getMonth();
+            date.setDate(date.getDate() + 7);
+            if (month !== date.getMonth()) {
+              return true;
+            }
+          });
+        }
+      }
+      _.each(arrayOfDates, function(date) {
+        //new event, all attrs set to model,
+        //set start date and end date to date
+        //set recurring to false
+        //set parentEvent to model
+        //save event
+      });
+      console.log('making lots of events for you now with these dates:', arrayOfDates, arrayOfDates.length);
     },
 
     setStartDate: function(recurEventModel) {
       var deferred = new $.Deferred();
       var startDate = new Date(),
           recurDay = +recurEventModel.get('weeklyRpt'),
-          endDate = new Date(),
           diff;
-      endDate.setFullYear(endDate.getFullYear() + 1);
       if (startDate.getDay() === recurDay) {
         deferred.resolve(recurEventModel, startDate);
       } else {

@@ -34,7 +34,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_regReq"] = Handlebars.template({
   return "<label name=\"reg-limit\">Registration Limit</label>\n  <input name=\"reg-limit\" class=\"reg-limit-input\" type=\"number\">\n<label name=\"gender-bal\">Lead/Follow Balanced</label>\n  <input type=\"checkbox\" class=\"gender-bal-input\" name=\"gender-bal\">\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseMoRpt"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<select class=\"monthly-option-input\">\n  <option value=\"first\">on the first week</option>\n  <option value=\"second\">on the second week</option>\n  <option value=\"third\">on the third week</option>\n  <option value=\"last\">on the last week</option>\n</select>\n";
+  return "<select class=\"monthly-option-input\">\n  <option value=\"first\">on the first week</option>\n  <option value=\"second\">on the second week</option>\n  <option value=\"third\">on the third week</option>\n  <option value=\"fourth\">on the fourth week</option>\n  <option value=\"last\">on the last week</option>\n</select>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseRecur"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<p>\n  I want to create a\n</p>\n<button class=\"choose-recur\" value=\"onetime\">stand alone event</button>\n<button class=\"choose-recur\" value=\"recur\">weekly or monthly event</button>\n";
