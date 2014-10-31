@@ -21,7 +21,7 @@
             $('.logout-msg').remove();
           }
           DanceCard.router.navigate('', {trigger: true});
-          DanceCard.session.set('user', Parse.User.current());
+          DanceCard.session.set('user', Parse.User.current().toJSON());
         }
       );
     }
