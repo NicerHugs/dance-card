@@ -16,6 +16,9 @@
         this.$el.html(this.template(this.model.toJSON()));
         var query = new Parse.Query('Event');
         query.equalTo('orgUrlId', this.model.get('urlId'));
+        var yesterday = new Date();
+        yesterday.setDate(yesterday.getDate()-1);
+        query.greaterThan('startDate', yesterday);
         query.notEqualTo('recurring', true);
         query.ascending('startDate');
         query.limit(10);
@@ -24,8 +27,7 @@
         .then(function() {
           var events = collection.toJSON();
           _.each(events, function(model) {
-            console.log(model);
-            new DanceCard.Views.EventListItem({
+            new DanceCard.Views.EventsPartial({
               $container: self.$el,
               model: model
             });

@@ -50,9 +50,11 @@
       e.preventDefault();
       if ($(e.target).val() === 'weekly') {
         this.model.set('recurMonthly', false);
+        this.$el.append('On');
         this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
       } else {
         this.model.set('recurMonthly', true);
+        this.$el.append('On');
         this.$el.append(DanceCard.templates.orgs.org.chooseMoRpt);
         this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
       }
@@ -60,8 +62,9 @@
     chooseRpt: function(e) {
       e.preventDefault();
       var weeklyRpt = $('.weekly-option-input').val();
+      var weeklyRptName = $('.weekly-option-input').text();
       var monthlyRpt = $('.monthly-option-input').val() || null;
-      this.model.set('weeklyRpt', weeklyRpt);
+      this.model.set({weeklyRpt: weeklyRpt, weeklyRptName: weeklyRptName});
       if (monthlyRpt) {
         this.model.set('monthlyRpt', monthlyRpt);
       }

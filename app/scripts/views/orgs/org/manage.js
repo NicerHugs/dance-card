@@ -4,44 +4,45 @@
     className: 'org-manage',
     template: DanceCard.templates.orgs.org.manage,
     render: function() {
-      var self = this;
       this.$el.html(this.template(this.model.toJSON()));
-      var query1 = new Parse.Query('Event');
-      query1.equalTo('orgUrlId', this.model.get('urlId'));
-      query1.equalTo('recurring', true);
-      var collection = query1.collection();
+      this.$el.append('<div class="recur-events"></div>');
+      this.$el.append('<div class="onetime-events"></div>');
+      this.populateOnetimeEvents();
+      this.populateRecurringEvents();
+    },
+    populateRecurringEvents: function() {
+      var self = this;
+      var query = new Parse.Query('Event');
+      query.equalTo('orgUrlId', this.model.get('urlId'));
+      query.equalTo('recurring', true);
+      var collection = query.collection();
+      var template = DanceCard.templates.orgs.org._recur;
       collection.fetch()
       .then(function() {
-        self.$el.append('<h3>recurring events</h3>');
-        var events = collection.toJSON();
-        if (events.length === 0) {
-          self.$el.append('<p>nothing to show</p>');
-        }
-        _.each(events, function(event){
-          new DanceCard.Views.EventListItem({
-            $container: self.$el,
-            model: event
-          });
-        });
+        $('.recur-events').html(template({
+          collection: collection,
+          orgUrlId: self.model.get('urlId')
+        }));
       });
-      var query2 = new Parse.Query('Event');
-      query2.equalTo('orgUrlId', this.model.get('urlId'));
-      query2.equalTo('recurring', false);
-      query2.doesNotExist('parentEvent');
-      var collection2 = query2.collection();
-      collection2.fetch()
+    },
+    populateOnetimeEvents: function() {
+      var self = this;
+      var query = new Parse.Query('Event');
+      query.equalTo('orgUrlId', this.model.get('urlId'));
+      query.equalTo('recurring', false);
+      query.doesNotExist('parentEvent');
+      var yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      query.greaterThan('startDate', yesterday);
+      query.ascending('startDate');
+      var template = DanceCard.templates.orgs.org._onetime;
+      var collection = query.collection();
+      collection.fetch()
       .then(function() {
-        self.$el.append('<h3>one time events<h3>');
-        var events = collection2.toJSON();
-        if (events.length === 0) {
-          self.$el.append('<p>nothing to show<p>');
-        }
-        _.each(events, function(event){
-          new DanceCard.Views.EventListItem({
-            $container: self.$el,
-            model: event
-          });
-        });
+        $('.onetime-events').html(template({
+          collection: collection,
+          orgUrlId: self.model.get('urlId')
+        }));
       });
     },
   });

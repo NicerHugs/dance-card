@@ -35,11 +35,55 @@ this["DanceCard"]["templates"]["orgs"]["org"] = this["DanceCard"]["templates"]["
 this["DanceCard"]["templates"]["orgs"]["org"]["_multiDay"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<label name=\"end-date\">End date</label>\n  <input name=\"end-date\" class=\"event-end-date-input\" type=\"date\">\n";
   },"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["_onetime"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "  You have no one time events.\n  <a href=\"#/orgs/"
+    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
+    + "/create-event\">Click here to add a new event</a>\n";
+},"3":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, lambda=this.lambda;
+  return "  <a href=\"#/orgs/"
+    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
+    + "/"
+    + escapeExpression(((helper = (helper = helpers.urlId || (depth0 != null ? depth0.urlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"urlId","hash":{},"data":data}) : helper)))
+    + "/manage\">"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.name : stack1), depth0))
+    + "</a>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "<h3>Your one time events</h3>\n\n";
+  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.models : stack1), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n";
+  stack1 = helpers.each.call(depth0, ((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.models : stack1), {"name":"each","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
+},"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["_recur"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "  You have no recurring events.\n  <a href=\"#/orgs/"
+    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
+    + "/create-event\">Click here to add a new event</a>\n";
+},"3":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "  <div class=\"recur-event\"> \n    <a href=\"#\" class=\"recurring\">"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.name : stack1), depth0))
+    + "</a>\n    This event occurs every "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.weeklyRptName : stack1), depth0))
+    + "\n    <div class=\"event-details\">\n    </div>\n  </div>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "<h3>Your recurring events</h3>\n\n";
+  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.models : stack1), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n";
+  stack1 = helpers.each.call(depth0, ((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.models : stack1), {"name":"each","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
+},"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_regReq"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<label name=\"reg-limit\">Registration Limit</label>\n  <input name=\"reg-limit\" class=\"reg-limit-input\" type=\"number\">\n<label name=\"gender-bal\">Lead/Follow Balanced</label>\n  <input type=\"checkbox\" class=\"gender-bal-input\" name=\"gender-bal\">\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseMoRpt"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<select class=\"monthly-option-input\">\n  <option value=\"first\">on the first week</option>\n  <option value=\"second\">on the second week</option>\n  <option value=\"third\">on the third week</option>\n  <option value=\"fourth\">on the fourth week</option>\n  <option value=\"last\">on the last week</option>\n</select>\n";
+  return "<select name=\"monthlyRpt\" class=\"monthly-option-input\">\n  <option value=\"first\">the first</option>\n  <option value=\"second\">the second</option>\n  <option value=\"third\">the third</option>\n  <option value=\"fourth\">the fourth</option>\n  <option value=\"last\">the last</option>\n</select>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseRecur"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<p>\n  I want to create a\n</p>\n<button class=\"choose-recur\" value=\"onetime\">stand alone event</button>\n<button class=\"choose-recur\" value=\"recur\">weekly or monthly event</button>\n";
@@ -48,7 +92,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["chooseWkMo"] = Handlebars.templat
   return "<p>\n  This event occurs:\n</p>\n<button class=\"choose-wk-mo\" value=\"weekly\">Weekly</button>\n<button class=\"choose-wk-mo\" value=\"monthly\">Monthly</button>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseWkRpt"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<select class=\"weekly-option-input\">\n  <option value=\"1\">on Monday</option>\n  <option value=\"2\">on Tuesday</option>\n  <option value=\"3\">on Wednesday</option>\n  <option value=\"4\">on Thursday</option>\n  <option value=\"5\">on Friday</option>\n  <option value=\"6\">on Saturday</option>\n  <option value=\"0\">on Sunday</option>\n</select>\n\n<button class=\"choose-rpt\">Continue</button>\n";
+  return "<select class=\"weekly-option-input\">\n  <option value=\"1\">Monday</option>\n  <option value=\"2\">Tuesday</option>\n  <option value=\"3\">Wednesday</option>\n  <option value=\"4\">Thursday</option>\n  <option value=\"5\">Friday</option>\n  <option value=\"6\">Saturday</option>\n  <option value=\"0\">Sunday</option>\n</select>\n\n<button class=\"choose-rpt\">Continue</button>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var stack1, buffer = "<div class=\"recurInfo\">\n";
@@ -93,20 +137,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.templa
   if (stack1 != null) { buffer += stack1; }
   return buffer + "\n<label name=\"notes\">Notes</label>\n<textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\" disabled>\n";
 },"useData":true});
-this["DanceCard"]["templates"]["orgs"]["org"]["events"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, lambda=this.lambda;
-  return "<a href=\"#/orgs/"
-    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
-    + "/"
-    + escapeExpression(((helper = (helper = helpers.urlId || (depth0 != null ? depth0.urlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"urlId","hash":{},"data":data}) : helper)))
-    + "\">"
-    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
-    + "</a>\n"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.startDate : depth0)) != null ? stack1.iso : stack1), depth0))
-    + "\n"
-    + escapeExpression(((helper = (helper = helpers.startTime || (depth0 != null ? depth0.startTime : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"startTime","hash":{},"data":data}) : helper)))
-    + "\n";
-},"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "<h2>"
@@ -117,5 +147,5 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "<h2>Hi, "
     + escapeExpression(((helper = (helper = helpers.orgName || (depth0 != null ? depth0.orgName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgName","hash":{},"data":data}) : helper)))
-    + "!</h2>\n";
+    + "!</h2>\n<p>Below is a list of your events. Click on any event name to view, add or change the event's info</p>\n";
 },"useData":true});
