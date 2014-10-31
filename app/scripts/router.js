@@ -15,7 +15,7 @@
       'logout'                 : 'logout',
       'register'               : 'register',
       'orgs'                   : 'orgs',
-      'orgs/:org'              : 'org', //dynamic
+      'orgs/:org'              : 'org', //dynamic, for validated user will allow user to manage events, otherwise will show the org and their events
       'orgs/:org/create-event' : 'createEvent', //dynamic
       'orgs/:org/:event'       : 'event', //dynamic
       'orgs/:org/:event/manage': 'manageEvent', //dynamic
@@ -56,6 +56,24 @@
       $('main').empty();
       new DanceCard.Views.Orgs({
         $container: $('main')
+      });
+    },
+    org: function() {
+      $('main').empty();
+      var query = new Parse.Query('User');
+      query.equalTo('urlId', location.hash.slice(7));
+      var user = query.find({
+        success: function(user) {
+          new DanceCard.Views.Org({
+            $container: $('main'),
+            model: user[0]
+          });
+        }, error: function() {
+          console.log('user not found');
+          new DanceCard.Views.OrgNotFound({
+            $container: $('main')
+          });
+        }
       });
     },
     createEvent: function() {

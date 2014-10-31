@@ -88,3 +88,15 @@ this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.templa
   if (stack1 != null) { buffer += stack1; }
   return buffer + "\n<label name=\"notes\">Notes</label>\n<textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\" disabled>\n";
 },"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "<h2>"
+    + escapeExpression(((helper = (helper = helpers.orgName || (depth0 != null ? depth0.orgName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgName","hash":{},"data":data}) : helper)))
+    + "</h2>\n";
+},"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "<h2>Welcome, "
+    + escapeExpression(((helper = (helper = helpers.orgName || (depth0 != null ? depth0.orgName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgName","hash":{},"data":data}) : helper)))
+    + "</h2>\n";
+},"useData":true});
