@@ -106,12 +106,12 @@
       var workshopIncl = $('.workshop-incl').prop('checked');
       var notes = $('.notes-input').val();
       var idName = name.replace(/[^\w\d\s]/g, '');
-      var id = idName.split(' ').join('_') + '_recurring_' + model.get('weeklyRpt');
+      var id = idName.split(' ').join('_') + '_recurring_' + this.model.get('weeklyRpt');
       this.model.set({
         urlId: id,
         name: name,
         type: type,
-        starTime: startTime,
+        startTime: startTime,
         endTime: endTime,
         price: price,
         beginnerFrdly: beginner,
@@ -128,9 +128,10 @@
     },
 
     buildRecurringEvents: function(model){
-      var arrayOfDates = [];
       var date = model.get('startDate');
-      _.times(52, function() {
+      var firstDate = new Date(model.get('startDate'));
+      var arrayOfDates = [firstDate];
+      _.times(51, function(n) {
         arrayOfDates.push(date.setDate(date.getDate() + 7));
       });
       arrayOfDates = _.map(arrayOfDates, function(date){

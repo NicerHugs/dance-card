@@ -18,8 +18,7 @@
         result.attributes.name + '</a></h1>'+
         '<div id="bodyContent">'+
         '<p>'+ result.attributes.startDate + result.attributes.startTime +'</p>'+
-        '<p>'+ result.attributes.description +'</p>'+
-        '<p>'+ result.attributes.fullAddress +'</p>'+
+        '<p>'+ result.attributes.venue.fullAddress +'</p>'+
         '</div>'+
         '</div>';
       var infowindow = new google.maps.InfoWindow({
