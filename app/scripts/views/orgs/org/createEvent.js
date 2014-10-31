@@ -119,11 +119,11 @@
         notes: notes
       });
       this.model.set('venue.name', venueName);
-      // this.model.save();
+      this.model.save();
       this.setStartDate(this.model)
       .done(function(model, startDate) {
         model.set('startDate', startDate);
-        self.buildRecurringEvents(model);//build the repeating events here
+        self.buildRecurringEvents(model);
       });
     },
 
@@ -173,13 +173,19 @@
         }
       }
       _.each(arrayOfDates, function(date) {
-        //new event, all attrs set to model,
-        //set start date and end date to date
-        //set recurring to false
-        //set parentEvent to model
-        //save event
+        var newEvent = new DanceCard.Models.Event(model);
+        var idName = model.get('name').replace(/[^\w\d\s]/g, '');
+        var dateString = date.toDateString().split(' ').join('_');
+        var id = idName.split(' ').join('_') + '_' + dateString;
+        newEvent.set({
+          startDate: date,
+          endDate: date,
+          recurring: false,
+          parentEvent: model,
+          urlId: id
+        });
+        newEvent.save();
       });
-      console.log('making lots of events for you now with these dates:', arrayOfDates, arrayOfDates.length);
     },
 
     setStartDate: function(recurEventModel) {
