@@ -106,7 +106,7 @@
       var workshopIncl = $('.workshop-incl').prop('checked');
       var notes = $('.notes-input').val();
       var idName = name.replace(/[^\w\d\s]/g, '');
-      var id = idName.split(' ').join('_') + '_' + 'recurring';
+      var id = idName.split(' ').join('_') + '_recurring_' + model.get('weeklyRpt');
       this.model.set({
         urlId: id,
         name: name,
@@ -182,6 +182,7 @@
           endDate: date,
           recurring: false,
           parentEvent: model,
+          parentEventUrlId: model.get('urlId'),
           urlId: id
         });
         newEvent.save();

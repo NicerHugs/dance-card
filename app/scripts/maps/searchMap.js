@@ -9,7 +9,6 @@
     var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
     _.each(queryResults.models, function(result) {
-      console.log(result);
       var contentString = '<div id="content">'+
         '<div id="siteNotice">'+
         '</div>'+
@@ -76,7 +75,6 @@
       collection.fetch()
       .then(function() {
         deferred.resolve(collection);
-        console.log(collection);
       });
     });
     return deferred.promise();
