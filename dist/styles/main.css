@@ -1,1 +1,1 @@
-*{box-sizing:border-box}html,body,#map-canvas{height:100%;margin:0;padding:0}
+*{box-sizing:border-box}html,body,.container,main,.index,#map-canvas{height:100%;margin:0;padding:0}.new-event-form label{display:block;float:left;text-align:right;width:25%}.new-event-form input,.new-event-form select,.new-event-form textarea{margin-left:25%;width:75%}
