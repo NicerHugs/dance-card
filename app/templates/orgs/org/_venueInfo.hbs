@@ -1,0 +1,26 @@
+{{#unless event.recurring}}
+  {{#if edit.venueInfo}}
+    <divclass="venue-info-editing">
+      <span><a href="#" class="save-edit-venue-info">save changes</a></span>
+      <span><a href="#" class="cancel-edit-venue-info">cancel</a></span>
+      <h3>Venue Info</h3>
+      <label name="venue-name">Venue Name</label>
+        <input name="venue-name" class="venue-name-input" type="text" placeholder="venue name">
+      <label name="address">Venue Address</label>
+        <input name="address" class="event-address-input" type="text" placeholder="venue address">
+      <label name="zipcode">Venue Zipcode</label>
+        <input name="zipcode" class="event-zipcode-input"type="text" placeholder="venue zipcode">
+    </div>
+  {{else}}
+  <div class="venue-info-viewing">
+    <span><a href="#" class="edit-venue-info">edit</a></span>
+    <h3>Venue Info</h3>
+    <h4>
+      {{event.venue.name}}
+    </h4>
+    <p>
+      {{event.venue.fullAddress}}
+    </p>
+  </div>
+  {{/if}}
+{{/unless}}

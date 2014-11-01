@@ -1,0 +1,53 @@
+{{#if edit.eventInfo}}
+  <div class="event-info-editing">
+    <span><a href="#" class="save-edit-event-info">save changes</a></span>
+    <span><a href="#" class="cancel-edit-event-info">cancel</a></span>
+    <h3>Event Info</h3>
+    <label name="event-price">Price</label>
+      <input type="text" class="price-input" name="event-price" placeholder="price">
+    {{#if event.recurring}}
+      To edit band and caller info, please edit the individual event
+    {{else}}
+      <label name="band-name">Band Name</label>
+        <input type="text" class="band-name-input" name="band-name" placeholder="band name">
+      <label name="musicians">Musicians</label>
+        <textarea name="musicians" class="musicians-input" rows="8" cols="10" placeholder="musicians"></textarea>
+      <label name="caller">Caller</label>
+        <input type="text" class="caller-input" name="caller" placeholder="caller">
+    {{/if}}
+    <label name="beginner-friendly">Beginner Friendly</label>
+      <input type="checkbox" class="beginner" name="beginner-friendly">
+    <label name="workshop-included">Workshop Included</label>
+      <input type="checkbox" class="workshop-incl" name="workshop-included">
+    <label name="notes">Notes</label>
+      <textarea name="note" class="notes-input" placeholder="notes"></textarea>
+  </div>
+{{else}}
+  <div class="event-info-viewing">
+    <span><a href="#" class="edit-event-info">edit</a></span>
+    <h3>Event Info</h3>
+    <p>Cost: ${{event.price}}</p>
+    {{#unless event.recurring}}
+      <p>
+        Band: {{#if event.band}}{{event.band}}{{else}}TBA{{/if}}
+      </p>
+      <p>
+        Musicians: {{#if event.musicians}}{{event.musicians}}{{else}}TBA{{/if}}
+      </p>
+      <p>
+        Caller: {{#if event.caller}}{{event.caller}}{{else}}TBA{{/if}}
+      </p>
+    {{/unless}}
+    <p>
+      This {{event.type}} is
+      {{#unless event.beginnerFrdly}} NOT {{/unless}}
+      beginner friendly
+      {{#if event.workshopIncl}} and includes a workshop.{{/if}}
+    </p>
+    {{#if event.notes}}
+      <p>
+        Organizer notes: {{event.notes}}
+      </p>
+    {{/if}}
+  </div>
+{{/if}}
