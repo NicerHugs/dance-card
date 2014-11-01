@@ -100,7 +100,7 @@
     createRecurringEvent: function() {
       var self = this;
       var name = $('.event-name-input').val();
-      var type = $('.event-type-input').val();
+      var type = $('.event-type-input').val().split('-').join(' ');
       var startTime = $('.event-start-time-input').val();
       var endTime = $('.event-end-time-input').val();
       var venueName = $('.venue-name-input').val();
@@ -217,7 +217,7 @@
 
     createOnetimeEvent: function() {
       var name = $('.event-name-input').val();
-      var type = $('.event-type-input').val();
+      var type = $('.event-type-input').val().split('-').join(' ');
       var startDate,
           endDate,
           regLimit,

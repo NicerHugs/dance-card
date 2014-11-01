@@ -17,8 +17,7 @@
       'orgs'                   : 'orgs',
       'orgs/:org'              : 'org', //dynamic, for validated user will allow user to manage events, otherwise will show the org and their events
       'orgs/:org/create-event' : 'createEvent', //dynamic
-      'orgs/:org/:event'       : 'evnt', //dynamic
-      'orgs/:org/:event/manage': 'manageEvent', //dynamic
+      'orgs/:org/:event'       : 'evnt', //dynamic, for validated user will be manage event page, otherwise will show the event info
       'orgs/:org/:event/RSVP'  : 'attendEvent', //dynamic
     },
 
@@ -88,7 +87,37 @@
     },
     evnt: function() {
       $('main').empty();
-      console.log('event view');
+      var urlId = location.hash.split(/\//)[3];
+      var collection = new DanceCard.Collections.currentEvent({
+        urlId: urlId
+      });
+      collection.fetch()
+      .then(function(collection) {
+        var loggedIn,
+            model = collection.models[0];
+        if (model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
+          new DanceCard.Views.Event({
+            $container: $('main'),
+            model: {
+              event: model.toJSON(),
+              loggedIn: true,
+              eventOrg: DanceCard.session.get('user')
+            }
+          });
+        } else {
+          model.get('org').fetch().then(function(org){
+            new DanceCard.Views.Event({
+              $container: $('main'),
+              model: {
+                event: model.toJSON(),
+                loggedIn: false,
+                eventOrg: org.toJSON()
+              }
+            });
+          });
+        }
+      });
+
     }
   });
 

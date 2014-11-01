@@ -23,7 +23,7 @@
       });
     },
     events: {
-      'click a' : 'toggleChildren'
+      'click .recur-event-name' : 'toggleChildren'
     },
     toggleChildren: function(e) {
       e.preventDefault();
