@@ -12,10 +12,7 @@
     },
     populateRecurringEvents: function() {
       var self = this;
-      var query = new Parse.Query('Event');
-      query.equalTo('orgUrlId', this.model.get('urlId'));
-      query.equalTo('recurring', true);
-      var collection = query.collection();
+
       var template = DanceCard.templates.orgs.org._recur;
       collection.fetch()
       .then(function() {

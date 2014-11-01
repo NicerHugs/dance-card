@@ -5,33 +5,52 @@
     template: DanceCard.templates.orgs.org.index,
     render: function() {
       var self = this;
+
+      //if the user is logged in and viewing thier own page
       if (Parse.User.current().get('urlId') === this.model.get('urlId')){
-        //render logged in user version
-        new DanceCard.Views.OrgManage({
-          $container: this.$el,
-          model: this.model
+        this.$el.html(this.template({
+          model: this.model.toJSON(),
+          loggedIn: true
+        }));
+        //render a list of their recurring events, each as its own view
+        var recurringCollection = new DanceCard.Collections.RecurringEventList({
+          urlId: this.model.get('urlId')
         });
+        recurringCollection.fetch()
+        .then(function() {
+          _.each(recurringCollection.models, function(event) {
+            new DanceCard.Views.RecurringEventListItem({
+              $container: $('.recurring-event-list'),
+              model: event
+            });
+          });
+        });
+        //render a list of their one time events, all in one view
+        var onetimeCollection = new DanceCard.Collections.OnetimeEventList({
+          urlId: this.model.get('urlId')
+        });
+        onetimeCollection.fetch()
+        .then(function() {
+          new DanceCard.Views.OnetimeEventList({
+            $container: self.$el,
+            collection: onetimeCollection
+          });
+        });
+
+      //if the user is not logged in or is viewing another orgs page
       } else {
-        //render non-logged in view
-        this.$el.html(this.template(this.model.toJSON()));
-        var query = new Parse.Query('Event');
-        query.equalTo('orgUrlId', this.model.get('urlId'));
-        var yesterday = new Date();
-        yesterday.setDate(yesterday.getDate()-1);
-        query.greaterThan('startDate', yesterday);
-        query.notEqualTo('recurring', true);
-        query.ascending('startDate');
-        query.limit(10);
-        var collection = query.collection();
+        //render a list of their next 10 upcoming events
+        var collection = new DanceCard.Collections.LoggedOutEventList({
+          urlId: this.model.get('urlId')
+        });
         collection.fetch()
         .then(function() {
           var events = collection.toJSON();
-          _.each(events, function(model) {
-            new DanceCard.Views.EventsPartial({
-              $container: self.$el,
-              model: model
-            });
-          });
+          self.$el.html(self.template({
+            events: events,
+            loggedIn: false,
+            model: {orgName: self.model.get('orgName')}
+          }));
         });
       }
     },

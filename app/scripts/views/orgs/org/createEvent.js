@@ -127,6 +127,7 @@
       .done(function(model, startDate) {
         model.set('startDate', startDate);
         self.buildRecurringEvents(model);
+        DanceCard.router.navigate("#/orgs/" + self.model.get('orgUrlId'), {trigger: true});
       });
     },
 
@@ -269,6 +270,7 @@
         });
       }
       this.model.save();
+      DanceCard.router.navigate("#/orgs/" + this.model.get('orgUrlId'), {trigger: true});
     }
   });
 

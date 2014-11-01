@@ -17,7 +17,7 @@
       'orgs'                   : 'orgs',
       'orgs/:org'              : 'org', //dynamic, for validated user will allow user to manage events, otherwise will show the org and their events
       'orgs/:org/create-event' : 'createEvent', //dynamic
-      'orgs/:org/:event'       : 'event', //dynamic
+      'orgs/:org/:event'       : 'evnt', //dynamic
       'orgs/:org/:event/manage': 'manageEvent', //dynamic
       'orgs/:org/:event/RSVP'  : 'attendEvent', //dynamic
     },
@@ -85,6 +85,10 @@
           orgUrlId: Parse.User.current().get('urlId')
         })
       });
+    },
+    evnt: function() {
+      $('main').empty();
+      console.log('event view');
     }
   });
 

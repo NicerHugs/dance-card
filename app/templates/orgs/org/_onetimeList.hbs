@@ -1,0 +1,9 @@
+<h3>Your One Time Events</h3>
+
+{{#each models}}
+  <li class="{{attributes.orgUrlId}}-event">
+    <a href="#/orgs/{{attributes.orgUrlId}}/{{attributes.urlId}}">{{attributes.name}}</a>
+    {{attributes.startDate}}
+    {{attributes.startTime}}-{{attributes.endTime}}
+  </li>
+{{/each}}
