@@ -104,12 +104,12 @@ this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.templa
   return "    This event occurs on the "
     + escapeExpression(((helper = (helper = helpers.monthlyRpt || (depth0 != null ? depth0.monthlyRpt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"monthlyRpt","hash":{},"data":data}) : helper)))
     + " "
-    + escapeExpression(((helper = (helper = helpers.weeklyRpt || (depth0 != null ? depth0.weeklyRpt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRpt","hash":{},"data":data}) : helper)))
+    + escapeExpression(((helper = (helper = helpers.weeklyRptName || (depth0 != null ? depth0.weeklyRptName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRptName","hash":{},"data":data}) : helper)))
     + " of each month.\n";
 },"4":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "    This event occurs every "
-    + escapeExpression(((helper = (helper = helpers.weeklyRpt || (depth0 != null ? depth0.weeklyRpt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRpt","hash":{},"data":data}) : helper)))
+    + escapeExpression(((helper = (helper = helpers.weeklyRptNamez || (depth0 != null ? depth0.weeklyRptNamez : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRptNamez","hash":{},"data":data}) : helper)))
     + ".\n";
 },"6":function(depth0,helpers,partials,data) {
   return "  <label name=\"start-date\">Start date</label>\n    <input name=\"start-date\" class=\"event-start-date-input\" type=\"date\">\n";
