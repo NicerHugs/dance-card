@@ -35,7 +35,7 @@
       'orgs'                   : 'orgs',
       'orgs/:org'              : 'org', //dynamic, for validated user will allow user to manage events, otherwise will show the org and their events
       'orgs/:org/create-event' : 'createEvent', //dynamic
-      'orgs/:org/:event'       : 'event', //dynamic
+      'orgs/:org/:event'       : 'evnt', //dynamic
       'orgs/:org/:event/manage': 'manageEvent', //dynamic
       'orgs/:org/:event/RSVP'  : 'attendEvent', //dynamic
     },
@@ -103,6 +103,10 @@
           orgUrlId: Parse.User.current().get('urlId')
         })
       });
+    },
+    evnt: function() {
+      $('main').empty();
+      console.log('event view');
     }
   });
 
@@ -145,11 +149,57 @@ this["DanceCard"]["templates"]["orgs"]["org"] = this["DanceCard"]["templates"]["
 this["DanceCard"]["templates"]["orgs"]["org"]["_multiDay"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<label name=\"end-date\">End date</label>\n  <input name=\"end-date\" class=\"event-end-date-input\" type=\"date\">\n";
   },"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  return "  <h3>Your One Time Events</h3>\n";
+  },"3":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "  You have no one time events.\n  <a href=\"#/orgs/"
+    + escapeExpression(((helper = (helper = helpers.urlId || (depth0 != null ? depth0.urlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"urlId","hash":{},"data":data}) : helper)))
+    + "/create-event\">Click here to add a new event</a>\n";
+},"5":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "  <li class=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.orgUrlId : stack1), depth0))
+    + "-event\">\n    <a href=\"#/orgs/"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.orgUrlId : stack1), depth0))
+    + "/"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.urlId : stack1), depth0))
+    + "\">"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.name : stack1), depth0))
+    + "</a>\n    "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.startDate : stack1), depth0))
+    + "\n    "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.startTime : stack1), depth0))
+    + "-"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.endTime : stack1), depth0))
+    + "\n  </li>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "";
+  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.parentEvent : depth0), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n";
+  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.models : depth0), {"name":"unless","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n";
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.models : depth0), {"name":"each","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
+},"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["_recurList"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "<h4><a href=\"#\">"
+    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
+    + "</a> occurs every "
+    + escapeExpression(((helper = (helper = helpers.monthlyRpt || (depth0 != null ? depth0.monthlyRpt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"monthlyRpt","hash":{},"data":data}) : helper)))
+    + " "
+    + escapeExpression(((helper = (helper = helpers.weeklyRptName || (depth0 != null ? depth0.weeklyRptName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRptName","hash":{},"data":data}) : helper)))
+    + "<h4>\n";
+},"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_regReq"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<label name=\"reg-limit\">Registration Limit</label>\n  <input name=\"reg-limit\" class=\"reg-limit-input\" type=\"number\">\n<label name=\"gender-bal\">Lead/Follow Balanced</label>\n  <input type=\"checkbox\" class=\"gender-bal-input\" name=\"gender-bal\">\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseMoRpt"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<select class=\"monthly-option-input\">\n  <option value=\"first\">on the first week</option>\n  <option value=\"second\">on the second week</option>\n  <option value=\"third\">on the third week</option>\n  <option value=\"fourth\">on the fourth week</option>\n  <option value=\"last\">on the last week</option>\n</select>\n";
+  return "<select name=\"monthlyRpt\" class=\"monthly-option-input\">\n  <option value=\"first\">the first</option>\n  <option value=\"second\">the second</option>\n  <option value=\"third\">the third</option>\n  <option value=\"fourth\">the fourth</option>\n  <option value=\"last\">the last</option>\n</select>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseRecur"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<p>\n  I want to create a\n</p>\n<button class=\"choose-recur\" value=\"onetime\">stand alone event</button>\n<button class=\"choose-recur\" value=\"recur\">weekly or monthly event</button>\n";
@@ -158,7 +208,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["chooseWkMo"] = Handlebars.templat
   return "<p>\n  This event occurs:\n</p>\n<button class=\"choose-wk-mo\" value=\"weekly\">Weekly</button>\n<button class=\"choose-wk-mo\" value=\"monthly\">Monthly</button>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseWkRpt"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<select class=\"weekly-option-input\">\n  <option value=\"1\">on Monday</option>\n  <option value=\"2\">on Tuesday</option>\n  <option value=\"3\">on Wednesday</option>\n  <option value=\"4\">on Thursday</option>\n  <option value=\"5\">on Friday</option>\n  <option value=\"6\">on Saturday</option>\n  <option value=\"0\">on Sunday</option>\n</select>\n\n<button class=\"choose-rpt\">Continue</button>\n";
+  return "<select class=\"weekly-option-input\">\n  <option value=\"1\">Monday</option>\n  <option value=\"2\">Tuesday</option>\n  <option value=\"3\">Wednesday</option>\n  <option value=\"4\">Thursday</option>\n  <option value=\"5\">Friday</option>\n  <option value=\"6\">Saturday</option>\n  <option value=\"0\">Sunday</option>\n</select>\n\n<button class=\"choose-rpt\">Continue</button>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var stack1, buffer = "<div class=\"recurInfo\">\n";
@@ -170,12 +220,12 @@ this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.templa
   return "    This event occurs on the "
     + escapeExpression(((helper = (helper = helpers.monthlyRpt || (depth0 != null ? depth0.monthlyRpt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"monthlyRpt","hash":{},"data":data}) : helper)))
     + " "
-    + escapeExpression(((helper = (helper = helpers.weeklyRpt || (depth0 != null ? depth0.weeklyRpt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRpt","hash":{},"data":data}) : helper)))
+    + escapeExpression(((helper = (helper = helpers.weeklyRptName || (depth0 != null ? depth0.weeklyRptName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRptName","hash":{},"data":data}) : helper)))
     + " of each month.\n";
 },"4":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "    This event occurs every "
-    + escapeExpression(((helper = (helper = helpers.weeklyRpt || (depth0 != null ? depth0.weeklyRpt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRpt","hash":{},"data":data}) : helper)))
+    + escapeExpression(((helper = (helper = helpers.weeklyRptName || (depth0 != null ? depth0.weeklyRptName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRptName","hash":{},"data":data}) : helper)))
     + ".\n";
 },"6":function(depth0,helpers,partials,data) {
   return "  <label name=\"start-date\">Start date</label>\n    <input name=\"start-date\" class=\"event-start-date-input\" type=\"date\">\n";
@@ -203,17 +253,42 @@ this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.templa
   if (stack1 != null) { buffer += stack1; }
   return buffer + "\n<label name=\"notes\">Notes</label>\n<textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\" disabled>\n";
 },"useData":true});
-this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "<h2>"
-    + escapeExpression(((helper = (helper = helpers.orgName || (depth0 != null ? depth0.orgName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgName","hash":{},"data":data}) : helper)))
-    + "</h2>\n";
-},"useData":true});
-this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "<h2>Hi, "
-    + escapeExpression(((helper = (helper = helpers.orgName || (depth0 != null ? depth0.orgName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgName","hash":{},"data":data}) : helper)))
-    + "!</h2>\n";
+this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "  <h2>Hi, "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.orgName : stack1), depth0))
+    + "!</h2>\n  <p>Below is a list of your events. Click on any event name to view, add or change the event's info</p>\n  <ul class=\"recurring-event-list\">\n    <h3>Your Recurring Events</h3>\n  </ul>\n";
+},"3":function(depth0,helpers,partials,data) {
+  var stack1, helper, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, buffer = "  <h2>"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.orgName : stack1), depth0))
+    + " Events</h2>\n  <ul class=\""
+    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
+    + "-event-list\">\n";
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.events : depth0), {"name":"each","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "  </ul>\n";
+},"4":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, lambda=this.lambda;
+  return "      <li class=\""
+    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
+    + "-event\">\n        <a href=\"#/orgs/"
+    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
+    + "/"
+    + escapeExpression(((helper = (helper = helpers.urlId || (depth0 != null ? depth0.urlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"urlId","hash":{},"data":data}) : helper)))
+    + "\">"
+    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
+    + "</a>\n        "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.startDate : depth0)) != null ? stack1.iso : stack1), depth0))
+    + "\n        "
+    + escapeExpression(((helper = (helper = helpers.startTime || (depth0 != null ? depth0.startTime : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"startTime","hash":{},"data":data}) : helper)))
+    + "-"
+    + escapeExpression(((helper = (helper = helpers.endTime || (depth0 != null ? depth0.endTime : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"endTime","hash":{},"data":data}) : helper)))
+    + "\n      </li>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.loggedIn : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
 },"useData":true});
 (function() {
   'use strict';
@@ -580,33 +655,122 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     className: 'org-index',
     template: DanceCard.templates.orgs.org.index,
     render: function() {
+      var self = this;
+
+      //if the user is logged in and viewing thier own page
       if (Parse.User.current().get('urlId') === this.model.get('urlId')){
-        //render logged in user version
-        new DanceCard.Views.OrgManage({
-          $container: this.$el,
-          model: this.model
+        this.$el.html(this.template({
+          model: this.model.toJSON(),
+          loggedIn: true
+        }));
+        //render a list of their recurring events, each as its own view
+        var recurringCollection = new DanceCard.Collections.RecurringEventList({
+          urlId: this.model.get('urlId')
         });
+        recurringCollection.fetch()
+        .then(function() {
+          _.each(recurringCollection.models, function(event) {
+            new DanceCard.Views.RecurringEventListItem({
+              $container: $('.recurring-event-list'),
+              model: event
+            });
+          });
+        });
+        //render a list of their one time events, all in one view
+        var onetimeCollection = new DanceCard.Collections.OnetimeEventList({
+          orgUrlId: this.model.get('urlId')
+        });
+        onetimeCollection.fetch()
+        .then(function() {
+          new DanceCard.Views.OnetimeEventList({
+            $container: self.$el,
+            collection: onetimeCollection
+          });
+        });
+
+      //if the user is not logged in or is viewing another orgs page
       } else {
-        //render non-logged in view
-        this.$el.html(this.template(this.model.toJSON()));
+        //render a list of their next 10 upcoming events
+        var collection = new DanceCard.Collections.LoggedOutEventList({
+          urlId: this.model.get('urlId')
+        });
+        collection.fetch()
+        .then(function() {
+          var events = collection.toJSON();
+          self.$el.html(self.template({
+            events: events,
+            loggedIn: false,
+            model: {orgName: self.model.get('orgName')}
+          }));
+        });
       }
-
     },
   });
 
 })();
 
-(function() {
+(function(){
+  'use strict';
 
-  DanceCard.Views.OrgManage = DanceCard.Views.Base.extend({
-    className: 'org-manage',
-    template: DanceCard.templates.orgs.org.manage,
+  DanceCard.Views.RecurringEventListItem = DanceCard.Views.Base.extend({
+    tagName: 'li',
+    className: 'recurring-event',
+    template: DanceCard.templates.orgs.org._recurList,
     render: function() {
-        this.$el.html(this.template(this.model.toJSON()));
+      var self = this;
+      //render the recurringe event
+      this.$el.html(this.template(this.model.toJSON()));
+      //render the children of the recurring event
+      var collection = new DanceCard.Collections.OnetimeEventList({
+        orgUrlId: this.model.get('orgUrlId'),
+        parentEvent: this.model.get('urlId')
+      });
+      collection.fetch()
+      .then(function() {
+        new DanceCard.Views.OnetimeEventList({
+          $container: self.$el,
+          collection: collection
+        });
+      });
     },
+    events: {
+      'click a' : 'toggleChildren'
+    },
+    toggleChildren: function(e) {
+      e.preventDefault();
+      if (this.$el.children('ul').css('height') === '0px') {
+        this.$el.children('ul').css('height', 'auto');
+      }
+      else {
+        this.$el.children('ul').css('height', 0);
+      }
+    }
   });
 
 })();
+
+(function(){
+  'use strict';
+
+  DanceCard.Views.OnetimeEventList = DanceCard.Views.Base.extend({
+    tagName: 'ul',
+    className: 'onetime-events',
+    template: DanceCard.templates.orgs.org._onetimeList,
+    render: function() {
+      this.$el.html(this.template(this.collection));
+    }
+  });
+
+})();
+
+DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
+  tagName: 'article',
+  className: 'org-event',
+  template: DanceCard.templates.orgs.org._event,
+  render: function() {
+    this.$el.html(this.template(this.model));
+  }
+});
 
 (function() {
 
@@ -660,9 +824,11 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       e.preventDefault();
       if ($(e.target).val() === 'weekly') {
         this.model.set('recurMonthly', false);
+        this.$el.append('On');
         this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
       } else {
         this.model.set('recurMonthly', true);
+        this.$el.append('On');
         this.$el.append(DanceCard.templates.orgs.org.chooseMoRpt);
         this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
       }
@@ -670,8 +836,9 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     chooseRpt: function(e) {
       e.preventDefault();
       var weeklyRpt = $('.weekly-option-input').val();
+      var weeklyRptName = $('.weekly-option-input option:selected').text();
       var monthlyRpt = $('.monthly-option-input').val() || null;
-      this.model.set('weeklyRpt', weeklyRpt);
+      this.model.set({weeklyRpt: weeklyRpt, weeklyRptName: weeklyRptName});
       if (monthlyRpt) {
         this.model.set('monthlyRpt', monthlyRpt);
       }
@@ -734,6 +901,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       .done(function(model, startDate) {
         model.set('startDate', startDate);
         self.buildRecurringEvents(model);
+        DanceCard.router.navigate("#/orgs/" + self.model.get('orgUrlId'), {trigger: true});
       });
     },
 
@@ -876,6 +1044,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
         });
       }
       this.model.save();
+      DanceCard.router.navigate("#/orgs/" + this.model.get('orgUrlId'), {trigger: true});
     }
   });
 
@@ -910,3 +1079,61 @@ DanceCard.Models.User = Parse.Object.extend({
     }
   },
 });
+
+(function() {
+	'use strict';
+
+	DanceCard.Collections.LoggedOutEventList = Parse.Collection.extend({
+		initialize: function(options){
+			this.orgUrlId = options.urlId;
+			var yesterday = new Date();
+			yesterday.setDate(yesterday.getDate()-1);
+			this.query = new Parse.Query('Event')
+				.ascending('startDate')
+				.equalTo('orgUrlId', this.orgUrlId)
+				.equalTo('recurring', false)
+				.greaterThan('startDate', yesterday)
+				.limit(10);
+		},
+		model: DanceCard.Models.Event,
+	});
+
+})();
+
+(function() {
+  'use strict';
+
+  DanceCard.Collections.RecurringEventList = Parse.Collection.extend({
+    initialize: function(options){
+      this.orgUrlId = options.urlId;
+      this.query = new Parse.Query('Event')
+        .equalTo('orgUrlId', this.orgUrlId)
+        .equalTo('recurring', true)
+        .limit(10);
+    },
+      model: DanceCard.Models.Event,
+  });
+
+})();
+
+(function() {
+  'use strict';
+
+  DanceCard.Collections.OnetimeEventList = Parse.Collection.extend({
+    initialize: function(options){
+      var yesterday = new Date();
+      yesterday.setDate(yesterday.getDate()-1);
+      this.orgUrlId = options.orgUrlId;
+      this.parentEvent = options.parentEvent || undefined;
+      this.query = new Parse.Query('Event')
+        .ascending('startDate')
+        .equalTo('orgUrlId', this.orgUrlId)
+        .equalTo('recurring', false)
+        .equalTo('parentEventUrlId', this.parentEvent)
+        .greaterThanOrEqualTo('startDate', yesterday)
+        .limit(10);
+    },
+      model: DanceCard.Models.Event,
+  });
+
+})();
