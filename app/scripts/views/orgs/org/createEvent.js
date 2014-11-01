@@ -253,6 +253,7 @@
       this.model.set({
         urlId: id,
         name: name,
+        type: type,
         startDate: startDate,
         startTime: startTime,
         endDate: endDate,
