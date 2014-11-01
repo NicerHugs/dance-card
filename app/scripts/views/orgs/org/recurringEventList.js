@@ -21,6 +21,18 @@
           collection: collection
         });
       });
+    },
+    events: {
+      'click a' : 'toggleChildren'
+    },
+    toggleChildren: function(e) {
+      e.preventDefault();
+      if (this.$el.children('ul').css('height') === '0px') {
+        this.$el.children('ul').css('height', 'auto');
+      }
+      else {
+        this.$el.children('ul').css('height', 0);
+      }
     }
   });
 
