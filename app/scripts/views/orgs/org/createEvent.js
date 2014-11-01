@@ -121,7 +121,11 @@
         workshopIncl: workshopIncl,
         notes: notes
       });
-      this.model.set('venue.name', venueName);
+      this.model.set('venue', {
+        name: venueName,
+        addressParts: this.model.attributes.venue.addressParts,
+        fullAddress: this.model.attributes.venue.fullAddress
+      });
       this.model.save();
       this.setStartDate(this.model)
       .done(function(model, startDate) {
@@ -262,7 +266,11 @@
         preRegReq: preRegReq,
         notes: notes
       });
-      this.model.set('venue.name', venueName);
+      this.model.set('venue', {
+        name: venueName,
+        addressParts: this.model.attributes.venue.addressParts,
+        fullAddress: this.model.attributes.venue.fullAddress
+      });
       if (preRegReq) {
         this.model.set('regInfo', {
           regLimit: regLimit,
