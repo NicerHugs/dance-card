@@ -1,4 +1,11 @@
-<h3>Your One Time Events</h3>
+{{#unless parentEvent}}
+  <h3>Your One Time Events</h3>
+{{/unless}}
+
+{{#unless models}}
+  You have no one time events.
+  <a href="#/orgs/{{urlId}}/create-event">Click here to add a new event</a>
+{{/unless}}
 
 {{#each models}}
   <li class="{{attributes.orgUrlId}}-event">

@@ -7,13 +7,13 @@
 			var yesterday = new Date();
 			yesterday.setDate(yesterday.getDate()-1);
 			this.query = new Parse.Query('Event')
-				.equalTo('orgUrlId', this.orgUrlId)
-				.greaterThan('startDate', yesterday)
-				.notEqualTo('recurring', true)
 				.ascending('startDate')
+				.equalTo('orgUrlId', this.orgUrlId)
+				.equalTo('recurring', false)
+				.greaterThan('startDate', yesterday)
 				.limit(10);
 		},
 		model: DanceCard.Models.Event,
 	});
-	
+
 })();

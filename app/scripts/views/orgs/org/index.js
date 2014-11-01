@@ -27,7 +27,7 @@
         });
         //render a list of their one time events, all in one view
         var onetimeCollection = new DanceCard.Collections.OnetimeEventList({
-          urlId: this.model.get('urlId')
+          orgUrlId: this.model.get('urlId')
         });
         onetimeCollection.fetch()
         .then(function() {
