@@ -62,7 +62,7 @@
     chooseRpt: function(e) {
       e.preventDefault();
       var weeklyRpt = $('.weekly-option-input').val();
-      var weeklyRptName = $('.weekly-option-input').text();
+      var weeklyRptName = $('.weekly-option-input option:selected').text();
       var monthlyRpt = $('.monthly-option-input').val() || null;
       this.model.set({weeklyRpt: weeklyRpt, weeklyRptName: weeklyRptName});
       if (monthlyRpt) {
