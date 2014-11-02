@@ -16,6 +16,7 @@
       'click .pre-reg-req-input'   : 'regReq',
       'click .multi-day-input'     : 'multiDay'
     },
+
     multiDay: function() {
       if (this.model.get('multiDay')) {
         this.model.set('multiDay', false);
@@ -25,6 +26,7 @@
         $('.multi-day').html(DanceCard.templates.orgs.org._multiDay);
       }
     },
+
     regReq: function() {
       if (this.model.get('regReq')) {
         this.model.set('regReq', false);
@@ -34,6 +36,7 @@
         $('.reg-req').html(DanceCard.templates.orgs.org._regReq);
       }
     },
+
     chooseRecur: function(e) {
       e.preventDefault();
       if ($(e.target).val() === 'onetime') {
@@ -46,6 +49,7 @@
         this.$el.html(DanceCard.templates.orgs.org.chooseWkMo);
       }
     },
+
     chooseWkMo: function(e) {
       e.preventDefault();
       if ($(e.target).val() === 'weekly') {
@@ -59,6 +63,7 @@
         this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
       }
     },
+
     chooseRpt: function(e) {
       e.preventDefault();
       var weeklyRpt = $('.weekly-option-input').val();
@@ -70,6 +75,7 @@
       }
       this.$el.html(DanceCard.templates.orgs.org.createEvent(this.model.toJSON()));
     },
+
     getLocation: function() {
       var self = this;
       var address = $('.event-address-input').val();
@@ -89,6 +95,7 @@
         }
       });
     },
+
     createEvent: function(e) {
       e.preventDefault();
       if (this.model.get('recurring')){
@@ -97,10 +104,9 @@
         this.createOnetimeEvent();
       }
     },
+
     createRecurringEvent: function() {
-      var self = this,
-          model = this.model,
-          name = $('.event-name-input').val(),
+      var name = $('.event-name-input').val(),
           type = $('.event-type-input').val().split('-').join(' '),
           startTime = $('.event-start-time-input').val(),
           endTime = $('.event-end-time-input').val(),
@@ -125,13 +131,16 @@
         notes: notes,
         startDate: startDate
       });
-      // this.model.set('startDate', startDate);
-      dates = this.model.buildDateArray();
+      dates = DanceCard.Utility.buildWeeklyDateArray(startDate);
+      if (this.model.get('recurMonthly')) {
+        dates = DanceCard.Utility.filterByWeekOfMonth(dates, this.model.get('monthlyRpt'));
+      }
       this.model.set('endDate', dates[dates.length-1]);
-      console.log('start date', this.model.get('startDate'), 'end date', this.model.get('endDate'), 'dates', dates.length);
       // this.model.save();
-      // self.buildRecurringEventChildren(this.model, dates);
-      // DanceCard.router.navigate("#/orgs/" + self.model.get('orgUrlId'), {trigger: true});
+      // this.model.buildChildren();
+      // this.buildRecurringEventChildren(this.model, dates);
+      // DanceCard.router.navigate("#/orgs/" + this.model.get('orgUrlId'), {trigger: true});
+      console.log(dates, dates.length);
     },
 
     buildRecurringEventChildren: function(model, arrayOfDates){
@@ -150,25 +159,6 @@
         });
         newEvent.save();
       });
-    },
-
-    setStartDate: function(recurEventModel) {
-      var startDate = new Date(),
-          recurDay = +recurEventModel.get('weeklyRpt'),
-          diff;
-      if (startDate.getDay() === recurDay) {
-        return startDate;
-      } else {
-        if (recurDay - startDate.getDay() > 0) {
-          diff = recurDay - startDate.getDay();
-          startDate.setDate(startDate.getDate() + diff);
-          return startDate;
-        } else {
-          diff = 7 + (recurDay - startDate.getDay());
-          startDate.setDate(startDate.getDate() + diff);
-          return startDate;
-        }
-      }
     },
 
     createOnetimeEvent: function() {
