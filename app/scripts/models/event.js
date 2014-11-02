@@ -1,6 +1,82 @@
 DanceCard.Models.Event = Parse.Object.extend({
   className: 'Event',
 
+  setRecurStartDate: function() {
+    var startDate = new Date(),
+        recurDay = +this.get('weeklyRpt'),
+        diff;
+    if (startDate.getDay() === recurDay) {
+      return startDate;
+    } else {
+      if (recurDay - startDate.getDay() > 0) {
+        diff = recurDay - startDate.getDay();
+        startDate.setDate(startDate.getDate() + diff);
+        return startDate;
+      } else {
+        diff = 7 + (recurDay - startDate.getDay());
+        startDate.setDate(startDate.getDate() + diff);
+        return startDate;
+      }
+    }
+  },
+
+  buildDateArray: function() {
+    var date = new Date(this.get('startDate')),
+        startDate = this.get('startDate'),
+        endDate = this.get('endDate') || DanceCard.Utility.addYear(startDate),
+        msBetween = endDate - startDate,
+        weeks;
+    // there are 86400000 milliseconds in a day
+    days = msBetween/86400000;
+    weeks = Math.floor(days/7);
+    var arrayOfDates = [new Date(this.get('startDate'))];
+    _.times(weeks-1, function(n) {
+      arrayOfDates.push(new Date(date.setDate(date.getDate() + 7)));
+    });
+    if (this.get('recurMonthly')) {
+      arrayOfDates = this.filterByWeekOfMonth(arrayOfDates);
+    }
+    return arrayOfDates;
+  },
+
+  filterByWeekOfMonth: function(dates) {
+    var week = this.get('monthlyRpt');
+    if (week === 'first') {
+      dates = _.filter(dates, function(date) {
+        if (date.getDate() <= 7 && date.getDay() + date.getDate() <= 13) {
+          return date;
+        }
+      });
+    } else if (week === 'second') {
+      dates = _.filter(dates, function(date) {
+        if (date.getDate() >= 8 && date.getDate() <= 14 && date.getDay() + date.getDate() <= 20) {
+          return date;
+        }
+      });
+    } else if (week === 'third') {
+      dates = _.filter(dates, function(date) {
+        if (date.getDate() >= 15 && date.getDate() <= 21 && date.getDay() + date.getDate() <= 27) {
+          return date;
+        }
+      });
+    } else if (week === 'fourth') {
+      dates = _.filter(dates, function(date) {
+        if (date.getDate() >= 22 && date.getDate() <= 28 && date.getDay() + date.getDate() <= 34) {
+          return date;
+        }
+      });
+    } else if (week === 'last') {
+      dates = _.filter(dates, function(date) {
+        var month = date.getMonth();
+        date.setDate(date.getDate() + 7);
+        if (month !== date.getMonth()) {
+          return date;
+        }
+      });
+    }
+    return dates;
+  },
+
   saveHeader: function(orgUrlId, parentEvent, limit) {
     options = {
       name: $('.event-name-input').val(),

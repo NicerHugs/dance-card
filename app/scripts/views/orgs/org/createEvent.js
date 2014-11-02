@@ -98,19 +98,21 @@
       }
     },
     createRecurringEvent: function() {
-      var self = this;
-      var model = this.model;
-      var name = $('.event-name-input').val();
-      var type = $('.event-type-input').val().split('-').join(' ');
-      var startTime = $('.event-start-time-input').val();
-      var endTime = $('.event-end-time-input').val();
-      var venueName = $('.venue-name-input').val();
-      var price = $('.price-input').val();
-      var beginner = $('.beginner').prop('checked');
-      var workshopIncl = $('.workshop-incl').prop('checked');
-      var notes = $('.notes-input').val();
-      var idName = name.replace(/[^\w\d\s]/g, '');
-      var id = idName.split(' ').join('_') + '_recurring_' + this.model.get('weeklyRpt');
+      var self = this,
+          model = this.model,
+          name = $('.event-name-input').val(),
+          type = $('.event-type-input').val().split('-').join(' '),
+          startTime = $('.event-start-time-input').val(),
+          endTime = $('.event-end-time-input').val(),
+          venueName = $('.venue-name-input').val(),
+          price = $('.price-input').val(),
+          beginner = $('.beginner').prop('checked'),
+          workshopIncl = $('.workshop-incl').prop('checked'),
+          notes = $('.notes-input').val(),
+          idName = name.replace(/[^\w\d\s]/g, ''),
+          id = idName.split(' ').join('_') + '_recurring_' + this.model.get('weeklyRpt'),
+          startDate = this.model.setRecurStartDate(),
+          dates;
       this.model.set({
         urlId: id,
         name: name,
@@ -120,63 +122,16 @@
         price: price,
         beginnerFrdly: beginner,
         workshopIncl: workshopIncl,
-        notes: notes
+        notes: notes,
+        startDate: startDate
       });
-      this.model.save();
-      startDate = this.setStartDate(this.model);
-      var arrayOfDates = self.buildArrayOfDates(startDate);
-      this.model.set('startDate', arrayOfDates[0]);
-      this.model.set('endDate', arrayOfDates[arrayOfDates.length-1]);
-      self.buildRecurringEventChildren(this.model, arrayOfDates);
-      DanceCard.router.navigate("#/orgs/" + self.model.get('orgUrlId'), {trigger: true});
-    },
-
-    buildArrayOfDates: function(date) {
-      var firstDate = new Date(date);
-      var arrayOfDates = [firstDate];
-      _.times(51, function(n) {
-        arrayOfDates.push(date.setDate(date.getDate() + 7));
-      });
-      arrayOfDates = _.map(arrayOfDates, function(date){
-        return new Date(date);
-      });
-      if (this.model.get('recurMonthly')) {
-        var week = this.model.get('monthlyRpt');
-        if (week === 'first') {
-          arrayOfDates = _.filter(arrayOfDates, function(date) {
-            if (date.getDate() <= 7 && date.getDay() + date.getDate() <= 13) {
-              return date;
-            }
-          });
-        } else if (week === 'second') {
-          arrayOfDates = _.filter(arrayOfDates, function(date) {
-            if (date.getDate() >= 8 && date.getDate() <= 14 && date.getDay() + date.getDate() <= 20) {
-              return date;
-            }
-          });
-        } else if (week === 'third') {
-          arrayOfDates = _.filter(arrayOfDates, function(date) {
-            if (date.getDate() >= 15 && date.getDate() <= 21 && date.getDay() + date.getDate() <= 27) {
-              return date;
-            }
-          });
-        } else if (week === 'fourth') {
-          arrayOfDates = _.filter(arrayOfDates, function(date) {
-            if (date.getDate() >= 22 && date.getDate() <= 28 && date.getDay() + date.getDate() <= 34) {
-              return date;
-            }
-          });
-        } else if (week === 'last') {
-          arrayOfDates = _.filter(arrayOfDates, function(date) {
-            var month = date.getMonth();
-            date.setDate(date.getDate() + 7);
-            if (month !== date.getMonth()) {
-              return date;
-            }
-          });
-        }
-      }
-      return arrayOfDates;
+      // this.model.set('startDate', startDate);
+      dates = this.model.buildDateArray();
+      this.model.set('endDate', dates[dates.length-1]);
+      console.log('start date', this.model.get('startDate'), 'end date', this.model.get('endDate'), 'dates', dates.length);
+      // this.model.save();
+      // self.buildRecurringEventChildren(this.model, dates);
+      // DanceCard.router.navigate("#/orgs/" + self.model.get('orgUrlId'), {trigger: true});
     },
 
     buildRecurringEventChildren: function(model, arrayOfDates){
@@ -211,7 +166,7 @@
         } else {
           diff = 7 + (recurDay - startDate.getDay());
           startDate.setDate(startDate.getDate() + diff);
-          return startDate
+          return startDate;
         }
       }
     },
