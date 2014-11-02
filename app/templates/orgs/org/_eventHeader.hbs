@@ -17,20 +17,16 @@
         <option value="caller-workshop">Caller Workshop</option>
       </select></p>
 
-      <p>
-        <label name="start-date">Start date</label>
-          <input name="start-date" class="event-start-date-input" type="date">
-      </p>
-
-      {{#if event.recurring}}
-        <p><label name="end-date">End Date</label>
-          <input name="end-date" class="event-end-date-input" type="date"></p>
-      {{else}}
+      {{#unless event.recurring}}
+        <p>
+          <label name="start-date">Start date</label>
+            <input name="start-date" class="event-start-date-input" type="date" value={{event.startDate.form}}>
+        </p>
         <p><label name="multi-day">Multi-day Event</label>
           <input name="multi-day"class="multi-day-input" type="checkbox"></p>
           <div class="multi-day">
         </div>
-      {{/if}}
+      {{/unless}}
 
     <p><label name="start-time">Start time</label>
       <input value="{{event.startTime}}" name="start-time" class="event-start-time-input" type="time"></p>
@@ -45,8 +41,10 @@
     <h2>{{event.name}}</h2>
       <p>Type: {{event.type}}</p>
       {{#if event.multiDay}}<p>This is a multi-day event</p>{{/if}}
-      <p>Start Date: {{event.startDate.iso}}</p>
-      <p>End Date: {{event.endDate.iso}}</p>
+      {{#unless event.recurring}}
+        <p>Start Date: {{event.startDate.iso}}</p>
+        <p>End Date: {{event.endDate.iso}}</p>
+      {{/unless}}
       <p>Start Time: {{event.startTime}}</p>
       <p>End Time: {{event.endTime}}</p>
   </div>

@@ -8,18 +8,10 @@
       This event occurs once a
       <input class="chooseRpt" name="chooseRpt" type="radio" value="true"><label name="chooseRpt">month</label>
       <input class="chooseRpt" name="chooseRpt" type="radio" value="false"><label name="chooseRpt">week</label>
-      on
+    </p>
+    <p>on
       <div class="choose-monthly-rpt">
       </div>
-      {{#if event.monthlyRpt}}
-        <select name="monthlyRpt" class="monthly-option-input">
-          <option value="first">the first</option>
-          <option value="second">the second</option>
-          <option value="third">the third</option>
-          <option value="fourth">the fourth</option>
-          <option value="last">the last</option>
-        </select>
-      {{/if}}
       <select class="weekly-option-input">
         <option value="1">Monday</option>
         <option value="2">Tuesday</option>
@@ -30,12 +22,15 @@
         <option value="0">Sunday</option>
       </select>
     </p>
+    <p><label name="end-date">End Date</label>
+      <input name="end-date" class="event-end-date-input" type="date" value={{event.endDate.form}}></p>
   </div>
 
 {{else}}
   <div class="event-recur-viewing">
     <span><a href="#" class="edit-event-recur">edit</a></span>
     <h3>Event Schedule</h3>
-    {{#if event.recurring}}</p>This event repeats every {{event.monthlyRpt}} {{event.weeklyRptName}}</p>{{/if}}
+    </p>This event repeats every {{event.monthlyRpt}} {{event.weeklyRptName}}</p>
+    <p>End Date: {{event.endDate.iso}}</p>
   </div>
 {{/if}}

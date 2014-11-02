@@ -99,6 +99,7 @@
     },
     createRecurringEvent: function() {
       var self = this;
+      var model = this.model;
       var name = $('.event-name-input').val();
       var type = $('.event-type-input').val().split('-').join(' ');
       var startTime = $('.event-start-time-input').val();
@@ -121,23 +122,17 @@
         workshopIncl: workshopIncl,
         notes: notes
       });
-      this.model.set('venue', {
-        name: venueName,
-        addressParts: this.model.attributes.venue.addressParts,
-        fullAddress: this.model.attributes.venue.fullAddress
-      });
       this.model.save();
-      this.setStartDate(this.model)
-      .done(function(model, startDate) {
-        model.set('startDate', startDate);
-        self.buildRecurringEvents(model);
-        DanceCard.router.navigate("#/orgs/" + self.model.get('orgUrlId'), {trigger: true});
-      });
+      startDate = this.setStartDate(this.model);
+      var arrayOfDates = self.buildArrayOfDates(startDate);
+      this.model.set('startDate', arrayOfDates[0]);
+      this.model.set('endDate', arrayOfDates[arrayOfDates.length-1]);
+      self.buildRecurringEventChildren(this.model, arrayOfDates);
+      DanceCard.router.navigate("#/orgs/" + self.model.get('orgUrlId'), {trigger: true});
     },
 
-    buildRecurringEvents: function(model){
-      var date = model.get('startDate');
-      var firstDate = new Date(model.get('startDate'));
+    buildArrayOfDates: function(date) {
+      var firstDate = new Date(date);
       var arrayOfDates = [firstDate];
       _.times(51, function(n) {
         arrayOfDates.push(date.setDate(date.getDate() + 7));
@@ -145,8 +140,8 @@
       arrayOfDates = _.map(arrayOfDates, function(date){
         return new Date(date);
       });
-      if (model.get('recurMonthly')) {
-        var week = model.get('monthlyRpt');
+      if (this.model.get('recurMonthly')) {
+        var week = this.model.get('monthlyRpt');
         if (week === 'first') {
           arrayOfDates = _.filter(arrayOfDates, function(date) {
             if (date.getDate() <= 7 && date.getDay() + date.getDate() <= 13) {
@@ -176,11 +171,15 @@
             var month = date.getMonth();
             date.setDate(date.getDate() + 7);
             if (month !== date.getMonth()) {
-              return true;
+              return date;
             }
           });
         }
       }
+      return arrayOfDates;
+    },
+
+    buildRecurringEventChildren: function(model, arrayOfDates){
       _.each(arrayOfDates, function(date) {
         var newEvent = new DanceCard.Models.Event(model);
         var idName = model.get('name').replace(/[^\w\d\s]/g, '');
@@ -199,24 +198,22 @@
     },
 
     setStartDate: function(recurEventModel) {
-      var deferred = new $.Deferred();
       var startDate = new Date(),
           recurDay = +recurEventModel.get('weeklyRpt'),
           diff;
       if (startDate.getDay() === recurDay) {
-        deferred.resolve(recurEventModel, startDate);
+        return startDate;
       } else {
         if (recurDay - startDate.getDay() > 0) {
           diff = recurDay - startDate.getDay();
           startDate.setDate(startDate.getDate() + diff);
-          deferred.resolve(recurEventModel, startDate);
+          return startDate;
         } else {
           diff = 7 + (recurDay - startDate.getDay());
           startDate.setDate(startDate.getDate() + diff);
-          deferred.resolve(recurEventModel, startDate);
+          return startDate
         }
       }
-      return deferred.promise();
     },
 
     createOnetimeEvent: function() {

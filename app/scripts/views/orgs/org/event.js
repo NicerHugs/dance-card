@@ -10,13 +10,23 @@
       if (this.model.loggedIn) {
         $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.model));
         if (this.model.event.recurring) {
-          $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.model));}
+          $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.model));
+        }
         $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(this.model));
         $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.model));
         if (this.model.event.recurMonthly) {
           $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model));
         }
       }
+    },
+    formatDatesforForm: function(model) {
+      var startDate = model.event.startDate.iso;
+      startDate = moment(startDate).format('YYYY-MM-DD');
+      var endDate = model.event.endDate.iso;
+      endDate = moment(endDate).format('YYYY-MM-DD');
+      model.event.startDate.form = startDate;
+      model.event.endDate.form = endDate;
+      return model;
     },
     events: {
       'click .edit-event-header' : 'editEventHeader',
@@ -32,22 +42,27 @@
     },
     editEventHeader: function(e) {
       e.preventDefault();
+      var formModel = this.formatDatesforForm(this.model);
       if (this.model.edit.eventHeader) {
         this.model.edit.eventHeader = false;
         $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.model));
       } else {
         this.model.edit.eventHeader = true;
-        $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.model));
+        $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(formModel));
       }
     },
     editEventRecur: function(e) {
       e.preventDefault();
+      var formModel = this.formatDatesforForm(this.model);
       if (this.model.edit.eventRecur) {
         this.model.edit.eventRecur = false;
         $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.model));
       } else {
         this.model.edit.eventRecur = true;
-        $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.model));
+        $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(formModel));
+        if (this.model.event.recurMonthly) {
+          $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model));
+        }
       }
     },
     editEventInfo: function(e) {
@@ -71,11 +86,17 @@
       }
     },
     saveEventHeader: function(e) {
+      var self = this;
       e.preventDefault();
       var model = new Parse.Query('Event');
       model.get(this.model.event.objectId, {
         success: function(event) {
-          event.saveHeader();
+          event.saveHeader(self.model.eventOrg.urlId, self.model.event.urlId, 1000)
+          .then(function(event) {
+            self.model.event = event.toJSON();
+            self.model.edit.eventHeader = false;
+            $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(self.model));
+          });
         },
         error: function() {
           console.log('an error occured');
@@ -83,11 +104,17 @@
       });
     },
     saveEventRecur: function(e) {
+      var self = this;
       e.preventDefault();
       var model = new Parse.Query('Event');
       model.get(this.model.event.objectId, {
         success: function(event) {
-          event.saveRecur();
+          event.saveRecur(self.model.eventOrg.urlID, self.model.eventUrlId, 1000)
+          .then(function(event) {
+            self.model.event = event.toJSON();
+            self.model.edit.eventRecur = false;
+            $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(self.model));
+          });
         },
         error: function() {
           console.log('an error occured');
@@ -119,12 +146,13 @@
       });
     },
     multiDay: function() {
+      var formModel = this.formatDatesforForm(this.model);
       if (this.model.event.multiDay) {
         this.model.event.multiDay = false;
         $('.multi-day').html('');
       } else {
         this.model.event.multiDay = true;
-        $('.multi-day').html(DanceCard.templates.orgs.org._multiDay);
+        $('.multi-day').html(DanceCard.templates.orgs.org._multiDay(formModel));
       }
     },
     chooseRpt: function() {
