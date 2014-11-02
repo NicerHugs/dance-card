@@ -36,6 +36,7 @@ DanceCard.Models.Event = Parse.Object.extend({
     }
     return this.save();
   },
+
   saveRecur: function(orgUrlId, parentEvent, limit) {
     var recurMonthly;
     if ($('.chooseRpt:checked').val() === "true") {
@@ -43,21 +44,33 @@ DanceCard.Models.Event = Parse.Object.extend({
     } else {
       recurMonthly = false;
     }
-    options = {
+    var endDate = new Date(moment($('.event-end-date-input').val()).format());
+    var oldOptions = {
+      weeklyRpt: this.get('weeklyRpt'),
+      weeklyRptName: this.get('weeklyRptName'),
+      recurMonthly: this.get('recurMonthly'),
+      monthlyRpt: this.get('monthlyRpt'),
+    };
+    var options = {
       weeklyRpt: $('.weekly-option-input').val(),
       weeklyRptName: $('.weekly-option-input :selected').text(),
       recurMonthly: recurMonthly,
       monthlyRpt: $('.monthly-option-input').val(),
-      endDate: new Date($('.event-end-date-input').val())
     };
     this.set(options);
-    //if anything other than end date changed, delete all children, and build all new children.
-    //if only end date changed, just add new children
+    this.set('endDate', endDate);
+    if (_.isEqual(oldOptions, options)) {
+      // just add new children to the list of child dates
+    } else {
+      // if anything other than end date changed, delete all children, and build all new children.
+    }
     return this.save();
   },
+
   saveInfo: function() {
     console.log('saving info');
   },
+
   saveVenue: function() {
     console.log('saving venue');
   }
