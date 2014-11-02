@@ -20,7 +20,7 @@
           if ($('.logout-msg')) {
             $('.logout-msg').remove();
           }
-          DanceCard.router.navigate('', {trigger: true});
+          DanceCard.router.navigate('#/orgs/'+ Parse.User.current().get('urlId'), {trigger: true});
           DanceCard.session.set('user', Parse.User.current().toJSON());
         }
       );

@@ -99,6 +99,7 @@
           new DanceCard.Views.Event({
             $container: $('main'),
             model: {
+              edit: {},
               event: model.toJSON(),
               loggedIn: true,
               eventOrg: DanceCard.session.get('user')

@@ -1,0 +1,41 @@
+{{#if edit.eventRecur}}
+  <div class="event-recur-editing">
+    <span><a href="#" class="save-event-recur">save changes</a></span>
+    <span><a href="#" class="edit-event-recur">cancel</a></span>
+
+    <h3>Event Schedule</h3>
+    <p>
+      This event occurs once a
+      <input class="chooseRpt" name="chooseRpt" type="radio" value="true"><label name="chooseRpt">month</label>
+      <input class="chooseRpt" name="chooseRpt" type="radio" value="false"><label name="chooseRpt">week</label>
+      on
+      <div class="choose-monthly-rpt">
+      </div>
+      {{#if event.monthlyRpt}}
+        <select name="monthlyRpt" class="monthly-option-input">
+          <option value="first">the first</option>
+          <option value="second">the second</option>
+          <option value="third">the third</option>
+          <option value="fourth">the fourth</option>
+          <option value="last">the last</option>
+        </select>
+      {{/if}}
+      <select class="weekly-option-input">
+        <option value="1">Monday</option>
+        <option value="2">Tuesday</option>
+        <option value="3">Wednesday</option>
+        <option value="4">Thursday</option>
+        <option value="5">Friday</option>
+        <option value="6">Saturday</option>
+        <option value="0">Sunday</option>
+      </select>
+    </p>
+  </div>
+
+{{else}}
+  <div class="event-recur-viewing">
+    <span><a href="#" class="edit-event-recur">edit</a></span>
+    <h3>Event Schedule</h3>
+    {{#if event.recurring}}</p>This event repeats every {{event.monthlyRpt}} {{event.weeklyRptName}}</p>{{/if}}
+  </div>
+{{/if}}

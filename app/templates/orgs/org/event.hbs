@@ -4,6 +4,11 @@
   <div class="event-header">
   </div>
 
+  {{#if event.recurring}}
+    <div class="event-recur">
+    </div>
+  {{/if}}
+
   <div class="event-info">
   </div>
 
@@ -17,15 +22,17 @@
 
   {{else}}
   {{!-- user cannot manage this event, only view --}}
-    <h2>{{event.name}}</h2>
-    <p>
-      {{#if event.multiDay}}From {{/if}}
-      {{event.startDate.iso}}
-      {{#if event.multiDay}} to {{event.endDate.iso}}{{/if}}
-      {{#if event.weeklyRptName}} and every {{event.weeklyRptName}}{{/if}} from
-      {{event.startTime}}-{{event.endTime}}
-    </p>
-    <p>by <a href="#/orgs/{{eventOrg.urlId}}">{{eventOrg.orgName}}</a></p>
+    <div class="event-header">
+      <h2>{{event.name}}</h2>
+      <p>
+        {{#if event.multiDay}}From {{/if}}
+        {{event.startDate.iso}}
+        {{#if event.multiDay}} to {{event.endDate.iso}}{{/if}}
+        {{#if event.weeklyRptName}} and every {{event.weeklyRptName}}{{/if}} from
+        {{event.startTime}}-{{event.endTime}}
+      </p>
+      <p>by <a href="#/orgs/{{eventOrg.urlId}}">{{eventOrg.orgName}}</a></p>
+    </div>
 
     <div class="event-info">
       <h3>Event Info</h3>
