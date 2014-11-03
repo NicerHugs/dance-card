@@ -3,6 +3,23 @@
 
   DanceCard.Utility = {
 
+    nextDateOfWeek: function(startDate, day) {
+      var diff;
+      if (startDate.getDay() === day) {
+        return startDate;
+      } else {
+        if (day - startDate.getDay() > 0) {
+          diff = day - startDate.getDay();
+          startDate.setDate(startDate.getDate() + diff);
+          return startDate;
+        } else {
+          diff = 7 + (recurDay - startDate.getDay());
+          startDate.setDate(startDate.getDate() + diff);
+          return startDate;
+        }
+      }
+    },
+
     addYear: function(startDate) {
       var date = new Date(startDate);
       date.setFullYear(date.getFullYear() + 1);
@@ -47,7 +64,6 @@
           }
         });
       }
-      console.log(dates);
       return dates;
     },
 

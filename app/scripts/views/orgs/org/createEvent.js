@@ -116,8 +116,9 @@
           workshopIncl = $('.workshop-incl').prop('checked'),
           notes = $('.notes-input').val(),
           idName = name.replace(/[^\w\d\s]/g, ''),
-          id = idName.split(' ').join('_') + '_recurring_' + this.model.get('weeklyRpt'),
-          startDate = this.model.setRecurStartDate(),
+          day = this.model.get('weeklyRpt'),
+          id = idName.split(' ').join('_') + '_recurring_' + day,
+          startDate = DanceCard.Utility.nextDateOfWeek(new Date(), day),
           endDate = DanceCard.Utility.addYear(startDate);
       this.model.set({
         urlId: id,
@@ -133,7 +134,7 @@
         endDate: endDate
       });
       this.model.save();
-      this.model.createChildren(this.model, startDate, endDate);
+      this.model.createChildren(this.model);
       DanceCard.router.navigate("#/orgs/" + this.model.get('orgUrlId'), {trigger: true});
     },
 

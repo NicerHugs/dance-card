@@ -133,16 +133,16 @@
                     },
           model = new Parse.Query('Event'),
           orgUrlId = this.model.eventOrg.urlId,
-          parentEvent = this.model.eventUrlId;
+          parentEvent = this.model.event.urlId;
       if ($('.chooseRpt:checked').val() === "true") {
         recurMonthly = true;
       } else {
         recurMonthly = false;
       }
-      options.recurMonthly = recurMonthly;
+      attrs.recurMonthly = recurMonthly;
       model.get(this.model.event.objectId, {
         success: function(event) {
-          event.saveRecur(orgUrlId, parentEvent, 1000, options)
+          event.saveRecur(orgUrlId, parentEvent, 1000, attrs)
           .then(function(event) {
             self.model.event = event.toJSON();
             self.model.edit.eventRecur = false;
