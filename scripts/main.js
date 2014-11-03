@@ -16,6 +16,111 @@
 
 })();
 
+(function(){
+  'use strict';
+
+  DanceCard.Utility = {
+
+    findLocation: function(address, zipcode) {
+      var geocoder = new google.maps.Geocoder(),
+          deferred = new $.Deferred();
+      geocoder.geocode({'address': address + ',' + zipcode}, function(results, status) {
+        var lat = results[0].geometry.location.k,
+            lng = results[0].geometry.location.B,
+            point = new Parse.GeoPoint({latitude: lat, longitude: lng}),
+            location = {
+                        addressParts: results[0].address_components,
+                        fullAddress: results[0].formatted_address,
+                        zipcode: zipcode
+                        };
+            console.log(results);
+            deferred.resolve({point: point, location: location});
+          });
+      return deferred.promise();
+    },
+
+    nextDateOfWeek: function(startDate, day) {
+      var diff;
+      if (startDate.getDay() === day) {
+        return startDate;
+      } else {
+        if (day - startDate.getDay() > 0) {
+          diff = day - startDate.getDay();
+          startDate.setDate(startDate.getDate() + diff);
+          return startDate;
+        } else {
+          diff = 7 + (day - startDate.getDay());
+          startDate.setDate(startDate.getDate() + diff);
+          return startDate;
+        }
+      }
+    },
+
+    addYear: function(startDate) {
+      var date = new Date(startDate);
+      date.setFullYear(date.getFullYear() + 1);
+      return date;
+    },
+
+    filterByWeekOfMonth: function(dates, week) {
+      // var week = this.get('monthlyRpt');
+      if (week === 'first') {
+        dates = _.filter(dates, function(date) {
+          if (date.getDate() <= 7 && date.getDay() + date.getDate() <= 13) {
+            return date;
+          }
+        });
+      } else if (week === 'second') {
+        dates = _.filter(dates, function(date) {
+          if (date.getDate() >= 8 && date.getDate() <= 14 && date.getDay() + date.getDate() <= 20) {
+            return date;
+          }
+        });
+      } else if (week === 'third') {
+        dates = _.filter(dates, function(date) {
+          if (date.getDate() >= 15 && date.getDate() <= 21 && date.getDay() + date.getDate() <= 27) {
+            return date;
+          }
+        });
+      } else if (week === 'fourth') {
+        dates = _.filter(dates, function(date) {
+          if (date.getDate() >= 22 && date.getDate() <= 28 && date.getDay() + date.getDate() <= 34) {
+            return date;
+          }
+        });
+      } else if (week === 'last') {
+        dates = _.filter(dates, function(date) {
+          var month = date.getMonth(),
+              nextWeek = new Date(date),
+              nextWeekMonth;
+          nextWeek.setDate(nextWeek.getDate() + 7);
+          nextWeekMonth = nextWeek.getMonth();
+          if (month !== nextWeekMonth){
+            return date;
+          }
+        });
+      }
+      return dates;
+    },
+
+    buildWeeklyDateArray: function(start, end) {
+      end = end || this.addYear(start);
+      var date = new Date(start),
+          arrayOfDates = [start],
+          msBetween = end - start,
+          // there are 86400000 milliseconds in a day
+          days = msBetween/86400000,
+          weeks = Math.floor(days/7);
+      _.times(weeks-1, function(n) {
+        arrayOfDates.push(new Date(date.setDate(date.getDate() + 7)));
+      });
+      return arrayOfDates;
+    }
+
+  };
+
+})();
+
 (function() {
   'use strict';
 
@@ -35,8 +140,7 @@
       'orgs'                   : 'orgs',
       'orgs/:org'              : 'org', //dynamic, for validated user will allow user to manage events, otherwise will show the org and their events
       'orgs/:org/create-event' : 'createEvent', //dynamic
-      'orgs/:org/:event'       : 'evnt', //dynamic
-      'orgs/:org/:event/manage': 'manageEvent', //dynamic
+      'orgs/:org/:event'       : 'evnt', //dynamic, for validated user will be manage event page, otherwise will show the event info
       'orgs/:org/:event/RSVP'  : 'attendEvent', //dynamic
     },
 
@@ -106,7 +210,38 @@
     },
     evnt: function() {
       $('main').empty();
-      console.log('event view');
+      var urlId = location.hash.split(/\//)[3];
+      var collection = new DanceCard.Collections.currentEvent({
+        urlId: urlId
+      });
+      collection.fetch()
+      .then(function(collection) {
+        var loggedIn,
+            model = collection.models[0];
+        if (model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
+          new DanceCard.Views.Event({
+            $container: $('main'),
+            model: {
+              edit: {},
+              event: model.toJSON(),
+              loggedIn: true,
+              eventOrg: DanceCard.session.get('user')
+            }
+          });
+        } else {
+          model.get('org').fetch().then(function(org){
+            new DanceCard.Views.Event({
+              $container: $('main'),
+              model: {
+                event: model.toJSON(),
+                loggedIn: false,
+                eventOrg: org.toJSON()
+              }
+            });
+          });
+        }
+      });
+
     }
   });
 
@@ -146,9 +281,166 @@ this["DanceCard"]["templates"]["register"] = Handlebars.template({"compiler":[6,
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"] = this["DanceCard"]["templates"]["orgs"] || {};
 this["DanceCard"]["templates"]["orgs"]["org"] = this["DanceCard"]["templates"]["orgs"]["org"] || {};
+this["DanceCard"]["templates"]["orgs"]["org"]["_eventHeader"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"event-header-editing\">\n    <span><a href=\"#\" class=\"save-event-header\">save changes</a></span>\n    <span><a href=\"#\" class=\"edit-event-header\">cancel</a></span>\n\n    <h2><input value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.name : stack1), depth0))
+    + "\"name=\"name\" class=\"event-name-input\" type=\"text\"></h2>\n\n    <p><label name=\"event-type\">Event Type</label>\n      <select class=\"event-type-input\" name=\"event-type\">\n        <option value=\"contra-dance\">Contra Dance</option>\n        <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n        <option value=\"contra-workshop\">Contra Workshop</option>\n        <option value=\"waltz\">Waltz Dance</option>\n        <option value=\"waltz-workshop\">Waltz Workshop</option>\n        <option value=\"square-dance\">Square Dance</option>\n        <option value=\"dance-weekend\">Dance Weekend</option>\n        <option value=\"caller-workshop\">Caller Workshop</option>\n      </select></p>\n\n";
+  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"unless","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "\n    <p><label name=\"start-time\">Start time</label>\n      <input value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startTime : stack1), depth0))
+    + "\" name=\"start-time\" class=\"event-start-time-input\" type=\"time\"></p>\n\n    <p><label name=\"end-time\">End time</label>\n      <input value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endTime : stack1), depth0))
+    + "\" name=\"end-time\" class=\"event-end-time-input\" type=\"time\"></p>\n\n  </div>\n";
+},"2":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "        <p>\n          <label name=\"start-date\">Start date</label>\n            <input name=\"start-date\" class=\"event-start-date-input\" type=\"date\" value="
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startDate : stack1)) != null ? stack1.form : stack1), depth0))
+    + ">\n        </p>\n        <p><label name=\"multi-day\">Multi-day Event</label>\n          <input name=\"multi-day\"class=\"multi-day-input\" type=\"checkbox\"></p>\n          <div class=\"multi-day\">\n        </div>\n";
+},"4":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"event-header-viewing\">\n    <span><a href=\"#\" class=\"edit-event-header\">edit</a></span>\n    <h2>"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.name : stack1), depth0))
+    + "</h2>\n      <p>Type: "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.type : stack1), depth0))
+    + "</p>\n      ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.multiDay : stack1), {"name":"if","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n";
+  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"unless","hash":{},"fn":this.program(7, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "      <p>Start Time: "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startTime : stack1), depth0))
+    + "</p>\n      <p>End Time: "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endTime : stack1), depth0))
+    + "</p>\n  </div>\n";
+},"5":function(depth0,helpers,partials,data) {
+  return "<p>This is a multi-day event</p>";
+  },"7":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "        <p>Start Date: "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startDate : stack1)) != null ? stack1.iso : stack1), depth0))
+    + "</p>\n        <p>End Date: "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endDate : stack1)) != null ? stack1.iso : stack1), depth0))
+    + "</p>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.edit : depth0)) != null ? stack1.eventHeader : stack1), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(4, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
+},"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["_eventInfo"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"event-info-editing\">\n    <span><a href=\"#\" class=\"save-event-info\">save changes</a></span>\n    <span><a href=\"#\" class=\"edit-event-info\">cancel</a></span>\n    <h3>Event Info</h3>\n    <label name=\"event-price\">Price</label>\n      <input type=\"text\" class=\"price-input\" name=\"event-price\" placeholder=\"price\" value="
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.price : stack1), depth0))
+    + ">\n";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.program(4, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "    <label name=\"beginner-friendly\">Beginner Friendly</label>\n";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.beginnerFrdly : stack1), {"name":"if","hash":{},"fn":this.program(6, data),"inverse":this.program(8, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "    <label name=\"workshop-included\">Workshop Included</label>\n";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.workshopIncl : stack1), {"name":"if","hash":{},"fn":this.program(10, data),"inverse":this.program(12, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "    <label name=\"notes\">Notes</label>\n      <textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n  </div>\n";
+},"2":function(depth0,helpers,partials,data) {
+  return "      <p>To edit band and caller info, please edit the individual event</p>\n";
+  },"4":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "      <label name=\"band-name\">Band Name</label>\n        <input type=\"text\" class=\"band-name-input\" name=\"band-name\" placeholder=\"band name\" value="
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), depth0))
+    + ">\n      <label name=\"musicians\">Musicians</label>\n        <textarea name=\"musicians\" class=\"musicians-input\" rows=\"8\" cols=\"10\" placeholder=\"musicians\">"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), depth0))
+    + "</textarea>\n      <label name=\"caller\">Caller</label>\n        <input type=\"text\" class=\"caller-input\" name=\"caller\" placeholder=\"caller\" value="
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), depth0))
+    + ">\n";
+},"6":function(depth0,helpers,partials,data) {
+  return "      <input type=\"checkbox\" class=\"beginner\" name=\"beginner-friendly\" checked>\n";
+  },"8":function(depth0,helpers,partials,data) {
+  return "      <input type=\"checkbox\" class=\"beginner\" name=\"beginner-friendly\">\n";
+  },"10":function(depth0,helpers,partials,data) {
+  return "      <input type=\"checkbox\" class=\"workshop-incl\" name=\"workshop-included\" checked>\n";
+  },"12":function(depth0,helpers,partials,data) {
+  return "      <input type=\"checkbox\" class=\"workshop-incl\" name=\"workshop-included\">\n";
+  },"14":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"event-info-viewing\">\n    <span><a href=\"#\" class=\"edit-event-info\">edit</a></span>\n    <h3>Event Info</h3>\n    <p>Cost: $"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.price : stack1), depth0))
+    + "</p>\n";
+  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"unless","hash":{},"fn":this.program(15, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "    <p>\n      This "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.type : stack1), depth0))
+    + " is\n      ";
+  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.beginnerFrdly : stack1), {"name":"unless","hash":{},"fn":this.program(24, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n      beginner friendly\n      ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.workshopIncl : stack1), {"name":"if","hash":{},"fn":this.program(26, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n    </p>\n";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), {"name":"if","hash":{},"fn":this.program(28, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "  </div>\n";
+},"15":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "      <p>\n        Band: ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), {"name":"if","hash":{},"fn":this.program(16, data),"inverse":this.program(18, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n      </p>\n      <p>\n        Musicians: ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), {"name":"if","hash":{},"fn":this.program(20, data),"inverse":this.program(18, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n      </p>\n      <p>\n        Caller: ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), {"name":"if","hash":{},"fn":this.program(22, data),"inverse":this.program(18, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "\n      </p>\n";
+},"16":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), depth0));
+  },"18":function(depth0,helpers,partials,data) {
+  return "TBA";
+  },"20":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), depth0));
+  },"22":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), depth0));
+  },"24":function(depth0,helpers,partials,data) {
+  return " NOT ";
+  },"26":function(depth0,helpers,partials,data) {
+  return " and includes a workshop.";
+  },"28":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "      <p>\n        Organizer notes: "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), depth0))
+    + "\n      </p>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.edit : depth0)) != null ? stack1.eventInfo : stack1), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(14, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
+},"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["_eventRecur"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "  <div class=\"event-recur-editing\">\n    <span><a href=\"#\" class=\"save-event-recur\">save changes</a></span>\n    <span><a href=\"#\" class=\"edit-event-recur\">cancel</a></span>\n\n    <h3>Event Schedule</h3>\n    <p>\n      This event occurs once a\n      <input class=\"chooseRpt\" name=\"chooseRpt\" type=\"radio\" value=\"true\"><label name=\"chooseRpt\">month</label>\n      <input class=\"chooseRpt\" name=\"chooseRpt\" type=\"radio\" value=\"false\"><label name=\"chooseRpt\">week</label>\n    </p>\n    <p>on\n      <div class=\"choose-monthly-rpt\">\n      </div>\n      <select class=\"weekly-option-input\">\n        <option value=\"1\">Monday</option>\n        <option value=\"2\">Tuesday</option>\n        <option value=\"3\">Wednesday</option>\n        <option value=\"4\">Thursday</option>\n        <option value=\"5\">Friday</option>\n        <option value=\"6\">Saturday</option>\n        <option value=\"0\">Sunday</option>\n      </select>\n    </p>\n    <p><label name=\"end-date\">End Date</label>\n      <input name=\"end-date\" class=\"event-end-date-input\" type=\"date\" value="
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endDate : stack1)) != null ? stack1.form : stack1), depth0))
+    + "></p>\n  </div>\n\n";
+},"3":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "  <div class=\"event-recur-viewing\">\n    <span><a href=\"#\" class=\"edit-event-recur\">edit</a></span>\n    <h3>Event Schedule</h3>\n    </p>This event repeats every "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.monthlyRpt : stack1), depth0))
+    + " "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.weeklyRptName : stack1), depth0))
+    + "</p>\n    <p>End Date: "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endDate : stack1)) != null ? stack1.iso : stack1), depth0))
+    + "</p>\n  </div>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.edit : depth0)) != null ? stack1.eventRecur : stack1), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
+},"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_multiDay"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<label name=\"end-date\">End date</label>\n  <input name=\"end-date\" class=\"event-end-date-input\" type=\"date\">\n";
-  },"useData":true});
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "<label name=\"end-date\">End date</label>\n  <input name=\"end-date\" class=\"event-end-date-input\" type=\"date\" value="
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endDate : stack1)) != null ? stack1.form : stack1), depth0))
+    + ">\n";
+},"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   return "  <h3>Your One Time Events</h3>\n";
   },"3":function(depth0,helpers,partials,data) {
@@ -187,17 +479,43 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeList"] = Handlebars.templ
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_recurList"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "<h4><a href=\"#\">"
+  return "<h4>\n  <a href=\"#\" class=\"recur-event-name\">"
     + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
     + "</a> occurs every "
     + escapeExpression(((helper = (helper = helpers.monthlyRpt || (depth0 != null ? depth0.monthlyRpt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"monthlyRpt","hash":{},"data":data}) : helper)))
     + " "
     + escapeExpression(((helper = (helper = helpers.weeklyRptName || (depth0 != null ? depth0.weeklyRptName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRptName","hash":{},"data":data}) : helper)))
-    + "<h4>\n";
+    + "\n  <a href=\"#/orgs/"
+    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
+    + "/"
+    + escapeExpression(((helper = (helper = helpers.urlId || (depth0 != null ? depth0.urlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"urlId","hash":{},"data":data}) : helper)))
+    + "\">manage this event</a>\n  <a href=\"#\" class=\"delete-recur\">delete this event</a>\n</h4>\n";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_regReq"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<label name=\"reg-limit\">Registration Limit</label>\n  <input name=\"reg-limit\" class=\"reg-limit-input\" type=\"number\">\n<label name=\"gender-bal\">Lead/Follow Balanced</label>\n  <input type=\"checkbox\" class=\"gender-bal-input\" name=\"gender-bal\">\n";
   },"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["_venueInfo"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "    <divclass=\"venue-info-editing\">\n      <span><a href=\"#\" class=\"save-venue-info\">save changes</a></span>\n      <span><a href=\"#\" class=\"edit-venue-info\">cancel</a></span>\n      <h3>Venue Info</h3>\n      <label name=\"venue-name\">Venue Name</label>\n        <input name=\"venue-name\" class=\"venue-name-input\" type=\"text\" placeholder=\"venue name\" value=\""
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.name : stack1), depth0))
+    + "\">\n      <label name=\"address\">Venue Address</label>\n        <input name=\"address\" class=\"event-address-input\" type=\"text\" placeholder=\"venue address\" value=\""
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.fullAddress : stack1), depth0))
+    + "\">\n      <label name=\"zipcode\">Venue Zipcode</label>\n        <input name=\"zipcode\" class=\"event-zipcode-input\"type=\"text\" placeholder=\"venue zipcode\" value=\""
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.zipcode : stack1), depth0))
+    + "\">\n    </div>\n";
+},"3":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "  <div class=\"venue-info-viewing\">\n    <span><a href=\"#\" class=\"edit-venue-info\">edit</a></span>\n    <h3>Venue Info</h3>\n    <h4>\n      "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.name : stack1), depth0))
+    + "\n    </h4>\n    <p>\n      "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.fullAddress : stack1), depth0))
+    + "\n    </p>\n  </div>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.edit : depth0)) != null ? stack1.venueInfo : stack1), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
+},"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseMoRpt"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<select name=\"monthlyRpt\" class=\"monthly-option-input\">\n  <option value=\"first\">the first</option>\n  <option value=\"second\">the second</option>\n  <option value=\"third\">the third</option>\n  <option value=\"fourth\">the fourth</option>\n  <option value=\"last\">the last</option>\n</select>\n";
   },"useData":true});
@@ -235,11 +553,13 @@ this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.templa
   return "<label name=\"band-name\">Band Name</label>\n  <input type=\"text\" class=\"band-name-input\" name=\"band-name\" placeholder=\"band name\">\n<label name=\"musicians\">Musicians</label>\n  <textarea name=\"musicians\" class=\"musicians-input\" rows=\"8\" cols=\"10\" placeholder=\"musicians\"></textarea>\n\n<label name=\"caller\">Caller</label>\n  <input type=\"text\" class=\"caller-input\" name=\"caller\" placeholder=\"caller\">\n";
   },"12":function(depth0,helpers,partials,data) {
   return "  <label name=\"pre-reg-req\">Pre-registration required</label>\n    <input type=\"checkbox\" name=\"pre-reg-req\" class=\"pre-reg-req-input\">\n    <div class=\"reg-req\">\n    </div>\n";
+  },"14":function(depth0,helpers,partials,data) {
+  return "disabled";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.recurring : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  buffer += "\n<label name=\"name\">Event Name</label>\n  <input name=\"name\" class=\"event-name-input\" type=\"text\">\n\n<label name=\"event-type\">Event Type</label>\n  <select class=\"event-type-input\" name=\"event-type\">\n    <option value=\"contraDance\" selected>Contra Dance</option>\n    <option value=\"advancedContraDance\">Advanced Contra Dance</option>\n    <option value=\"contraWorkshop\">Contra Workshop</option>\n    <option value=\"waltzDance\">Waltz Dance</option>\n    <option value=\"waltzWorkshop\">Waltz Workshop</option>\n    <option value=\"squareDance\">Square Dance</option>\n    <option value=\"danceWeekend\">Dance Weekend</option>\n    <option value=\"callerWorkshop\">Caller Workshop</option>\n  </select>\n\n";
+  buffer += "\n<label name=\"name\">Event Name</label>\n  <input name=\"name\" class=\"event-name-input\" type=\"text\">\n\n<label name=\"event-type\">Event Type</label>\n  <select class=\"event-type-input\" name=\"event-type\">\n    <option value=\"contra-dance\" selected>Contra Dance</option>\n    <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n    <option value=\"contra-workshop\">Contra Workshop</option>\n    <option value=\"waltz\">Waltz Dance</option>\n    <option value=\"waltz-workshop\">Waltz Workshop</option>\n    <option value=\"square-dance\">Square Dance</option>\n    <option value=\"dance-weekend\">Dance Weekend</option>\n    <option value=\"caller-workshop\">Caller Workshop</option>\n  </select>\n\n";
   stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.recurring : depth0), {"name":"unless","hash":{},"fn":this.program(6, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += "\n<label name=\"start-time\">Start time</label>\n  <input name=\"start-time\" class=\"event-start-time-input\" type=\"time\">\n\n";
@@ -251,7 +571,111 @@ this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.templa
   buffer += "\n<label name=\"event-price\">Price</label>\n  <input type=\"text\" class=\"price-input\" name=\"event-price\" placeholder=\"price\">\n\n<label name=\"beginner-friendly\">Beginner Friendly</label>\n  <input type=\"checkbox\" class=\"beginner\" name=\"beginner-friendly\">\n\n<label name=\"workshop-included\">Workshop Included</label>\n  <input type=\"checkbox\" class=\"workshop-incl\" name=\"workshop-included\">\n\n";
   stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.recurring : depth0), {"name":"unless","hash":{},"fn":this.program(12, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n<label name=\"notes\">Notes</label>\n<textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\" disabled>\n";
+  buffer += "\n<label name=\"notes\">Notes</label>\n<textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\"\n  ";
+  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.recurring : depth0), {"name":"unless","hash":{},"fn":this.program(14, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + ">\n";
+},"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["event"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "\n  <div class=\"event-header\">\n  </div>\n\n";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "\n  <div class=\"event-info\">\n  </div>\n\n  <div class=\"venue-info\">\n  </div>\n\n";
+},"2":function(depth0,helpers,partials,data) {
+  return "    <div class=\"event-recur\">\n    </div>\n";
+  },"4":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "\n";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"if","hash":{},"fn":this.program(5, data),"inverse":this.program(7, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "\n";
+},"5":function(depth0,helpers,partials,data) {
+  return "  <span>sorry, you don't have permission to manage this event</span>\n\n";
+  },"7":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "    <div class=\"event-header\">\n      <h2>"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.name : stack1), depth0))
+    + "</h2>\n      <p>\n        ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.multiDay : stack1), {"name":"if","hash":{},"fn":this.program(8, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n        "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startDate : stack1)) != null ? stack1.iso : stack1), depth0))
+    + "\n        ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.multiDay : stack1), {"name":"if","hash":{},"fn":this.program(10, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n        ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.weeklyRptName : stack1), {"name":"if","hash":{},"fn":this.program(12, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += " from\n        "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startTime : stack1), depth0))
+    + "-"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endTime : stack1), depth0))
+    + "\n      </p>\n      <p>by <a href=\"#/orgs/"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.eventOrg : depth0)) != null ? stack1.urlId : stack1), depth0))
+    + "\">"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.eventOrg : depth0)) != null ? stack1.orgName : stack1), depth0))
+    + "</a></p>\n    </div>\n\n    <div class=\"event-info\">\n      <h3>Event Info</h3>\n      <p>Cost: $"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.price : stack1), depth0))
+    + "</p>\n      <p>\n        Band: ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), {"name":"if","hash":{},"fn":this.program(14, data),"inverse":this.program(16, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n      </p>\n";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), {"name":"if","hash":{},"fn":this.program(18, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "      <p>\n        Caller: ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), {"name":"if","hash":{},"fn":this.program(20, data),"inverse":this.program(16, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n      </p>\n      <p>\n        This "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.type : stack1), depth0))
+    + " is\n        ";
+  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.beginnerFrdly : stack1), {"name":"unless","hash":{},"fn":this.program(22, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n        beginner friendly\n        ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.workshopIncl : stack1), {"name":"if","hash":{},"fn":this.program(24, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n      </p>\n";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), {"name":"if","hash":{},"fn":this.program(26, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "    </div>\n\n    <div class=\"venue-info\">\n      <h3>Venue Info</h3>\n      <h4>\n        "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.name : stack1), depth0))
+    + "\n      </h4>\n      <p>\n        "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.fullAddress : stack1), depth0))
+    + "\n      </p>\n    </div>\n\n";
+},"8":function(depth0,helpers,partials,data) {
+  return "From ";
+  },"10":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return " to "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endDate : stack1)) != null ? stack1.iso : stack1), depth0));
+},"12":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return " and every "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.weeklyRptName : stack1), depth0));
+},"14":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), depth0));
+  },"16":function(depth0,helpers,partials,data) {
+  return "TBA";
+  },"18":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "        <p>\n          Musicians: "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), depth0))
+    + "\n        </p>\n";
+},"20":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), depth0));
+  },"22":function(depth0,helpers,partials,data) {
+  return " NOT ";
+  },"24":function(depth0,helpers,partials,data) {
+  return " and includes a workshop.";
+  },"26":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "        <p>\n          Organizer notes: "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), depth0))
+    + "\n        </p>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.loggedIn : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(4, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
@@ -512,7 +936,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
           if ($('.logout-msg')) {
             $('.logout-msg').remove();
           }
-          DanceCard.router.navigate('', {trigger: true});
+          DanceCard.router.navigate('#/orgs/'+ Parse.User.current().get('urlId'), {trigger: true});
           DanceCard.session.set('user', Parse.User.current().toJSON());
         }
       );
@@ -734,7 +1158,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
       });
     },
     events: {
-      'click a' : 'toggleChildren'
+      'click .recur-event-name' : 'toggleChildren'
     },
     toggleChildren: function(e) {
       e.preventDefault();
@@ -790,6 +1214,7 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
       'click .pre-reg-req-input'   : 'regReq',
       'click .multi-day-input'     : 'multiDay'
     },
+
     multiDay: function() {
       if (this.model.get('multiDay')) {
         this.model.set('multiDay', false);
@@ -799,6 +1224,7 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
         $('.multi-day').html(DanceCard.templates.orgs.org._multiDay);
       }
     },
+
     regReq: function() {
       if (this.model.get('regReq')) {
         this.model.set('regReq', false);
@@ -808,6 +1234,7 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
         $('.reg-req').html(DanceCard.templates.orgs.org._regReq);
       }
     },
+
     chooseRecur: function(e) {
       e.preventDefault();
       if ($(e.target).val() === 'onetime') {
@@ -820,6 +1247,7 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
         this.$el.html(DanceCard.templates.orgs.org.chooseWkMo);
       }
     },
+
     chooseWkMo: function(e) {
       e.preventDefault();
       if ($(e.target).val() === 'weekly') {
@@ -833,6 +1261,7 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
         this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
       }
     },
+
     chooseRpt: function(e) {
       e.preventDefault();
       var weeklyRpt = $('.weekly-option-input').val();
@@ -844,25 +1273,21 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
       }
       this.$el.html(DanceCard.templates.orgs.org.createEvent(this.model.toJSON()));
     },
-    getLocation: function() {
-      var self = this;
-      var address = $('.event-address-input').val();
-      var zipcode = $('.event-zipcode-input').val();
-      var geocoder = new google.maps.Geocoder();
-      geocoder.geocode({'address': address + ',' + zipcode}, function(results, status) {
-        if (status === google.maps.GeocoderStatus.OK && address && zipcode.length === 5) {
-          $('.submit-event').removeAttr('disabled');
-          var lat = results[0].geometry.location.k;
-          var lng = results[0].geometry.location.B;
-          var point = new Parse.GeoPoint({latitude: lat, longitude: lng});
-          self.model.set('point', point);
-          self.model.set('venue', {
-            addressParts: results[0].address_components,
-            fullAddress: results[0].formatted_address,
-          });
+
+    getLocation: function(e) {
+      if ($(e.target).val().length); {
+        var self = this,
+            address = $('.event-address-input').val(),
+            zipcode = $('.event-zipcode-input').val(),
+            location = DanceCard.Utility.findLocation(address, zipcode)
+              .done(function(location) {
+                self.model.set('point', location.point);
+                self.model.set('venue', location.location);
+                $('.submit-event').removeAttr('disabled');
+              });
         }
-      });
     },
+
     createEvent: function(e) {
       e.preventDefault();
       if (this.model.get('recurring')){
@@ -871,19 +1296,22 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
         this.createOnetimeEvent();
       }
     },
+
     createRecurringEvent: function() {
-      var self = this;
-      var name = $('.event-name-input').val();
-      var type = $('.event-type-input').val();
-      var startTime = $('.event-start-time-input').val();
-      var endTime = $('.event-end-time-input').val();
-      var venueName = $('.venue-name-input').val();
-      var price = $('.price-input').val();
-      var beginner = $('.beginner').prop('checked');
-      var workshopIncl = $('.workshop-incl').prop('checked');
-      var notes = $('.notes-input').val();
-      var idName = name.replace(/[^\w\d\s]/g, '');
-      var id = idName.split(' ').join('_') + '_recurring_' + this.model.get('weeklyRpt');
+      var name = $('.event-name-input').val(),
+          type = $('.event-type-input').val().split('-').join(' '),
+          startTime = $('.event-start-time-input').val(),
+          endTime = $('.event-end-time-input').val(),
+          venueName = $('.venue-name-input').val(),
+          price = $('.price-input').val(),
+          beginner = $('.beginner').prop('checked'),
+          workshopIncl = $('.workshop-incl').prop('checked'),
+          notes = $('.notes-input').val(),
+          idName = name.replace(/[^\w\d\s]/g, ''),
+          day = this.model.get('weeklyRpt'),
+          id = idName.split(' ').join('_') + '_recurring_' + day,
+          startDate = DanceCard.Utility.nextDateOfWeek(new Date(), day),
+          endDate = DanceCard.Utility.addYear(startDate);
       this.model.set({
         urlId: id,
         name: name,
@@ -893,141 +1321,60 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
         price: price,
         beginnerFrdly: beginner,
         workshopIncl: workshopIncl,
-        notes: notes
+        notes: notes,
+        startDate: startDate,
+        endDate: endDate
       });
-      this.model.set('venue.name', venueName);
+      this.model.set('venue', {
+        name: venueName,
+        addressParts: this.model.attributes.venue.addressParts,
+        fullAddress: this.model.attributes.venue.fullAddress,
+        zipcode: this.model.attributes.venue.zipcode
+      });
       this.model.save();
-      this.setStartDate(this.model)
-      .done(function(model, startDate) {
-        model.set('startDate', startDate);
-        self.buildRecurringEvents(model);
-        DanceCard.router.navigate("#/orgs/" + self.model.get('orgUrlId'), {trigger: true});
-      });
-    },
-
-    buildRecurringEvents: function(model){
-      var date = model.get('startDate');
-      var firstDate = new Date(model.get('startDate'));
-      var arrayOfDates = [firstDate];
-      _.times(51, function(n) {
-        arrayOfDates.push(date.setDate(date.getDate() + 7));
-      });
-      arrayOfDates = _.map(arrayOfDates, function(date){
-        return new Date(date);
-      });
-      if (model.get('recurMonthly')) {
-        var week = model.get('monthlyRpt');
-        if (week === 'first') {
-          arrayOfDates = _.filter(arrayOfDates, function(date) {
-            if (date.getDate() <= 7 && date.getDay() + date.getDate() <= 13) {
-              return date;
-            }
-          });
-        } else if (week === 'second') {
-          arrayOfDates = _.filter(arrayOfDates, function(date) {
-            if (date.getDate() >= 8 && date.getDate() <= 14 && date.getDay() + date.getDate() <= 20) {
-              return date;
-            }
-          });
-        } else if (week === 'third') {
-          arrayOfDates = _.filter(arrayOfDates, function(date) {
-            if (date.getDate() >= 15 && date.getDate() <= 21 && date.getDay() + date.getDate() <= 27) {
-              return date;
-            }
-          });
-        } else if (week === 'fourth') {
-          arrayOfDates = _.filter(arrayOfDates, function(date) {
-            if (date.getDate() >= 22 && date.getDate() <= 28 && date.getDay() + date.getDate() <= 34) {
-              return date;
-            }
-          });
-        } else if (week === 'last') {
-          arrayOfDates = _.filter(arrayOfDates, function(date) {
-            var month = date.getMonth();
-            date.setDate(date.getDate() + 7);
-            if (month !== date.getMonth()) {
-              return true;
-            }
-          });
-        }
-      }
-      _.each(arrayOfDates, function(date) {
-        var newEvent = new DanceCard.Models.Event(model);
-        var idName = model.get('name').replace(/[^\w\d\s]/g, '');
-        var dateString = date.toDateString().split(' ').join('_');
-        var id = idName.split(' ').join('_') + '_' + dateString;
-        newEvent.set({
-          startDate: date,
-          endDate: date,
-          recurring: false,
-          parentEvent: model,
-          parentEventUrlId: model.get('urlId'),
-          urlId: id
-        });
-        newEvent.save();
-      });
-    },
-
-    setStartDate: function(recurEventModel) {
-      var deferred = new $.Deferred();
-      var startDate = new Date(),
-          recurDay = +recurEventModel.get('weeklyRpt'),
-          diff;
-      if (startDate.getDay() === recurDay) {
-        deferred.resolve(recurEventModel, startDate);
-      } else {
-        if (recurDay - startDate.getDay() > 0) {
-          diff = recurDay - startDate.getDay();
-          startDate.setDate(startDate.getDate() + diff);
-          deferred.resolve(recurEventModel, startDate);
-        } else {
-          diff = 7 + (recurDay - startDate.getDay());
-          startDate.setDate(startDate.getDate() + diff);
-          deferred.resolve(recurEventModel, startDate);
-        }
-      }
-      return deferred.promise();
+      this.model.createChildren(this.model);
+      DanceCard.router.navigate("#/orgs/" + this.model.get('orgUrlId'), {trigger: true});
     },
 
     createOnetimeEvent: function() {
-      var name = $('.event-name-input').val();
-      var type = $('.event-type-input').val();
-      var startDate,
+      var name = $('.event-name-input').val(),
+          type = $('.event-type-input').val().split('-').join(' '),
+          startDate = new Date(moment($('.event-start-date-input').val()).format()),
+          dateString = startDate.toDateString().split(' ').join('_'),
+          startTime = $('.event-start-time-input').val(),
+          endTime = $('.event-end-time-input').val(),
+          venueName = $('.venue-name-input').val(),
+          bandName = $('.band-name-input').val(),
+          musicians = $('.musicians-input').val(),
+          caller = $('.caller-input').val(),
+          price = $('.price-input').val(),
+          beginner = $('.beginner').prop('checked'),
+          workshopIncl = $('.workshop-incl').prop('checked'),
+          preRegReq = $('.pre-reg-req-input').prop('checked'),
+          notes = $('.notes-input').val(),
+          idName = name.replace(/[^\w\d\s]/g, ''),
+          id = idName.split(' ').join('_') + '_' + dateString,
           endDate,
           regLimit,
           genderBal;
-      startDate = new Date($('.event-start-date-input').val());
-      var dateString = startDate.toDateString().split(' ').join('_');
-      var startTime = $('.event-start-time-input').val();
-      var endTime = $('.event-end-time-input').val();
       if (this.model.get('multiDay')) {
-        endDate = new Date($('.event-end-date-input').val());
+        endDate = new Date(moment($('.event-end-date-input').val()).format());
       } else {
-        endDate = startDate;
+        endDate = new Date(moment(startDate).format());
       }
-      var venueName = $('.venue-name-input').val();
-      var bandName = $('.band-name-input').val();
-      var musicians = $('.musicians-input').val();
-      var caller = $('.caller-input').val();
-      var price = $('.price-input').val();
-      var beginner = $('.beginner').prop('checked');
-      var workshopIncl = $('.workshop-incl').prop('checked');
-      var preRegReq = $('.pre-reg-req-input').prop('checked');
       if (preRegReq) {
         regLimit = $('.reg-limit-input').val();
         genderBal = $('.gender-bal-input').prop('checked');
       }
-      var notes = $('.notes-input').val();
-      var idName = name.replace(/[^\w\d\s]/g, '');
-      var id = idName.split(' ').join('_') + '_' + dateString;
       this.model.set({
         urlId: id,
         name: name,
+        type: type,
         startDate: startDate,
         startTime: startTime,
         endDate: endDate,
         endTime: endTime,
-        bandName: bandName,
+        band: bandName,
         musicians: musicians,
         caller: caller,
         price: price,
@@ -1036,7 +1383,12 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
         preRegReq: preRegReq,
         notes: notes
       });
-      this.model.set('venue.name', venueName);
+      this.model.set('venue', {
+        name: venueName,
+        addressParts: this.model.attributes.venue.addressParts,
+        fullAddress: this.model.attributes.venue.fullAddress,
+        zipcode: this.model.attributes.venue.zipcode
+      });
       if (preRegReq) {
         this.model.set('regInfo', {
           regLimit: regLimit,
@@ -1050,12 +1402,403 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
 
 })();
 
+(function(){
+  'use strict';
+
+  DanceCard.Views.Event = DanceCard.Views.Base.extend({
+    className: 'event',
+    template: DanceCard.templates.orgs.org.event,
+    render: function() {
+      console.log(this.model);
+      this.$el.html(this.template(this.model));
+      if (this.model.loggedIn) {
+        $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.model));
+        if (this.model.event.recurring) {
+          $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.model));
+        }
+        $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(this.model));
+        $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.model));
+        if (this.model.event.recurMonthly) {
+          $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model));
+        }
+      }
+    },
+    formatDatesforForm: function(model) {
+      var startDate = model.event.startDate.iso;
+      startDate = moment(startDate).format('YYYY-MM-DD');
+      var endDate = model.event.endDate.iso;
+      endDate = moment(endDate).format('YYYY-MM-DD');
+      model.event.startDate.form = startDate;
+      model.event.endDate.form = endDate;
+      return model;
+    },
+    events: {
+      'click .edit-event-header' : 'editEventHeader',
+      'click .edit-event-recur'  : 'editEventRecur',
+      'click .edit-event-info'   : 'editEventInfo',
+      'click .edit-venue-info'   : 'editVenueInfo',
+      'click .save-event-header' : 'saveEventHeader',
+      'click .save-event-recur'  : 'saveEventRecur',
+      'click .save-event-info'   : 'saveEventInfo',
+      'click .save-venue-info'   : 'saveVenueInfo',
+      'click .multi-day-input'   : 'multiDay',
+      'click .chooseRpt'         : 'chooseRpt'
+    },
+    editEventHeader: function(e) {
+      e.preventDefault();
+      var formModel = this.formatDatesforForm(this.model);
+      if (this.model.edit.eventHeader) {
+        this.model.edit.eventHeader = false;
+        $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.model));
+      } else {
+        this.model.edit.eventHeader = true;
+        $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(formModel));
+      }
+    },
+    editEventRecur: function(e) {
+      e.preventDefault();
+      var formModel = this.formatDatesforForm(this.model);
+      if (this.model.edit.eventRecur) {
+        this.model.edit.eventRecur = false;
+        $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.model));
+      } else {
+        this.model.edit.eventRecur = true;
+        $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(formModel));
+        if (this.model.event.recurMonthly) {
+          $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model));
+        }
+      }
+    },
+    editEventInfo: function(e) {
+      e.preventDefault();
+      if (this.model.edit.eventInfo) {
+        this.model.edit.eventInfo = false;
+        $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(this.model));
+      } else {
+        this.model.edit.eventInfo = true;
+        $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(this.model));
+      }
+    },
+    editVenueInfo: function(e) {
+      e.preventDefault();
+      if (this.model.edit.venueInfo) {
+        this.model.edit.venueInfo = false;
+        $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.model));
+      } else {
+        this.model.edit.venueInfo = true;
+        $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.model));
+      }
+    },
+
+    saveEventHeader: function(e) {
+      e.preventDefault();
+      var self = this,
+          id = this.model.event.objectId,
+          attrs = {
+                    name: $('.event-name-input').val(),
+                    type: $('.event-type-input').val(),
+                    startTime: $('.event-start-time-input').val(),
+                    endTime: $('.event-end-time-input').val()
+                  },
+          dateAttrs = {},
+          model = new Parse.Query('Event'),
+          orgUrlId = this.model.eventOrg.urlId,
+          parentEvent = this.model.event.urlId;
+      if ($('.event-start-date-input').val()) {
+        dateAttrs.startDate = new Date($('.event-start-date-input').val());
+      }
+      if ($('.event-end-date-input').val()) {
+        dateAttrs.endDate = new Date($('.event-end-date-input').val());
+        dateAttrs.multiDay = $('.multi-day-input').prop('checked');
+      }
+      model.get(id, {
+        success: function(event) {
+          event.saveHeader(orgUrlId, parentEvent, 1000, attrs, dateAttrs)
+          .then(function(event) {
+            self.model.event = event.toJSON();
+            self.model.edit.eventHeader = false;
+            $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(self.model));
+          });
+        },
+        error: function() {
+          console.log('an error occured');
+        }
+      });
+    },
+
+    saveEventRecur: function(e) {
+      e.preventDefault();
+      var self = this,
+          recurMonthly,
+          attrs = {
+                      weeklyRpt: $('.weekly-option-input').val(),
+                      weeklyRptName: $('.weekly-option-input :selected').text(),
+                      monthlyRpt: $('.monthly-option-input').val(),
+                    },
+          model = new Parse.Query('Event'),
+          orgUrlId = this.model.eventOrg.urlId,
+          parentEvent = this.model.event.urlId;
+      if ($('.chooseRpt:checked').val() === "true") {
+        recurMonthly = true;
+      } else {
+        recurMonthly = false;
+      }
+      attrs.recurMonthly = recurMonthly;
+      model.get(this.model.event.objectId, {
+        success: function(event) {
+          event.saveRecur(orgUrlId, parentEvent, 1000, attrs)
+          .then(function(event) {
+            self.model.event = event.toJSON();
+            self.model.edit.eventRecur = false;
+            $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(self.model));
+          });
+        },
+        error: function() {
+          console.log('an error occured');
+        }
+      });
+    },
+
+    saveEventInfo: function(e) {
+      e.preventDefault();
+      var self = this,
+          model = new Parse.Query('Event'),
+          orgUrlId = this.model.eventOrg.urlId,
+          parentEvent = this.model.event.urlId,
+          attrs = {
+            price: $('.price-input').val(),
+            band: $('.band-name-input').val() || 'TBA',
+            musicians: $('.musicians-input').val(),
+            caller: $('.caller-input').val() || 'TBA',
+            beginnerFrdly: $('.beginner').prop('checked'),
+            workshopIncl: $('.workshop-incl').prop('checked'),
+            notes: $('.notes-input').val()
+          };
+      model.get(this.model.event.objectId, {
+        success: function(event) {
+          event.saveInfo(orgUrlId, parentEvent, 1000, attrs)
+          .then(function(event) {
+            self.model.event = event.toJSON();
+            self.model.edit.eventInfo = false;
+            $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(self.model));
+          });
+        },
+        error: function() {
+          console.log('an error occured');
+        }
+      });
+    },
+
+    saveVenueInfo: function(e) {
+      e.preventDefault();
+      var self = this,
+          model = new Parse.Query('Event'),
+          orgUrlId = this.model.eventOrg.urlId,
+          parentEvent = this.model.event.urlId,
+          zipcode = $('.event-zipcode-input').val(),
+          address = $('.event-address-input').val(),
+          name = $('.venue-name-input').val();
+      DanceCard.Utility.findLocation(address, zipcode)
+      .done(function(location) {
+        var attrs = {
+                      name: name,
+                      zipcode: zipcode,
+                      fullAddress: location.location.fullAddress,
+                      addressParts: location.location.addressParts
+                    };
+        model.get(self.model.event.objectId, {
+          success: function(event) {
+            event.saveVenue(orgUrlId, parentEvent, 1000, attrs)
+            .then(function(event) {
+              self.model.event = event.toJSON();
+              self.model.edit.venueInfo = false;
+              $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(self.model));
+            });
+          },
+          error: function() {
+            console.log('an error occured');
+          }
+        });
+      });
+    },
+
+    multiDay: function() {
+      var formModel = this.formatDatesforForm(this.model);
+      if (this.model.event.multiDay) {
+        this.model.event.multiDay = false;
+        $('.multi-day').html('');
+      } else {
+        this.model.event.multiDay = true;
+        $('.multi-day').html(DanceCard.templates.orgs.org._multiDay(formModel));
+      }
+    },
+
+    chooseRpt: function() {
+      if ($('.chooseRpt:checked').val() === "true") {
+        $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model));
+      } else {
+        $('.choose-monthly-rpt').html('');
+      }
+    }
+  });
+
+})();
+
 DanceCard.Models.Activity = Parse.Object.extend({
   className: 'activity'
 });
 
 DanceCard.Models.Event = Parse.Object.extend({
-  className: 'Event'
+  className: 'Event',
+
+  createChildren: function(parent, startDate) {
+    var week = parent.get('monthlyRpt'),
+        endDate = parent.get('endDate'),
+        dates;
+    startDate = startDate || parent.get('startDate');
+    dates = DanceCard.Utility.buildWeeklyDateArray(startDate, endDate);
+    if (parent.get('recurMonthly')) {
+      dates = DanceCard.Utility.filterByWeekOfMonth(dates, week);
+    }
+    _.each(dates, function(date) {
+      var newEvent = new DanceCard.Models.Event(parent),
+          idName = parent.get('name').replace(/[^\w\d\s]/g, ''),
+          dateString = date.toDateString().split(' ').join('_'),
+          id = idName.split(' ').join('_') + '_' + dateString;
+      newEvent.set({
+        startDate: date,
+        endDate: date,
+        recurring: false,
+        parentEvent: parent,
+        parentEventUrlId: parent.get('urlId'),
+        urlId: id
+      });
+      newEvent.save();
+    });
+  },
+
+  saveHeader: function(orgUrlId, parentEvent, limit, attrs, dateAttrs) {
+    this.set(attrs);
+    if (dateAttrs.startDate) {
+      this.set(dateAttrs);
+    }
+    if (this.get('recurring')) {
+      var collection = new DanceCard.Collections.OnetimeEventList({
+        orgUrlId: orgUrlId,
+        parentEvent: parentEvent,
+        limit: limit
+      });
+      collection.fetch()
+      .then(function() {
+        _.each(collection.models, function(event) {
+          event.set(attrs);
+          event.save();
+        });
+      });
+    }
+    return this.save();
+  },
+
+  saveRecur: function(orgUrlId, parentEvent, limit, attrs) {
+    var self = this,
+        endDate = new Date(moment($('.event-end-date-input').val()).format()),
+        day = attrs.weeklyRpt,
+        oldAttrs = {
+                      weeklyRpt: this.get('weeklyRpt'),
+                      weeklyRptName: this.get('weeklyRptName'),
+                      recurMonthly: this.get('recurMonthly'),
+                      monthlyRpt: this.get('monthlyRpt'),
+                    },
+        parentUrlId = this.get('urlId'),
+        recurMonthly;
+    if ($('.chooseRpt:checked').val() === "true") {
+      recurMonthly = true;
+    } else {
+      recurMonthly = false;
+    }
+    var collection = new DanceCard.Collections.OnetimeEventList({
+      orgUrlId: orgUrlId,
+      parentEvent: parentEvent,
+      limit: 1000
+    });
+    collection.fetch()
+    .then(function(){
+      if (_.isEqual(oldAttrs, attrs)) {
+        // if only the end date changes, add new children until new endDate
+        var maxDate = _.max(collection.models, function(model){
+           return model.get('startDate');
+        });
+        startDate = new Date(maxDate.get('startDate'));
+        startDate.setDate(startDate.getDate()+1);
+        startDate = DanceCard.Utility.nextDateOfWeek(startDate, attrs.weeklyRpt);
+        attrs.endDate = endDate;
+        self.set(attrs);
+        self.createChildren(self, startDate);
+      } else {
+        // if anything other than end date changed, delete all children, and build all new children.
+        attrs.startDate = DanceCard.Utility.nextDateOfWeek(new Date(), day);
+        attrs.endDate = endDate;
+        self.set(attrs);
+        // this is a crazy convoluted way to destroy all the children of this
+        // model. try as i might i couldn't get any of parse's built in functions
+        // to work for destroying the items in the collection and ultimately opted
+        // to do it manually.
+        var ids = _.map(collection.models, function(model){
+          return model.id;
+        });
+        _.each(ids, function(id) {
+          var query = new Parse.Query('Event');
+          query.get(id, {success: function(event){
+            event.destroy({success: function(){
+              console.log('deleted', id);
+            }, error: function(error) {
+              console.log('error', error);
+            }});
+          }});
+        });
+        self.createChildren(self);
+      }
+    });
+    return this.save();
+  },
+
+  saveInfo: function(orgUrlId, parentEvent, limit, attrs) {
+    this.set(attrs);
+    if (this.get('recurring')) {
+      var collection = new DanceCard.Collections.OnetimeEventList({
+        orgUrlId: orgUrlId,
+        parentEvent: parentEvent,
+        limit: limit
+      });
+      collection.fetch()
+      .then(function() {
+        _.each(collection.models, function(event) {
+          event.set(attrs);
+          event.save();
+        });
+      });
+    }
+    return this.save();
+  },
+
+  saveVenue: function(orgUrlId, parentEvent, limit, attrs) {
+    this.set('venue', attrs);
+    if (this.get('recurring')) {
+      var collection = new DanceCard.Collections.OnetimeEventList({
+        orgUrlId: orgUrlId,
+        parentEvent: parentEvent,
+        limit: limit
+      });
+      collection.fetch()
+      .then(function() {
+        _.each(collection.models, function(event) {
+          event.set('venue', attrs);
+          event.save();
+        });
+      });
+    }
+    return this.save();
+  }
 });
 
 DanceCard.Models.Session = new Parse.Object.extend({
@@ -1125,15 +1868,30 @@ DanceCard.Models.User = Parse.Object.extend({
       yesterday.setDate(yesterday.getDate()-1);
       this.orgUrlId = options.orgUrlId;
       this.parentEvent = options.parentEvent || undefined;
+      this.limit = options.limit || 10;
       this.query = new Parse.Query('Event')
         .ascending('startDate')
         .equalTo('orgUrlId', this.orgUrlId)
         .equalTo('recurring', false)
         .equalTo('parentEventUrlId', this.parentEvent)
         .greaterThanOrEqualTo('startDate', yesterday)
-        .limit(10);
+        .limit(this.limit);
     },
       model: DanceCard.Models.Event,
   });
+
+})();
+
+(function() {
+	'use strict';
+
+	DanceCard.Collections.currentEvent = Parse.Collection.extend({
+		initialize: function(options){
+			this.urlId = options.urlId;
+			this.query = new Parse.Query('Event')
+				.equalTo('urlId', this.urlId)
+		},
+		model: DanceCard.Models.Event,
+	});
 
 })();
