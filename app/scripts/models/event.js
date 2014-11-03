@@ -131,7 +131,9 @@ DanceCard.Models.Event = Parse.Object.extend({
     return this.save();
   },
 
-  saveVenue: function() {
-    console.log('saving venue');
+  saveVenue: function(attrs) {
+    this.set('venue', attrs);
+    console.log(this);
+    return this.save();
   }
 });

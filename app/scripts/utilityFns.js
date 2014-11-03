@@ -3,6 +3,10 @@
 
   DanceCard.Utility = {
 
+    findLocation: function(){
+      
+    },
+
     nextDateOfWeek: function(startDate, day) {
       var diff;
       if (startDate.getDay() === day) {

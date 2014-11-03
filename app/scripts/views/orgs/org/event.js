@@ -184,12 +184,22 @@
         }
       });
     },
+
     saveVenueInfo: function(e) {
       e.preventDefault();
-      var model = new Parse.Query('Event');
+      var self = this,
+          model = new Parse.Query('Event'),
+          attrs = {
+            name: $('.venue-name-input').val()
+          };
       model.get(this.model.event.objectId, {
         success: function(event) {
-          event.saveVenue();
+          event.saveVenue(attrs)
+          .then(function(event) {
+            self.model.event = event.toJSON();
+            self.model.edit.venueInfo = false;
+            $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(self.model));
+          });
         },
         error: function() {
           console.log('an error occured');
