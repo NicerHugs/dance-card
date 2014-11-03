@@ -189,6 +189,8 @@
       e.preventDefault();
       var self = this,
           model = new Parse.Query('Event'),
+          orgUrlId = this.model.eventOrg.urlId,
+          parentEvent = this.model.event.urlId,
           zipcode = $('.event-zipcode-input').val(),
           address = $('.event-address-input').val(),
           name = $('.venue-name-input').val();
@@ -202,7 +204,7 @@
                     };
         model.get(self.model.event.objectId, {
           success: function(event) {
-            event.saveVenue(attrs)
+            event.saveVenue(orgUrlId, parentEvent, 1000, attrs)
             .then(function(event) {
               self.model.event = event.toJSON();
               self.model.edit.venueInfo = false;

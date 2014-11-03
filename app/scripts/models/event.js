@@ -131,9 +131,22 @@ DanceCard.Models.Event = Parse.Object.extend({
     return this.save();
   },
 
-  saveVenue: function(attrs) {
+  saveVenue: function(orgUrlId, parentEvent, limit, attrs) {
     this.set('venue', attrs);
-    console.log(this);
+    if (this.get('recurring')) {
+      var collection = new DanceCard.Collections.OnetimeEventList({
+        orgUrlId: orgUrlId,
+        parentEvent: parentEvent,
+        limit: limit
+      });
+      collection.fetch()
+      .then(function() {
+        _.each(collection.models, function(event) {
+          event.set('venue', attrs);
+          event.save();
+        });
+      });
+    }
     return this.save();
   }
 });

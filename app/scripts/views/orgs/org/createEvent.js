@@ -127,6 +127,12 @@
         startDate: startDate,
         endDate: endDate
       });
+      this.model.set('venue', {
+        name: venueName,
+        addressParts: this.model.attributes.venue.addressParts,
+        fullAddress: this.model.attributes.venue.fullAddress,
+        zipcode: this.model.attributes.venue.zipcode
+      });
       this.model.save();
       this.model.createChildren(this.model);
       DanceCard.router.navigate("#/orgs/" + this.model.get('orgUrlId'), {trigger: true});
