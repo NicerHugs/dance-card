@@ -13,7 +13,7 @@
           startDate.setDate(startDate.getDate() + diff);
           return startDate;
         } else {
-          diff = 7 + (recurDay - startDate.getDay());
+          diff = 7 + (day - startDate.getDay());
           startDate.setDate(startDate.getDate() + diff);
           return startDate;
         }
