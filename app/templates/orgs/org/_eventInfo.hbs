@@ -4,21 +4,29 @@
     <span><a href="#" class="edit-event-info">cancel</a></span>
     <h3>Event Info</h3>
     <label name="event-price">Price</label>
-      <input type="text" class="price-input" name="event-price" placeholder="price">
+      <input type="text" class="price-input" name="event-price" placeholder="price" value={{event.price}}>
     {{#if event.recurring}}
-      To edit band and caller info, please edit the individual event
+      <p>To edit band and caller info, please edit the individual event</p>
     {{else}}
       <label name="band-name">Band Name</label>
-        <input type="text" class="band-name-input" name="band-name" placeholder="band name">
+        <input type="text" class="band-name-input" name="band-name" placeholder="band name" value={{event.band}}>
       <label name="musicians">Musicians</label>
-        <textarea name="musicians" class="musicians-input" rows="8" cols="10" placeholder="musicians"></textarea>
+        <textarea name="musicians" class="musicians-input" rows="8" cols="10" placeholder="musicians">{{event.musicians}}</textarea>
       <label name="caller">Caller</label>
-        <input type="text" class="caller-input" name="caller" placeholder="caller">
+        <input type="text" class="caller-input" name="caller" placeholder="caller" value={{event.caller}}>
     {{/if}}
     <label name="beginner-friendly">Beginner Friendly</label>
+      {{#if event.beginnerFrdly}}
+      <input type="checkbox" class="beginner" name="beginner-friendly" checked>
+      {{else}}
       <input type="checkbox" class="beginner" name="beginner-friendly">
+      {{/if}}
     <label name="workshop-included">Workshop Included</label>
+      {{#if event.workshopIncl}}
+      <input type="checkbox" class="workshop-incl" name="workshop-included" checked>
+      {{else}}
       <input type="checkbox" class="workshop-incl" name="workshop-included">
+      {{/if}}
     <label name="notes">Notes</label>
       <textarea name="note" class="notes-input" placeholder="notes"></textarea>
   </div>

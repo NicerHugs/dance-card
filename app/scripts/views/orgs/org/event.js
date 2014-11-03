@@ -157,10 +157,27 @@
 
     saveEventInfo: function(e) {
       e.preventDefault();
-      var model = new Parse.Query('Event');
+      var self = this,
+          model = new Parse.Query('Event'),
+          orgUrlId = this.model.eventOrg.urlId,
+          parentEvent = this.model.event.urlId,
+          attrs = {
+            price: $('.price-input').val(),
+            band: $('.band-name-input').val() || 'TBA',
+            musicians: $('.musicians-input').val(),
+            caller: $('.caller-input').val() || 'TBA',
+            beginnerFrdly: $('.beginner').prop('checked'),
+            workshopIncl: $('.workshop-incl').prop('checked'),
+            notes: $('.notes-input').val()
+          };
       model.get(this.model.event.objectId, {
         success: function(event) {
-          event.saveInfo();
+          event.saveInfo(orgUrlId, parentEvent, 1000, attrs)
+          .then(function(event) {
+            self.model.event = event.toJSON();
+            self.model.edit.eventInfo = false;
+            $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(self.model));
+          });
         },
         error: function() {
           console.log('an error occured');
