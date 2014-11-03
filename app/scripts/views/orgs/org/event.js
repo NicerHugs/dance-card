@@ -85,13 +85,31 @@
         $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.model));
       }
     },
+
     saveEventHeader: function(e) {
-      var self = this;
       e.preventDefault();
-      var model = new Parse.Query('Event');
-      model.get(this.model.event.objectId, {
+      var self = this,
+          id = this.model.event.objectId,
+          attrs = {
+                    name: $('.event-name-input').val(),
+                    type: $('.event-type-input').val(),
+                    startTime: $('.event-start-time-input').val(),
+                    endTime: $('.event-end-time-input').val()
+                  },
+          dateAttrs = {},
+          model = new Parse.Query('Event'),
+          orgUrlId = this.model.eventOrg.urlId,
+          parentEvent = this.model.event.urlId;
+      if ($('.event-start-date-input').val()) {
+        dateAttrs.startDate = new Date($('.event-start-date-input').val());
+      }
+      if ($('.event-end-date-input').val()) {
+        dateAttrs.endDate = new Date($('.event-end-date-input').val());
+        dateAttrs.multiDay = $('.multi-day-input').prop('checked');
+      }
+      model.get(id, {
         success: function(event) {
-          event.saveHeader(self.model.eventOrg.urlId, self.model.event.urlId, 1000)
+          event.saveHeader(orgUrlId, parentEvent, 1000, attrs, dateAttrs)
           .then(function(event) {
             self.model.event = event.toJSON();
             self.model.edit.eventHeader = false;
@@ -103,13 +121,28 @@
         }
       });
     },
+
     saveEventRecur: function(e) {
-      var self = this;
       e.preventDefault();
-      var model = new Parse.Query('Event');
+      var self = this,
+          recurMonthly,
+          attrs = {
+                      weeklyRpt: $('.weekly-option-input').val(),
+                      weeklyRptName: $('.weekly-option-input :selected').text(),
+                      monthlyRpt: $('.monthly-option-input').val(),
+                    },
+          model = new Parse.Query('Event'),
+          orgUrlId = this.model.eventOrg.urlId,
+          parentEvent = this.model.eventUrlId;
+      if ($('.chooseRpt:checked').val() === "true") {
+        recurMonthly = true;
+      } else {
+        recurMonthly = false;
+      }
+      options.recurMonthly = recurMonthly;
       model.get(this.model.event.objectId, {
         success: function(event) {
-          event.saveRecur(self.model.eventOrg.urlID, self.model.eventUrlId, 1000)
+          event.saveRecur(orgUrlId, parentEvent, 1000, options)
           .then(function(event) {
             self.model.event = event.toJSON();
             self.model.edit.eventRecur = false;
@@ -121,6 +154,7 @@
         }
       });
     },
+
     saveEventInfo: function(e) {
       e.preventDefault();
       var model = new Parse.Query('Event');

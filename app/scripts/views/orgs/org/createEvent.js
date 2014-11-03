@@ -118,7 +118,7 @@
           idName = name.replace(/[^\w\d\s]/g, ''),
           id = idName.split(' ').join('_') + '_recurring_' + this.model.get('weeklyRpt'),
           startDate = this.model.setRecurStartDate(),
-          dates;
+          endDate = DanceCard.Utility.addYear(startDate);
       this.model.set({
         urlId: id,
         name: name,
@@ -129,69 +129,44 @@
         beginnerFrdly: beginner,
         workshopIncl: workshopIncl,
         notes: notes,
-        startDate: startDate
+        startDate: startDate,
+        endDate: endDate
       });
-      dates = DanceCard.Utility.buildWeeklyDateArray(startDate);
-      if (this.model.get('recurMonthly')) {
-        dates = DanceCard.Utility.filterByWeekOfMonth(dates, this.model.get('monthlyRpt'));
-      }
-      this.model.set('endDate', dates[dates.length-1]);
-      // this.model.save();
-      // this.model.buildChildren();
-      // this.buildRecurringEventChildren(this.model, dates);
-      // DanceCard.router.navigate("#/orgs/" + this.model.get('orgUrlId'), {trigger: true});
-      console.log(dates, dates.length);
-    },
-
-    buildRecurringEventChildren: function(model, arrayOfDates){
-      _.each(arrayOfDates, function(date) {
-        var newEvent = new DanceCard.Models.Event(model);
-        var idName = model.get('name').replace(/[^\w\d\s]/g, '');
-        var dateString = date.toDateString().split(' ').join('_');
-        var id = idName.split(' ').join('_') + '_' + dateString;
-        newEvent.set({
-          startDate: date,
-          endDate: date,
-          recurring: false,
-          parentEvent: model,
-          parentEventUrlId: model.get('urlId'),
-          urlId: id
-        });
-        newEvent.save();
-      });
+      this.model.save();
+      this.model.createChildren(this.model, startDate, endDate);
+      DanceCard.router.navigate("#/orgs/" + this.model.get('orgUrlId'), {trigger: true});
     },
 
     createOnetimeEvent: function() {
-      var name = $('.event-name-input').val();
-      var type = $('.event-type-input').val().split('-').join(' ');
-      var startDate,
+      var name = $('.event-name-input').val(),
+          type = $('.event-type-input').val().split('-').join(' '),
+          startDate = new Date(moment($('.event-start-date-input').val()).format()),
+          dateString = startDate.toDateString().split(' ').join('_'),
+          startTime = $('.event-start-time-input').val(),
+          endTime = $('.event-end-time-input').val(),
+          venueName = $('.venue-name-input').val(),
+          bandName = $('.band-name-input').val(),
+          musicians = $('.musicians-input').val(),
+          caller = $('.caller-input').val(),
+          price = $('.price-input').val(),
+          beginner = $('.beginner').prop('checked'),
+          workshopIncl = $('.workshop-incl').prop('checked'),
+          preRegReq = $('.pre-reg-req-input').prop('checked'),
+          notes = $('.notes-input').val(),
+          idName = name.replace(/[^\w\d\s]/g, ''),
+          id = idName.split(' ').join('_') + '_' + dateString,
           endDate,
           regLimit,
           genderBal;
-      startDate = new Date($('.event-start-date-input').val());
-      var dateString = startDate.toDateString().split(' ').join('_');
-      var startTime = $('.event-start-time-input').val();
-      var endTime = $('.event-end-time-input').val();
       if (this.model.get('multiDay')) {
-        endDate = new Date($('.event-end-date-input').val());
+        endDate = new Date(moment($('.event-end-date-input').val()).format());
       } else {
-        endDate = startDate;
+        endDate = new Date(moment(startDate).format());
       }
-      var venueName = $('.venue-name-input').val();
-      var bandName = $('.band-name-input').val();
-      var musicians = $('.musicians-input').val();
-      var caller = $('.caller-input').val();
-      var price = $('.price-input').val();
-      var beginner = $('.beginner').prop('checked');
-      var workshopIncl = $('.workshop-incl').prop('checked');
-      var preRegReq = $('.pre-reg-req-input').prop('checked');
       if (preRegReq) {
         regLimit = $('.reg-limit-input').val();
         genderBal = $('.gender-bal-input').prop('checked');
       }
-      var notes = $('.notes-input').val();
-      var idName = name.replace(/[^\w\d\s]/g, '');
-      var id = idName.split(' ').join('_') + '_' + dateString;
       this.model.set({
         urlId: id,
         name: name,

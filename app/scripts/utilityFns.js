@@ -37,13 +37,17 @@
         });
       } else if (week === 'last') {
         dates = _.filter(dates, function(date) {
-          var month = date.getMonth();
-          date.setDate(date.getDate() + 7);
-          if (month !== date.getMonth()) {
+          var month = date.getMonth(),
+              nextWeek = new Date(date),
+              nextWeekMonth;
+          nextWeek.setDate(nextWeek.getDate() + 7);
+          nextWeekMonth = nextWeek.getMonth();
+          if (month !== nextWeekMonth){
             return date;
           }
         });
       }
+      console.log(dates);
       return dates;
     },
 
