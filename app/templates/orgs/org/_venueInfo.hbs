@@ -5,11 +5,11 @@
       <span><a href="#" class="edit-venue-info">cancel</a></span>
       <h3>Venue Info</h3>
       <label name="venue-name">Venue Name</label>
-        <input name="venue-name" class="venue-name-input" type="text" placeholder="venue name">
+        <input name="venue-name" class="venue-name-input" type="text" placeholder="venue name" value="{{event.venue.name}}">
       <label name="address">Venue Address</label>
-        <input name="address" class="event-address-input" type="text" placeholder="venue address">
+        <input name="address" class="event-address-input" type="text" placeholder="venue address" value="{{event.venue.fullAddress}}">
       <label name="zipcode">Venue Zipcode</label>
-        <input name="zipcode" class="event-zipcode-input"type="text" placeholder="venue zipcode">
+        <input name="zipcode" class="event-zipcode-input"type="text" placeholder="venue zipcode" value="{{event.venue.zipcode}}">
     </div>
   {{else}}
   <div class="venue-info-viewing">

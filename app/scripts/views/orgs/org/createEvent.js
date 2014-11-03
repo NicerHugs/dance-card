@@ -76,24 +76,18 @@
       this.$el.html(DanceCard.templates.orgs.org.createEvent(this.model.toJSON()));
     },
 
-    getLocation: function() {
-      var self = this;
-      var address = $('.event-address-input').val();
-      var zipcode = $('.event-zipcode-input').val();
-      var geocoder = new google.maps.Geocoder();
-      geocoder.geocode({'address': address + ',' + zipcode}, function(results, status) {
-        if (status === google.maps.GeocoderStatus.OK && address && zipcode.length === 5) {
-          $('.submit-event').removeAttr('disabled');
-          var lat = results[0].geometry.location.k;
-          var lng = results[0].geometry.location.B;
-          var point = new Parse.GeoPoint({latitude: lat, longitude: lng});
-          self.model.set('point', point);
-          self.model.set('venue', {
-            addressParts: results[0].address_components,
-            fullAddress: results[0].formatted_address,
-          });
+    getLocation: function(e) {
+      if ($(e.target).val().length); {
+        var self = this,
+            address = $('.event-address-input').val(),
+            zipcode = $('.event-zipcode-input').val(),
+            location = DanceCard.Utility.findLocation(address, zipcode)
+              .done(function(location) {
+                self.model.set('point', location.point);
+                self.model.set('venue', location.location);
+                $('.submit-event').removeAttr('disabled');
+              });
         }
-      });
     },
 
     createEvent: function(e) {
@@ -176,7 +170,7 @@
         startTime: startTime,
         endDate: endDate,
         endTime: endTime,
-        bandName: bandName,
+        band: bandName,
         musicians: musicians,
         caller: caller,
         price: price,
@@ -188,7 +182,8 @@
       this.model.set('venue', {
         name: venueName,
         addressParts: this.model.attributes.venue.addressParts,
-        fullAddress: this.model.attributes.venue.fullAddress
+        fullAddress: this.model.attributes.venue.fullAddress,
+        zipcode: this.model.attributes.venue.zipcode
       });
       if (preRegReq) {
         this.model.set('regInfo', {

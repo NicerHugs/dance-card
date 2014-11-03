@@ -189,23 +189,33 @@
       e.preventDefault();
       var self = this,
           model = new Parse.Query('Event'),
-          attrs = {
-            name: $('.venue-name-input').val()
-          };
-      model.get(this.model.event.objectId, {
-        success: function(event) {
-          event.saveVenue(attrs)
-          .then(function(event) {
-            self.model.event = event.toJSON();
-            self.model.edit.venueInfo = false;
-            $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(self.model));
-          });
-        },
-        error: function() {
-          console.log('an error occured');
-        }
+          zipcode = $('.event-zipcode-input').val(),
+          address = $('.event-address-input').val(),
+          name = $('.venue-name-input').val();
+      DanceCard.Utility.findLocation(address, zipcode)
+      .done(function(location) {
+        var attrs = {
+                      name: name,
+                      zipcode: zipcode,
+                      fullAddress: location.location.fullAddress,
+                      addressParts: location.location.addressParts
+                    };
+        model.get(self.model.event.objectId, {
+          success: function(event) {
+            event.saveVenue(attrs)
+            .then(function(event) {
+              self.model.event = event.toJSON();
+              self.model.edit.venueInfo = false;
+              $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(self.model));
+            });
+          },
+          error: function() {
+            console.log('an error occured');
+          }
+        });
       });
     },
+
     multiDay: function() {
       var formModel = this.formatDatesforForm(this.model);
       if (this.model.event.multiDay) {
@@ -216,6 +226,7 @@
         $('.multi-day').html(DanceCard.templates.orgs.org._multiDay(formModel));
       }
     },
+
     chooseRpt: function() {
       if ($('.chooseRpt:checked').val() === "true") {
         $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model));
