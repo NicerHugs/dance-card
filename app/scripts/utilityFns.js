@@ -120,6 +120,26 @@
         arrayOfDates.push(new Date(date.setDate(date.getDate() + 7)));
       });
       return arrayOfDates;
+    },
+
+    // this is a crazy convoluted way to destroy all the children of this
+    // model. try as i might i couldn't get any of parse's built in functions
+    // to work for destroying the items in the collection and ultimately opted
+    // to do it manually.
+    destroyAll: function(collection) {
+      var ids = _.map(collection.models, function(model){
+        return model.id;
+      });
+      _.each(ids, function(id) {
+        var query = new Parse.Query('Event');
+        query.get(id, {success: function(event){
+          event.destroy({success: function(){
+          }, error: function(error) {
+            console.log('error', error);
+          }});
+        }});
+      });
+      return collection;
     }
 
   };

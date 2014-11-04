@@ -78,34 +78,30 @@ DanceCard.Models.Event = Parse.Object.extend({
         var maxDate = _.max(collection.models, function(model){
            return model.get('startDate');
         });
-        startDate = new Date(maxDate.get('startDate'));
-        startDate.setDate(startDate.getDate()+1);
-        startDate = DanceCard.Utility.nextDateOfWeek(startDate, attrs.weeklyRpt);
-        attrs.endDate = endDate;
-        self.set(attrs);
-        self.createChildren(self, startDate);
+        if (maxDate.get('startDate') < endDate) {
+          // for a later end date, build new events
+          startDate = new Date(maxDate.get('startDate'));
+          startDate.setDate(startDate.getDate()+1);
+          startDate = DanceCard.Utility.nextDateOfWeek(startDate, attrs.weeklyRpt);
+          attrs.endDate = endDate;
+          self.set(attrs);
+          self.createChildren(self, startDate);
+        } else {
+          // for an earlier end date, destroy events beyond end date
+          var cancelledEvents = {};
+          cancelledEvents.models = _.filter(collection.models, function(event) {
+            if (event.get('startDate') > endDate) {
+              return event;
+            }
+          });
+          DanceCard.Utility.destroyAll(cancelledEvents);
+        }
       } else {
         // if anything other than end date changed, delete all children, and build all new children.
         attrs.startDate = DanceCard.Utility.nextDateOfWeek(new Date(), day);
         attrs.endDate = endDate;
         self.set(attrs);
-        // this is a crazy convoluted way to destroy all the children of this
-        // model. try as i might i couldn't get any of parse's built in functions
-        // to work for destroying the items in the collection and ultimately opted
-        // to do it manually.
-        var ids = _.map(collection.models, function(model){
-          return model.id;
-        });
-        _.each(ids, function(id) {
-          var query = new Parse.Query('Event');
-          query.get(id, {success: function(event){
-            event.destroy({success: function(){
-              console.log('deleted', id);
-            }, error: function(error) {
-              console.log('error', error);
-            }});
-          }});
-        });
+        DanceCard.Utility.destroyAll(collection);
         self.createChildren(self);
       }
     });
