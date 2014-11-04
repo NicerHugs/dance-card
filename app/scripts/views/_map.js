@@ -29,20 +29,8 @@
           position: position,
           icon: image
         }),
-        contentString = '<div id="content">'+
-          '<div id="siteNotice">'+
-          '</div>'+
-          '<h1 id="firstHeading" class="firstHeading">'+
-          '<a href="#/orgs/'+
-          event.attributes.orgUrlId+'/'+event.attributes.urlId+'">'+
-          event.attributes.name + '</a></h1>'+
-          '<div id="bodyContent">'+
-          '<p>'+ event.attributes.startDate + event.attributes.startTime +'</p>'+
-          '<p>'+ event.attributes.venue.fullAddress +'</p>'+
-          '</div>'+
-          '</div>',
         infowindow = new google.maps.InfoWindow({
-          content: contentString
+          content: DanceCard.templates._infoWindow(event.toJSON())
         });
 
         google.maps.event.addListener(marker, 'click', function() {
