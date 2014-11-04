@@ -92,7 +92,7 @@
           id = this.model.event.objectId,
           attrs = {
                     name: $('.event-name-input').val(),
-                    type: $('.event-type-input').val(),
+                    type: $('.event-type-input').val().split('-').join(' '),
                     startTime: $('.event-start-time-input').val(),
                     endTime: $('.event-end-time-input').val()
                   },

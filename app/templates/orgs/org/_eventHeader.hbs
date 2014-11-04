@@ -7,6 +7,7 @@
 
     <p><label name="event-type">Event Type</label>
       <select class="event-type-input" name="event-type">
+        {{#select event.type}}
         <option value="contra-dance">Contra Dance</option>
         <option value="advanced-contra-dance">Advanced Contra Dance</option>
         <option value="contra-workshop">Contra Workshop</option>
@@ -15,6 +16,7 @@
         <option value="square-dance">Square Dance</option>
         <option value="dance-weekend">Dance Weekend</option>
         <option value="caller-workshop">Caller Workshop</option>
+        {{/select}}
       </select></p>
 
       {{#unless event.recurring}}
