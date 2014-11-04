@@ -22,9 +22,12 @@
           lat: event.attributes.point._latitude,
           lng: event.attributes.point._longitude
         },
+        color = self.setColor(event),
+        image= "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color,
         marker = new google.maps.Marker({
           map: self.map,
-          position: position
+          position: position,
+          icon: image
         }),
         contentString = '<div id="content">'+
           '<div id="siteNotice">'+
@@ -46,6 +49,25 @@
           infowindow.open(self.map, marker);
         });
       });
+    },
+
+    setColor: function(event) {
+      var iconColors = {
+        a: ['contra dance', 'FF9800'],
+        b: ['caller workshop', '263248'],
+        c: ['dance weekend', ''],
+        d: ['square dance', ''],
+        e: ['waltz workshop', ''],
+        f: ['waltz', ''],
+        g: ['contra workshop', ''],
+        h: ['advanced contra dance', '']
+      },
+      color = _.filter(iconColors, function(color) {
+        if (event.get('type') === color[0]){
+          return color;
+        }
+      })[0][1];
+      return color;
     }
   });
 
