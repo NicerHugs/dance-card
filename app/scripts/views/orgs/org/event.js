@@ -201,10 +201,11 @@
                       zipcode: zipcode,
                       fullAddress: location.location.fullAddress,
                       addressParts: location.location.addressParts
-                    };
+                    },
+            point = location.point;
         model.get(self.model.event.objectId, {
           success: function(event) {
-            event.saveVenue(orgUrlId, parentEvent, 1000, attrs)
+            event.saveVenue(orgUrlId, parentEvent, 1000, attrs, point)
             .then(function(event) {
               self.model.event = event.toJSON();
               self.model.edit.venueInfo = false;

@@ -53,14 +53,14 @@
 
     setColor: function(event) {
       var iconColors = {
-        a: ['contra dance', 'FF9800'],
-        b: ['caller workshop', '263248'],
-        c: ['dance weekend', ''],
-        d: ['square dance', ''],
-        e: ['waltz workshop', ''],
-        f: ['waltz', ''],
-        g: ['contra workshop', ''],
-        h: ['advanced contra dance', '']
+        a: ['contra dance', '00A79D'],
+        b: ['caller workshop', '21409A'],
+        c: ['dance weekend', '61D515'],
+        d: ['square dance', '00ACEF'],
+        e: ['waltz workshop', 'FA9696'],
+        f: ['waltz', 'F36523'],
+        g: ['contra workshop', 'FFDE17'],
+        h: ['advanced contra dance', 'FF0A81']
       },
       color = _.filter(iconColors, function(color) {
         if (event.get('type') === color[0]){
