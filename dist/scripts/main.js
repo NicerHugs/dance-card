@@ -21,6 +21,29 @@
 
   DanceCard.Utility = {
 
+    userLocation: function() {
+      var deferred = new $.Deferred();
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var lat = position.coords.latitude,
+            lng = position.coords.longitude,
+            userLocation = {
+              lat: lat,
+              lng: lng,
+              userPoint: new Parse.GeoPoint({
+                latitude: lat,
+                longitude: lng,
+            })
+          };
+        deferred.resolve(userLocation);
+      });
+      return deferred.promise();
+    },
+
+    addDays: function(dateObj, numDays) {
+     dateObj.setDate(dateObj.getDate() + numDays);
+     return dateObj;
+   },
+
     findLocation: function(address, zipcode) {
       var geocoder = new google.maps.Geocoder(),
           deferred = new $.Deferred();
@@ -144,6 +167,12 @@
       'orgs/:org/:event/RSVP'  : 'attendEvent', //dynamic
     },
 
+    coolNewMapPage: function() {
+      $('main').empty();
+      new DanceCard.Views.CoolNewMapPage({
+        $container: $('main')
+      });
+    },
     index: function() {
       $('main').empty();
       new DanceCard.Views.Index({
@@ -249,8 +278,59 @@
 
 this["DanceCard"] = this["DanceCard"] || {};
 this["DanceCard"]["templates"] = this["DanceCard"]["templates"] || {};
+this["DanceCard"]["templates"]["_eventList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "    "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.location : depth0)) != null ? stack1.location : stack1)) != null ? stack1.fullAddress : stack1), depth0))
+    + "\n";
+},"3":function(depth0,helpers,partials,data) {
+  return "    you\n";
+  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "<h3>\n  Events within "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.searchResults : depth0)) != null ? stack1.distance : stack1), depth0))
+    + " miles of\n";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.location : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "</h3>\n\n<h4>Date Range:</h4>\n"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.searchResults : depth0)) != null ? stack1.startDate : stack1), depth0))
+    + "-"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.searchResults : depth0)) != null ? stack1.endDate : stack1), depth0))
+    + "\n\n<h4>Event Type:</h4>\n"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.searchResults : depth0)) != null ? stack1.type : stack1), depth0))
+    + "\n";
+},"useData":true});
+this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, lambda=this.lambda;
+  return "<h5><a href=\"#/orgs/"
+    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
+    + "/"
+    + escapeExpression(((helper = (helper = helpers.urlId || (depth0 != null ? depth0.urlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"urlId","hash":{},"data":data}) : helper)))
+    + "\">"
+    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
+    + "</a></h5>\n"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.startDate : depth0)) != null ? stack1.iso : stack1), depth0))
+    + " "
+    + escapeExpression(((helper = (helper = helpers.startTime || (depth0 != null ? depth0.startTime : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"startTime","hash":{},"data":data}) : helper)))
+    + "\n";
+},"useData":true});
+this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, lambda=this.lambda;
+  return "<div id=\"content\">\n  <div id=\"siteNotice\">\n  </div>\n  <h1 id=\"firstHeading\" class=\"firstHeading\">\n  <a href=\"#/orgs/"
+    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
+    + "/"
+    + escapeExpression(((helper = (helper = helpers.urlId || (depth0 != null ? depth0.urlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"urlId","hash":{},"data":data}) : helper)))
+    + "\">\n  "
+    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
+    + "</a></h1>\n  <div id=\"bodyContent\">\n  <p>"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.startDate : depth0)) != null ? stack1.iso : stack1), depth0))
+    + " "
+    + escapeExpression(((helper = (helper = helpers.startTime || (depth0 != null ? depth0.startTime : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"startTime","hash":{},"data":data}) : helper)))
+    + "</p>\n  <p>"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.venue : depth0)) != null ? stack1.fullAddress : stack1), depth0))
+    + "</p>\n  </div>\n</div>\n";
+},"useData":true});
 this["DanceCard"]["templates"]["index"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "index template\n<div id=\"map-canvas\"></div>\n";
+  return "<div class=\"searchBox\">\n  <form>\n    <input class=\"search-location\" type=\"text\" placeholder=\"location\">\n    <input class=\"search-distance\" type=\"text\" placeholder=\"within miles\">\n    <input class=\"search-start-date\" type=\"date\">\n    <input class=\"search-end-date\"type=\"date\">\n    <select class=\"search-type\">\n      <option value=\"all\">all</option>\n      <option value=\"contra-dance\">Contra Dance</option>\n      <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n      <option value=\"contra-workshop\">Contra Workshop</option>\n      <option value=\"waltz\">Waltz Dance</option>\n      <option value=\"waltz-workshop\">Waltz Workshop</option>\n      <option value=\"square-dance\">Square Dance</option>\n      <option value=\"dance-weekend\">Dance Weekend</option>\n      <option value=\"caller-workshop\">Caller Workshop</option>\n    </select>\n    <input class=\"search-submit\" type=\"submit\">\n</form>\n</div>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["login"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<h2>Log In</h2>\n<label name=\"email\">Organization Email:</label>\n  <input name=\"email\" type=\"text\" class=\"email-input\" placeholder=\"email\">\n<label name=\"password\">Password:</label>\n  <input name=\"password\" type=\"password\" class=\"password-input\" placeholder=\"password\">\n<input type=\"submit\" value=\"login\">\n";
@@ -714,139 +794,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"useData":true});
-(function() {
-  'use strict';
-
-  function initializeMap(userLocation, queryResults) {
-    var mapOptions = {
-      zoom:9,
-      center: userLocation
-    };
-    var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-
-    _.each(queryResults.models, function(result) {
-      var contentString = '<div id="content">'+
-        '<div id="siteNotice">'+
-        '</div>'+
-        '<h1 id="firstHeading" class="firstHeading">'+
-        '<a href="#/orgs/'+
-        result.attributes.orgUrlId+'/'+result.attributes.urlId+'">'+
-        result.attributes.name + '</a></h1>'+
-        '<div id="bodyContent">'+
-        '<p>'+ result.attributes.startDate + result.attributes.startTime +'</p>'+
-        '<p>'+ result.attributes.venue.fullAddress +'</p>'+
-        '</div>'+
-        '</div>';
-      var infowindow = new google.maps.InfoWindow({
-        content: contentString
-      });
-      var position = {
-        lat: result.attributes.point._latitude,
-        lng: result.attributes.point._longitude
-        };
-      var marker = new google.maps.Marker({
-        map: map,
-        position: position
-      });
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.open(map,marker);
-      });
-    });
-  }
-
-  DanceCard.renderSearchMap = function(queryResults){
-    navigator.geolocation.getCurrentPosition(
-      function(position){
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
-        var userLocation = new google.maps.LatLng(lat, lng);
-        initializeMap(userLocation, queryResults);
-      },
-      function(){
-        console.log('the browser didnt support geolocation');
-      }
-    );
-  };
-
-  function addDays(dateObj, numDays) {
-   dateObj.setDate(dateObj.getDate() + numDays);
-   return dateObj;
-  }
-
-  DanceCard.locDateSearchQuery = function(distance, time){
-    distance = distance || 25;
-    time = time || 7;
-    var dateLimit = addDays(new Date(), time);
-    var deferred = new $.Deferred();
-    var query = new Parse.Query(DanceCard.Models.Event);
-    query.greaterThanOrEqualTo('startDate', new Date());
-    query.lessThanOrEqualTo('startDate', dateLimit);
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var lat = position.coords.latitude;
-      var lng = position.coords.longitude;
-      var userLocation = new Parse.GeoPoint({latitude: lat, longitude: lng});
-      query.withinMiles('point', userLocation, distance);
-      var collection = query.collection();
-      collection.fetch()
-      .then(function() {
-        deferred.resolve(collection);
-      });
-    });
-    return deferred.promise();
-  };
-
-})();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-
-(function(){
-  'use strict';
-
-  var geocoder;
-  var map;
-    function initialize() {
-      geocoder = new google.maps.Geocoder();
-      var latlng = new google.maps.LatLng(-34.397, 150.644);
-      var mapOptions = {
-        zoom: 8,
-        center: latlng
-      };
-      map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-    }
-
-    function codeAddress() {
-      var address = document.getElementById("address").value;
-      geocoder.geocode( { 'address': address}, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-          map.setCenter(results[0].geometry.location);
-          // set the latlong var on the event using this restult
-          // below shows the location on the map for the user to confirm it's good.
-          var marker = new google.maps.Marker({
-              map: map,
-              position: results[0].geometry.location
-          });
-        } else {
-          alert("Geocode was not successful for the following reason: " + status);
-        }
-      });
-    }
-
-})();
-
 (function(){
   'use strict';
 
@@ -877,11 +824,21 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
   'use strict';
 
   DanceCard.Views.Base = Parse.View.extend({
-   initialize: function(options) {
-     this.$container = options.$container;
-     this.$container.append(this.el);
-     this.render();
-   }
+    initialize: function(options) {
+      this.options = options;
+      this.$container = options.$container;
+      this.$container.append(this.el);
+      this.render();
+      this.children = [];
+    },
+    remove: function() {
+      this.$el.remove();
+      this.removeChildren();
+      return this;
+    },
+    removeChildren: function() {
+      _.invoke(this.children, 'remove');
+    }
   });
 
 })();
@@ -972,12 +929,75 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
     className: 'index',
     template: DanceCard.templates.index,
     render: function() {
+      var self = this;
       this.$el.html(this.template());
-      DanceCard.locDateSearchQuery(25, 10)
-      .done(function(collection) {
-        DanceCard.renderSearchMap(collection);
-      });
+      this.searchResults();
     },
+    events: {
+      'click .search-submit' : 'runSearchResults'
+    },
+    runSearchResults: function(e) {
+      e.preventDefault();
+      this.searchResults();
+    },
+    searchResults: function() {
+      var self = this,
+          startDate = $('.search-start-date').val() || new Date(),
+          endDate = $('.search-end-date').val() || DanceCard.Utility.addDays(new Date(), 6),
+          location = $('.search-location').val() || undefined,
+          distance = $('.search-distance').val() || 50,
+          type = $('.search-type :selected').val().split('-').join(' '),
+          collection;
+      this.searchCollection = {
+            startDate: new Date(startDate),
+            endDate: DanceCard.Utility.addDays(new Date(endDate), 1),
+            distance: distance,
+            type: type
+          };
+      if (location) {
+        DanceCard.Utility.findLocation(location)
+        .done(function(location) {
+          self.searchCollection.location = location.point;
+          collection = new DanceCard.Collections.SearchEventList(self.searchCollection);
+          _.invoke(this.children, 'remove');
+          self.removeChildren();
+          self.makeList(collection, location);
+          self.makeMap(collection, location.point);
+        });
+      } else {
+        navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
+      }
+    },
+    userLocSearchResults: function(position) {
+      var lat = position.coords.latitude,
+          lng = position.coords.longitude,
+          point = new Parse.GeoPoint(lat, lng),
+          collection;
+      this.searchCollection.location = point;
+      collection = new DanceCard.Collections.SearchEventList(this.searchCollection);
+      this.removeChildren();
+      this.makeList(collection);
+      this.makeMap(collection, point);
+    },
+    makeMap: function(collection, point) {
+      var lat = point.latitude,
+          lng = point.longitude;
+      this.children.push(new DanceCard.Views.MapPartial({
+        $container: this.$el,
+        zoom: 9,
+        loc: {lat: lat, lng: lng},
+        collection: collection
+      }));
+    },
+    makeList: function(collection, loc) {
+      loc = loc || undefined;
+      this.children.push(new DanceCard.Views.EventListPartial({
+        $container: this.$el,
+        collection: collection,
+        searchResults: this.searchCollection,
+        location: loc
+      }));
+    }
   });
 
 })();
@@ -1605,10 +1625,11 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
                       zipcode: zipcode,
                       fullAddress: location.location.fullAddress,
                       addressParts: location.location.addressParts
-                    };
+                    },
+            point = location.point;
         model.get(self.model.event.objectId, {
           success: function(event) {
-            event.saveVenue(orgUrlId, parentEvent, 1000, attrs)
+            event.saveVenue(orgUrlId, parentEvent, 1000, attrs, point)
             .then(function(event) {
               self.model.event = event.toJSON();
               self.model.edit.venueInfo = false;
@@ -1639,6 +1660,113 @@ DanceCard.Views.EventPartial = DanceCard.Views.Base.extend({
       } else {
         $('.choose-monthly-rpt').html('');
       }
+    }
+  });
+
+})();
+
+(function() {
+  'use strict';
+
+  DanceCard.Views.MapPartial = DanceCard.Views.Base.extend({
+    id: 'map-canvas',
+    render: function() {
+      var self = this;
+      this.map = new google.maps.Map(document.getElementById("map-canvas"), {
+        zoom: this.options.zoom,
+        center: this.options.loc
+      });
+      this.collection.fetch()
+      .then(function() {
+        self.renderChildren(self.collection);
+      });
+    },
+
+    renderChildren: function(collection) {
+      var self = this;
+      _.each(collection.models, function(event) {
+        var position = {
+          lat: event.attributes.point._latitude,
+          lng: event.attributes.point._longitude
+        },
+        color = self.setColor(event),
+        image= "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color,
+        marker = new google.maps.Marker({
+          map: self.map,
+          position: position,
+          icon: image
+        }),
+        infowindow = new google.maps.InfoWindow({
+          content: DanceCard.templates._infoWindow(event.toJSON())
+        });
+
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.open(self.map, marker);
+        });
+      });
+    },
+
+    setColor: function(event) {
+      var iconColors = {
+        a: ['contra dance', '00A79D'],
+        b: ['caller workshop', '21409A'],
+        c: ['dance weekend', '61D515'],
+        d: ['square dance', '00ACEF'],
+        e: ['waltz workshop', '9079DB'],
+        f: ['waltz', 'F36523'],
+        g: ['contra workshop', 'FFDE17'],
+        h: ['advanced contra dance', 'FF0A81']
+      },
+      color = _.filter(iconColors, function(color) {
+        if (event.get('type') === color[0]){
+          return color;
+        }
+      })[0][1];
+      return color;
+    }
+  });
+
+})();
+
+(function() {
+  'use strict';
+
+  DanceCard.Views.EventListPartial = DanceCard.Views.Base.extend({
+    className: 'search-results-list',
+    template: DanceCard.templates._eventList,
+    render: function() {
+      this.$el.html(this.template({
+        location: this.options.location,
+        searchResults: this.options.searchResults
+      }));
+      this.renderChildren();
+    },
+    renderChildren: function() {
+      var self = this;
+      this.collection.fetch()
+      .then(function(){
+        _.each(self.collection.models, function(child){
+          self.children.push(new DanceCard.Views.EventListItemPartial({
+            $container: self.$el,
+            model: child
+          }));
+        });
+      });
+    }
+  });
+
+})();
+
+(function() {
+  'use strict';
+
+  DanceCard.Views.EventListItemPartial = DanceCard.Views.Base.extend({
+    tagName: 'li',
+    className: 'search-result',
+    template: DanceCard.templates._eventListItem,
+    render: function() {
+      console.log(this.model.toJSON());
+      this.$el.html(this.template(this.model.toJSON()));
     }
   });
 
@@ -1781,8 +1909,11 @@ DanceCard.Models.Event = Parse.Object.extend({
     return this.save();
   },
 
-  saveVenue: function(orgUrlId, parentEvent, limit, attrs) {
-    this.set('venue', attrs);
+  saveVenue: function(orgUrlId, parentEvent, limit, attrs, point) {
+    this.set({
+      venue: attrs,
+      point: point
+    });
     if (this.get('recurring')) {
       var collection = new DanceCard.Collections.OnetimeEventList({
         orgUrlId: orgUrlId,
@@ -1792,7 +1923,10 @@ DanceCard.Models.Event = Parse.Object.extend({
       collection.fetch()
       .then(function() {
         _.each(collection.models, function(event) {
-          event.set('venue', attrs);
+          event.set({
+            venue: attrs,
+            point: point
+            });
           event.save();
         });
       });
@@ -1893,5 +2027,23 @@ DanceCard.Models.User = Parse.Object.extend({
 		},
 		model: DanceCard.Models.Event,
 	});
+
+})();
+
+(function() {
+  'use strict';
+
+  DanceCard.Collections.SearchEventList = Parse.Collection.extend({
+    initialize: function(options){
+      this.query = new Parse.Query('Event')
+        .greaterThanOrEqualTo('startDate', options.startDate)
+        .lessThanOrEqualTo('endDate', options.endDate)
+        .withinMiles('point', options.location, options.distance);
+        if (options.type !== "all") {
+          this.query.equalTo('type', options.type);
+        }
+    },
+    model: DanceCard.Models.Event,
+  });
 
 })();
