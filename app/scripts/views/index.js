@@ -22,7 +22,8 @@
           endDate = $('.search-end-date').val() || DanceCard.Utility.addDays(new Date(), 6),
           location = $('.search-location').val() || undefined,
           distance = $('.search-distance').val() || 50,
-          type = $('.search-type :selected').val().split('-').join(' ');
+          type = $('.search-type :selected').val().split('-').join(' '),
+          collection;
       this.searchCollection = {
             startDate: new Date(startDate),
             endDate: DanceCard.Utility.addDays(new Date(endDate), 1),
@@ -30,11 +31,15 @@
             type: type
           };
       if (location) {
-        // get the location with geocoder,
-        // then get a geopoint with the geocoder data (is this Utility.getLocation?)
-        // then collection.location = point
-        // return promise of collection
-        return collection;
+        DanceCard.Utility.findLocation(location)
+        .done(function(location) {
+          self.searchCollection.location = location.point;
+          collection = new DanceCard.Collections.SearchEventList(self.searchCollection);
+          _.invoke(this.children, 'remove');
+          self.removeChildren();
+          self.makeList(collection, location);
+          self.makeMap(collection, location.point);
+        });
       } else {
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
@@ -46,21 +51,28 @@
           collection;
       this.searchCollection.location = point;
       collection = new DanceCard.Collections.SearchEventList(this.searchCollection);
+      this.removeChildren();
+      this.makeList(collection);
       this.makeMap(collection, point);
     },
     makeMap: function(collection, point) {
       var lat = point.latitude,
           lng = point.longitude;
-      if (this.map) {
-        this.map.remove();
-      }
-      this.map = new DanceCard.Views.MapPartial({
+      this.children.push(new DanceCard.Views.MapPartial({
         $container: this.$el,
         zoom: 9,
         loc: {lat: lat, lng: lng},
         collection: collection
-      });
-      console.log(this.map);
+      }));
+    },
+    makeList: function(collection, loc) {
+      loc = loc || undefined;
+      this.children.push(new DanceCard.Views.EventListPartial({
+        $container: this.$el,
+        collection: collection,
+        searchResults: this.searchCollection,
+        location: loc
+      }));
     }
   });
 

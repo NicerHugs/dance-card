@@ -9,9 +9,9 @@
         zoom: this.options.zoom,
         center: this.options.loc
       });
-      this.options.collection.fetch()
+      this.collection.fetch()
       .then(function() {
-        self.renderChildren(self.options.collection);
+        self.renderChildren(self.collection);
       });
     },
 

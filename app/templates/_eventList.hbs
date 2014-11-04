@@ -1,0 +1,14 @@
+<h3>
+  Events within {{searchResults.distance}} miles of
+  {{#if location}}
+    {{location.location.fullAddress}}
+  {{else}}
+    you
+  {{/if}}
+</h3>
+
+<h4>Date Range:</h4>
+{{searchResults.startDate}}-{{searchResults.endDate}}
+
+<h4>Event Type:</h4>
+{{searchResults.type}}
