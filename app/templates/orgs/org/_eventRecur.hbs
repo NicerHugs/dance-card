@@ -6,8 +6,8 @@
     <h3>Event Schedule</h3>
     <p>
       This event occurs once a
-      <input class="chooseRpt" name="chooseRpt" type="radio" value="true"><label name="chooseRpt">month</label>
-      <input class="chooseRpt" name="chooseRpt" type="radio" value="false"><label name="chooseRpt">week</label>
+      <input class="chooseRpt" name="chooseRpt" type="radio" value="true" {{#if event.recurMonthly}} checked{{/if}}><label name="chooseRpt">month</label>
+      <input class="chooseRpt" name="chooseRpt" type="radio" value="false" {{#unless event.recurMonthly}} checked {{/unless}}><label name="chooseRpt">week</label>
     </p>
     <p>on
       <div class="choose-monthly-rpt">
