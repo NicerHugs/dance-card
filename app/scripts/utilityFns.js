@@ -3,6 +3,29 @@
 
   DanceCard.Utility = {
 
+    userLocation: function() {
+      var deferred = new $.Deferred();
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var lat = position.coords.latitude,
+            lng = position.coords.longitude,
+            userLocation = {
+              lat: lat,
+              lng: lng,
+              userPoint: new Parse.GeoPoint({
+                latitude: lat,
+                longitude: lng,
+            })
+          };
+        deferred.resolve(userLocation);
+      });
+      return deferred.promise();
+    },
+
+    addDays: function(dateObj, numDays) {
+     dateObj.setDate(dateObj.getDate() + numDays);
+     return dateObj;
+   },
+
     findLocation: function(address, zipcode) {
       var geocoder = new google.maps.Geocoder(),
           deferred = new $.Deferred();

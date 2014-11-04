@@ -1,7 +1,7 @@
 this["DanceCard"] = this["DanceCard"] || {};
 this["DanceCard"]["templates"] = this["DanceCard"]["templates"] || {};
 this["DanceCard"]["templates"]["index"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "index template\n<div id=\"map-canvas\"></div>\n";
+  return "<div class=\"searchBox\">\n  <input type=\"text\" placeholder=\"location\">\n  <input type=\"text\" placeholder=\"within miles\">\n  <input type=\"date\">\n  <input type=\"date\">\n  <select>\n    <option>all</option>\n    <option>Contra Dance</option>\n    <option>Waltz Dance</option>\n  </select>\n</div>\n<div id=\"map-canvas\"></div>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["login"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<h2>Log In</h2>\n<label name=\"email\">Organization Email:</label>\n  <input name=\"email\" type=\"text\" class=\"email-input\" placeholder=\"email\">\n<label name=\"password\">Password:</label>\n  <input name=\"password\" type=\"password\" class=\"password-input\" placeholder=\"password\">\n<input type=\"submit\" value=\"login\">\n";
