@@ -24,6 +24,7 @@
           distance = $('.search-distance').val() || 50,
           type = $('.search-type :selected').val().split('-').join(' '),
           collection;
+
       this.searchCollection = {
             startDate: new Date(startDate),
             endDate: DanceCard.Utility.addDays(new Date(endDate), 1),

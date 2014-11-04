@@ -10,7 +10,7 @@
 {{#each models}}
   <li class="{{attributes.orgUrlId}}-event">
     <a href="#/orgs/{{attributes.orgUrlId}}/{{attributes.urlId}}">{{attributes.name}}</a>
-    {{attributes.startDate}}
+    {{#dateDisplay}}{{attributes.startDate}}{{/dateDisplay}}
     {{attributes.startTime}}-{{attributes.endTime}}
   </li>
 {{/each}}

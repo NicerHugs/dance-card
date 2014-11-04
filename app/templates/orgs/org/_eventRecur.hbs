@@ -25,7 +25,7 @@
       </select>
     </p>
     <p><label name="end-date">End Date</label>
-      <input name="end-date" class="event-end-date-input" type="date" value={{event.endDate.form}}></p>
+      <input name="end-date" class="event-end-date-input" type="date" value={{#dateForm}}{{event.endDate.iso}}{{/dateForm}}></p>
   </div>
 
 {{else}}
@@ -33,6 +33,6 @@
     <span><a href="#" class="edit-event-recur">edit</a></span>
     <h3>Event Schedule</h3>
     </p>This event repeats every {{event.monthlyRpt}} {{event.weeklyRptName}}</p>
-    <p>End Date: {{event.endDate.iso}}</p>
+    <p>End Date: {{#dateShort}}{{event.endDate.iso}}{{/dateShort}}</p>
   </div>
 {{/if}}

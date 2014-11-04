@@ -26,8 +26,8 @@
       <h2>{{event.name}}</h2>
       <p>
         {{#if event.multiDay}}From {{/if}}
-        {{event.startDate.iso}}
-        {{#if event.multiDay}} to {{event.endDate.iso}}{{/if}}
+        {{#dateShort}}{{event.startDate.iso}}{{/dateShort}}
+        {{#if event.multiDay}} to {{#dateShort}}{{event.endDate.iso}}{{/dateShort}}{{/if}}
         {{#if event.weeklyRptName}} and every {{event.weeklyRptName}}{{/if}} from
         {{event.startTime}}-{{event.endTime}}
       </p>

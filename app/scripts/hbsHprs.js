@@ -8,4 +8,19 @@
     return newStr;
   });
 
+  Handlebars.registerHelper('dateForm', function(options) {
+    var date = moment(options.fn(this)).format('YYYY-MM-DD');
+    return date;
+  });
+
+  Handlebars.registerHelper('dateDisplay', function(options) {
+    var date = moment(options.fn(this)).format('MMMM Do YYYY');
+    return date;
+  });
+
+  Handlebars.registerHelper('dateShort', function(options) {
+    var date = moment(options.fn(this)).format('MMM DD YYYY');
+    return date;
+  });
+
 })();

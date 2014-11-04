@@ -42,24 +42,22 @@
     },
     editEventHeader: function(e) {
       e.preventDefault();
-      var formModel = this.formatDatesforForm(this.model);
       if (this.model.edit.eventHeader) {
         this.model.edit.eventHeader = false;
         $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.model));
       } else {
         this.model.edit.eventHeader = true;
-        $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(formModel));
+        $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.model));
       }
     },
     editEventRecur: function(e) {
       e.preventDefault();
-      var formModel = this.formatDatesforForm(this.model);
       if (this.model.edit.eventRecur) {
         this.model.edit.eventRecur = false;
         $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.model));
       } else {
         this.model.edit.eventRecur = true;
-        $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(formModel));
+        $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.model));
         if (this.model.event.recurMonthly) {
           $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model));
         }
@@ -220,13 +218,12 @@
     },
 
     multiDay: function() {
-      var formModel = this.formatDatesforForm(this.model);
       if (this.model.event.multiDay) {
         this.model.event.multiDay = false;
         $('.multi-day').html('');
       } else {
         this.model.event.multiDay = true;
-        $('.multi-day').html(DanceCard.templates.orgs.org._multiDay(formModel));
+        $('.multi-day').html(DanceCard.templates.orgs.org._multiDay(this.model));
       }
     },
 

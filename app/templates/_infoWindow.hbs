@@ -5,7 +5,7 @@
   <a href="#/orgs/{{orgUrlId}}/{{urlId}}">
   {{name}}</a></h1>
   <div id="bodyContent">
-  <p>{{startDate.iso}} {{startTime}}</p>
+  <p>{{#dateDisplay}}{{startDate.iso}}{{/dateDisplay}} {{startTime}}</p>
   <p>{{venue.fullAddress}}</p>
   </div>
 </div>

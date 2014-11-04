@@ -10,7 +10,7 @@
     {{#each events}}
       <li class="{{orgUrlId}}-event">
         <a href="#/orgs/{{orgUrlId}}/{{urlId}}">{{name}}</a>
-        {{startDate.iso}}
+        {{#dateDisplay}}{{startDate.iso}}{{/dateDisplay}}
         {{startTime}}-{{endTime}}
       </li>
     {{/each}}

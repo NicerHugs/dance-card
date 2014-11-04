@@ -8,7 +8,9 @@
 </h3>
 
 <h4>Date Range:</h4>
-{{searchResults.startDate}}-{{searchResults.endDate}}
+{{#dateShort}}{{searchResults.startDate}}{{/dateShort}}
+-
+{{#dateShort}}{{searchResults.endDate}}{{/dateShort}}
 
 <h4>Event Type:</h4>
 {{searchResults.type}}
