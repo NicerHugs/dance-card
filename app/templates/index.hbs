@@ -1,12 +1,15 @@
 <div class="searchBox">
-  <input type="text" placeholder="location">
-  <input type="text" placeholder="within miles">
-  <input type="date">
-  <input type="date">
-  <select>
-    <option>all</option>
-    <option>Contra Dance</option>
-    <option>Waltz Dance</option>
-  </select>
+  <form>
+    <input class="search-location" type="text" placeholder="location">
+    <input class="search-distance" type="text" placeholder="within miles">
+    <input class="search-start-date" type="date">
+    <input class="search-end-date"type="date">
+    <select class="search-type">
+      <option>all</option>
+      <option>Contra Dance</option>
+      <option>Waltz Dance</option>
+    </select>
+    <input class="search-submit" type="submit">
+</form>
 </div>
 <div id="map-canvas"></div>

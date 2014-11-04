@@ -1,12 +1,15 @@
 (function() {
   'use strict';
 
-  DanceCard.Collections.MapEventList = Parse.Collection.extend({
+  DanceCard.Collections.SearchEventList = Parse.Collection.extend({
     initialize: function(options){
       this.query = new Parse.Query('Event')
         .greaterThanOrEqualTo('startDate', options.startDate)
         .lessThanOrEqualTo('endDate', options.endDate)
         .withinMiles('point', options.location, options.distance);
+        if (options.type !== "all") {
+          this.query.equalTo('type', options.type);
+        }
     },
     model: DanceCard.Models.Event,
   });

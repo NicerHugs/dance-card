@@ -57,7 +57,7 @@
         b: ['caller workshop', '21409A'],
         c: ['dance weekend', '61D515'],
         d: ['square dance', '00ACEF'],
-        e: ['waltz workshop', 'FA9696'],
+        e: ['waltz workshop', '9079DB'],
         f: ['waltz', 'F36523'],
         g: ['contra workshop', 'FFDE17'],
         h: ['advanced contra dance', 'FF0A81']
