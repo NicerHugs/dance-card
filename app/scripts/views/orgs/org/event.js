@@ -196,7 +196,6 @@
       .done(function(location) {
         var attrs = {
                       name: name,
-                      zipcode: zipcode,
                       fullAddress: location.location.fullAddress,
                       addressParts: location.location.addressParts
                     },

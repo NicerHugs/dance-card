@@ -26,17 +26,16 @@
      return dateObj;
    },
 
-    findLocation: function(address, zipcode) {
+    findLocation: function(address) {
       var geocoder = new google.maps.Geocoder(),
           deferred = new $.Deferred();
-      geocoder.geocode({'address': address + ',' + zipcode}, function(results, status) {
+      geocoder.geocode({'address': address}, function(results, status) {
         var lat = results[0].geometry.location.k,
             lng = results[0].geometry.location.B,
             point = new Parse.GeoPoint({latitude: lat, longitude: lng}),
             location = {
                         addressParts: results[0].address_components,
                         fullAddress: results[0].formatted_address,
-                        zipcode: zipcode
                         };
             console.log(results);
             deferred.resolve({point: point, location: location});

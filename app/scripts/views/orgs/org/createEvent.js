@@ -11,7 +11,7 @@
       'click .choose-recur'        : 'chooseRecur',
       'click .choose-wk-mo'        : 'chooseWkMo',
       'click .choose-rpt'          : 'chooseRpt',
-      'keyup .event-zipcode-input' : 'getLocation',
+      'keyup .event-address-input' : 'getLocation',
       'click .submit-event'        : 'createEvent',
       'click .pre-reg-req-input'   : 'regReq',
       'click .multi-day-input'     : 'multiDay'
@@ -77,17 +77,19 @@
     },
 
     getLocation: function(e) {
-      if ($(e.target).val().length); {
-        var self = this,
-            address = $('.event-address-input').val(),
-            zipcode = $('.event-zipcode-input').val(),
-            location = DanceCard.Utility.findLocation(address, zipcode)
-              .done(function(location) {
-                self.model.set('point', location.point);
-                self.model.set('venue', location.location);
-                $('.submit-event').removeAttr('disabled');
-              });
-        }
+      var self = this,
+          address = $('.event-address-input').val();
+      DanceCard.Utility.findLocation(address)
+      .done(function(location) {
+        var attrs = { name: name,
+                      fullAddress: location.location.fullAddress,
+                      addressParts: location.location.addressParts
+                    },
+            point = location.point;
+
+        self.model.set({venue: attrs, point: point});
+        $('.submit-event').removeAttr('disabled');
+      });
     },
 
     createEvent: function(e) {
