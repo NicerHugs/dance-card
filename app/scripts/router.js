@@ -20,78 +20,81 @@
       'orgs/:org/:event'       : 'evnt', //dynamic, for validated user will be manage event page, otherwise will show the event info
       'orgs/:org/:event/RSVP'  : 'attendEvent', //dynamic
     },
+    mainChildren: [],
 
     index: function() {
-      $('main').empty();
-      new DanceCard.Views.Index({
+      _.invoke(this.mainChildren, 'remove');
+      this.mainChildren.push(new DanceCard.Views.Index({
         $container: $('main')
-      });
+      }));
     },
     login: function() {
-      $('main').empty();
-      new DanceCard.Views.Login({
+      _.invoke(this.mainChildren, 'remove');
+      this.mainChildren.push(new DanceCard.Views.Login({
         $container: $('main')
-      });
+      }));
     },
     logout: function() {
       Parse.User.logOut();
       DanceCard.session.set('user', Parse.User.current());
-      $('main').empty();
-      new DanceCard.Views.Logout({
+      _.invoke(this.mainChildren, 'remove');
+      this.mainChildren.push(new DanceCard.Views.Logout({
         $container: $('main'),
-      });
-      new DanceCard.Views.Login({
+      }));
+      this.mainChildren.push(new DanceCard.Views.Login({
         $container: $('main')
-      });
+      }));
     },
     register: function() {
-      $('main').empty();
-      new DanceCard.Views.Register({
+      _.invoke(this.mainChildren, 'remove');
+      this.mainChildren.push(new DanceCard.Views.Register({
         $container: $('main'),
         model: new DanceCard.Models.User()
-      });
+      }));
     },
     orgs: function() {
-      $('main').empty();
-      new DanceCard.Views.Orgs({
+      _.invoke(this.mainChildren, 'remove');
+      this.mainChildren.push(new DanceCard.Views.Orgs({
         $container: $('main')
-      });
+      }));
     },
     org: function(org) {
-      $('main').empty();
-      var query = new Parse.Query('User');
+      _.invoke(this.mainChildren, 'remove');
+      var self = this,
+          query = new Parse.Query('User'),
+          user = query.find({
+            success: function(user) {
+              self.mainChildren.push(new DanceCard.Views.Org({
+                $container: $('main'),
+                model: user[0]
+              }));
+            }, error: function() {
+              console.log('user not found');
+              self.mainChildren.push(new DanceCard.Views.OrgNotFound({
+                $container: $('main')
+              }));
+            }
+          });
       query.equalTo('urlId', org);
-      var user = query.find({
-        success: function(user) {
-          new DanceCard.Views.Org({
-            $container: $('main'),
-            model: user[0]
-          });
-        }, error: function() {
-          console.log('user not found');
-          new DanceCard.Views.OrgNotFound({
-            $container: $('main')
-          });
-        }
-      });
     },
     createEvent: function(org) {
-      $('main').empty();
-      new DanceCard.Views.CreateEvent({
+      _.invoke(this.mainChildren, 'remove');
+      this.mainChildren.push(new DanceCard.Views.CreateEvent({
         $container: $('main'),
         model: new DanceCard.Models.Event({
           org: Parse.User.current(),
           orgUrlId: org
         })
-      });
+      }));
     },
     evnt: function(org, evnt) {
-      $('main').empty();
-      var query = new Parse.Query('Event');
+      _.invoke(this.mainChildren, 'remove');
+      var self = this,
+          query = new Parse.Query('Event');
       query.get(evnt)
       .then(function(evt) {
         if (org === DanceCard.session.get('user').urlId) {
-          new DanceCard.Views.Event({
+          self.mainChildren.push(new DanceCard.Views.Event({
             $container: $('main'),
             model: {
               edit: {},
@@ -99,18 +102,17 @@
               loggedIn: true,
               eventOrg: DanceCard.session.get('user')
             }
-          });
+          }));
         } else {
-          console.log(evt);
           var orgObj = evt.get('org');
-          new DanceCard.Views.Event({
+          self.mainChildren.push(new DanceCard.Views.Event({
             $container: $('main'),
             model: {
               event: evt.toJSON(),
               loggedIn: false,
               eventOrg: orgObj.toJSON()
             }
-          });
+          }));
         }
       });
 
