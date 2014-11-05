@@ -23,19 +23,21 @@ DanceCard.Models.Event = Parse.Object.extend({
     });
   },
 
-  saveHeader: function(orgUrlId, parentEvent, limit, attrs, dateAttrs) {
+  saveHeader: function(orgUrlId, limit, attrs, dateAttrs) {
     this.set(attrs);
     if (dateAttrs.startDate) {
       this.set(dateAttrs);
     }
     if (this.get('recurring')) {
+
       var collection = new DanceCard.Collections.OnetimeEventList({
         orgUrlId: orgUrlId,
-        parentEvent: parentEvent,
+        parentEvent: this,
         limit: limit
       });
       collection.fetch()
       .then(function() {
+        console.log(collection);
         _.each(collection.models, function(event) {
           event.set(attrs);
           event.save();
@@ -45,7 +47,7 @@ DanceCard.Models.Event = Parse.Object.extend({
     return this.save();
   },
 
-  saveRecur: function(orgUrlId, parentEvent, limit, attrs) {
+  saveRecur: function(orgUrlId, limit, attrs) {
     var self = this,
         endDate = new Date(moment($('.event-end-date-input').val()).format()),
         day = attrs.weeklyRpt,
@@ -64,7 +66,7 @@ DanceCard.Models.Event = Parse.Object.extend({
     }
     var collection = new DanceCard.Collections.OnetimeEventList({
       orgUrlId: orgUrlId,
-      parentEvent: parentEvent,
+      parentEvent: this,
       limit: 1000
     });
     collection.fetch()
@@ -104,12 +106,12 @@ DanceCard.Models.Event = Parse.Object.extend({
     return this.save();
   },
 
-  saveInfo: function(orgUrlId, parentEvent, limit, attrs) {
+  saveInfo: function(orgUrlId, limit, attrs) {
     this.set(attrs);
     if (this.get('recurring')) {
       var collection = new DanceCard.Collections.OnetimeEventList({
         orgUrlId: orgUrlId,
-        parentEvent: parentEvent,
+        parentEvent: this,
         limit: limit
       });
       collection.fetch()
@@ -123,7 +125,7 @@ DanceCard.Models.Event = Parse.Object.extend({
     return this.save();
   },
 
-  saveVenue: function(orgUrlId, parentEvent, limit, attrs, point) {
+  saveVenue: function(orgUrlId, limit, attrs, point) {
     this.set({
       venue: attrs,
       point: point
@@ -131,7 +133,7 @@ DanceCard.Models.Event = Parse.Object.extend({
     if (this.get('recurring')) {
       var collection = new DanceCard.Collections.OnetimeEventList({
         orgUrlId: orgUrlId,
-        parentEvent: parentEvent,
+        parentEvent: this,
         limit: limit
       });
       collection.fetch()

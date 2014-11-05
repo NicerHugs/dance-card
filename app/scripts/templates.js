@@ -367,6 +367,9 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_recurList"] = Handlebars.templat
 this["DanceCard"]["templates"]["orgs"]["org"]["_regReq"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<label name=\"reg-limit\">Registration Limit</label>\n  <input name=\"reg-limit\" class=\"reg-limit-input\" type=\"number\">\n<label name=\"gender-bal\">Lead/Follow Balanced</label>\n  <input type=\"checkbox\" class=\"gender-bal-input\" name=\"gender-bal\">\n";
   },"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["_saveWarning"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<div class=\"save-warning\">\n  These changes will also occur on all instances of this recurring event.\n  Previously made changes to any instance of this event may be overwritten.\n  Are you sure you want to continue?\n  <input type=\"button\" class=\"continue-save\" value=\"continue\">\n  <a href='#'>cancel</a>\n</div>\n";
+  },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_venueInfo"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "    <divclass=\"venue-info-editing\">\n      <span><a href=\"#\" class=\"save-venue-info\">save changes</a></span>\n      <span><a href=\"#\" class=\"edit-venue-info\">cancel</a></span>\n      <h3>Venue Info</h3>\n      <label name=\"venue-name\">Venue Name</label>\n        <input name=\"venue-name\" class=\"venue-name-input\" type=\"text\" placeholder=\"venue name\" value=\""

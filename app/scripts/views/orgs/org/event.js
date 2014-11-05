@@ -111,8 +111,7 @@
                   },
           dateAttrs = {},
           model = new Parse.Query('Event'),
-          orgUrlId = this.model.eventOrg.urlId,
-          parentEvent = this.model.event.urlId;
+          orgUrlId = this.model.eventOrg.urlId;
       if ($('.event-start-date-input').val()) {
         dateAttrs.startDate = new Date($('.event-start-date-input').val());
       }
@@ -122,7 +121,7 @@
       }
       model.get(id, {
         success: function(event) {
-          event.saveHeader(orgUrlId, parentEvent, 1000, attrs, dateAttrs)
+          event.saveHeader(orgUrlId, 1000, attrs, dateAttrs)
           .then(function(event) {
             self.model.event = event.toJSON();
             self.model.edit.eventHeader = false;
@@ -145,8 +144,7 @@
                       monthlyRpt: $('.monthly-option-input').val(),
                     },
           model = new Parse.Query('Event'),
-          orgUrlId = this.model.eventOrg.urlId,
-          parentEvent = this.model.event.urlId;
+          orgUrlId = this.model.eventOrg.urlId;
       if ($('.chooseRpt:checked').val() === "true") {
         recurMonthly = true;
       } else {
@@ -155,7 +153,7 @@
       attrs.recurMonthly = recurMonthly;
       model.get(this.model.event.objectId, {
         success: function(event) {
-          event.saveRecur(orgUrlId, parentEvent, 1000, attrs)
+          event.saveRecur(orgUrlId, 1000, attrs)
           .then(function(event) {
             self.model.event = event.toJSON();
             self.model.edit.eventRecur = false;
@@ -173,7 +171,6 @@
       var self = this,
           model = new Parse.Query('Event'),
           orgUrlId = this.model.eventOrg.urlId,
-          parentEvent = this.model.event.urlId,
           attrs = {
             price: $('.price-input').val(),
             band: $('.band-name-input').val() || 'TBA',
@@ -185,7 +182,7 @@
           };
       model.get(this.model.event.objectId, {
         success: function(event) {
-          event.saveInfo(orgUrlId, parentEvent, 1000, attrs)
+          event.saveInfo(orgUrlId, 1000, attrs)
           .then(function(event) {
             self.model.event = event.toJSON();
             self.model.edit.eventInfo = false;
@@ -203,7 +200,6 @@
       var self = this,
           model = new Parse.Query('Event'),
           orgUrlId = this.model.eventOrg.urlId,
-          parentEvent = this.model.event.urlId,
           zipcode = $('.event-zipcode-input').val(),
           address = $('.event-address-input').val(),
           name = $('.venue-name-input').val();
@@ -217,7 +213,7 @@
             point = location.point;
         model.get(self.model.event.objectId, {
           success: function(event) {
-            event.saveVenue(orgUrlId, parentEvent, 1000, attrs, point)
+            event.saveVenue(orgUrlId, 1000, attrs, point)
             .then(function(event) {
               self.model.event = event.toJSON();
               self.model.edit.venueInfo = false;
