@@ -60,22 +60,22 @@
     },
     org: function(org) {
       _.invoke(this.mainChildren, 'remove');
-      var self = this,
-          query = new Parse.Query('User'),
-          user = query.find({
-            success: function(user) {
-              self.mainChildren.push(new DanceCard.Views.Org({
-                $container: $('main'),
-                model: user[0]
-              }));
-            }, error: function() {
-              console.log('user not found');
-              self.mainChildren.push(new DanceCard.Views.OrgNotFound({
-                $container: $('main')
-              }));
-            }
-          });
-      query.equalTo('urlId', org);
+      var self = this;
+      new Parse.Query('User')
+        .equalTo('urlId', org)
+        .find({
+          success: function(user) {
+            self.mainChildren.push(new DanceCard.Views.Org({
+              $container: $('main'),
+              model: user[0]
+            }));
+          }, error: function() {
+            console.log('user not found');
+            self.mainChildren.push(new DanceCard.Views.OrgNotFound({
+              $container: $('main')
+            }));
+          }
+        });
     },
     createEvent: function(org) {
       _.invoke(this.mainChildren, 'remove');
@@ -96,12 +96,13 @@
         if (org === DanceCard.session.get('user').urlId) {
           self.mainChildren.push(new DanceCard.Views.Event({
             $container: $('main'),
-            model: {
-              edit: {},
-              event: evt.toJSON(),
-              loggedIn: true,
-              eventOrg: DanceCard.session.get('user')
-            }
+            model: evt
+            // model: {
+              // edit: {},
+              // event: evt.toJSON(),
+              // loggedIn: true,
+              // eventOrg: DanceCard.session.get('user')
+            // }
           }));
         } else {
           var orgObj = evt.get('org');

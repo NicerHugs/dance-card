@@ -25,7 +25,7 @@
             <input name="start-date" class="event-start-date-input" type="date" value={{#dateForm}}{{event.startDate.iso}}{{/dateForm}}>
         </p>
         <p><label name="multi-day">Multi-day Event</label>
-          <input name="multi-day"class="multi-day-input" type="checkbox"></p>
+          <input name="multi-day" class="multi-day-input" type="checkbox" {{#if event.multiDay}}checked{{/if}}></p>
           <div class="multi-day">
         </div>
       {{/unless}}
@@ -45,8 +45,10 @@
       <p>Type: {{event.type}}</p>
       {{#if event.multiDay}}<p>This is a multi-day event</p>{{/if}}
       {{#unless event.recurring}}
-        <p>Start Date: {{#dateShort}}{{event.startDate.iso}}{{/dateShort}}</p>
-        <p>End Date: {{#dateShort}}{{event.endDate.iso}}{{/dateShort}}</p>
+        <p>{{#if event.multiDay}}Start {{/if}}Date: {{#dateShort}}{{event.startDate.iso}}{{/dateShort}}</p>
+        {{#if event.multiDay}}
+          <p>End Date: {{#dateShort}}{{event.endDate.iso}}{{/dateShort}}</p>
+        {{/if}}
       {{/unless}}
       <p>Start Time: {{event.startTime}}</p>
       <p>End Time: {{event.endTime}}</p>

@@ -31,13 +31,12 @@ DanceCard.Models.Event = Parse.Object.extend({
     if (this.get('recurring')) {
 
       var collection = new DanceCard.Collections.OnetimeEventList({
-        orgUrlId: orgUrlId,
+        orgUrlId: this.orgUrlId,
         parentEvent: this,
         limit: limit
       });
       collection.fetch()
       .then(function() {
-        console.log(collection);
         _.each(collection.models, function(event) {
           event.set(attrs);
           event.save();
@@ -103,7 +102,7 @@ DanceCard.Models.Event = Parse.Object.extend({
         self.createChildren(self);
       }
     });
-    return this.save();
+    return this.save(attrs);
   },
 
   saveInfo: function(orgUrlId, limit, attrs) {
