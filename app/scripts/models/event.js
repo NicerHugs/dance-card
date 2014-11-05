@@ -23,7 +23,7 @@ DanceCard.Models.Event = Parse.Object.extend({
     });
   },
 
-  saveHeader: function(orgUrlId, limit, attrs, dateAttrs) {
+  saveHeader: function(attrs, dateAttrs) {
     this.set(attrs);
     if (dateAttrs.startDate) {
       this.set(dateAttrs);
@@ -33,7 +33,7 @@ DanceCard.Models.Event = Parse.Object.extend({
       var collection = new DanceCard.Collections.OnetimeEventList({
         orgUrlId: this.orgUrlId,
         parentEvent: this,
-        limit: limit
+        limit: 1000
       });
       collection.fetch()
       .then(function() {
@@ -46,7 +46,7 @@ DanceCard.Models.Event = Parse.Object.extend({
     return this.save();
   },
 
-  saveRecur: function(orgUrlId, limit, attrs) {
+  saveRecur: function(attrs) {
     var self = this,
         endDate = new Date(moment($('.event-end-date-input').val()).format()),
         day = attrs.weeklyRpt,
@@ -64,7 +64,7 @@ DanceCard.Models.Event = Parse.Object.extend({
       recurMonthly = false;
     }
     var collection = new DanceCard.Collections.OnetimeEventList({
-      orgUrlId: orgUrlId,
+      orgUrlId: this.orgUrlId,
       parentEvent: this,
       limit: 1000
     });
@@ -105,13 +105,13 @@ DanceCard.Models.Event = Parse.Object.extend({
     return this.save(attrs);
   },
 
-  saveInfo: function(orgUrlId, limit, attrs) {
+  saveInfo: function(attrs) {
     this.set(attrs);
     if (this.get('recurring')) {
       var collection = new DanceCard.Collections.OnetimeEventList({
-        orgUrlId: orgUrlId,
+        orgUrlId: this.orgUrlId,
         parentEvent: this,
-        limit: limit
+        limit: 1000
       });
       collection.fetch()
       .then(function() {
@@ -124,16 +124,16 @@ DanceCard.Models.Event = Parse.Object.extend({
     return this.save();
   },
 
-  saveVenue: function(orgUrlId, limit, attrs, point) {
+  saveVenue: function(attrs, point) {
     this.set({
       venue: attrs,
       point: point
     });
     if (this.get('recurring')) {
       var collection = new DanceCard.Collections.OnetimeEventList({
-        orgUrlId: orgUrlId,
+        orgUrlId: this.orgUrlId,
         parentEvent: this,
-        limit: limit
+        limit: 1000
       });
       collection.fetch()
       .then(function() {

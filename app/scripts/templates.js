@@ -132,9 +132,9 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_eventHeader"] = Handlebars.templ
   },"7":function(depth0,helpers,partials,data) {
   return "checked";
   },"9":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"event-header-viewing\">\n    <span><a href=\"#\" class=\"edit-event-header\">edit</a></span>\n    <h2>"
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <span><a href=\"#\" class=\"delete-event\">delete this event</a></span>\n  <div class=\"event-header-viewing\">\n    <span><a href=\"#\" class=\"edit-event-header\">edit</a></span>\n    <h2>"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.name : stack1), depth0))
-    + "</h2>\n      <span><a href=\"#\" class=\"delete-event\">delete this event</a></span>\n      <p>Type: "
+    + "</h2>\n      <p>Type: "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.type : stack1), depth0))
     + "</p>\n      ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.multiDay : stack1), {"name":"if","hash":{},"fn":this.program(10, data),"inverse":this.noop,"data":data});
@@ -190,7 +190,9 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_eventInfo"] = Handlebars.templat
   buffer += "    <label name=\"workshop-included\">Workshop Included</label>\n";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.workshopIncl : stack1), {"name":"if","hash":{},"fn":this.program(10, data),"inverse":this.program(12, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "    <label name=\"notes\">Notes</label>\n      <textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n  </div>\n";
+  return buffer + "    <label name=\"notes\">Notes</label>\n      <textarea name=\"notes\" class=\"notes-input\">"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), depth0))
+    + "</textarea>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
   return "      <p>To edit band and caller info, please edit the individual event</p>\n";
   },"4":function(depth0,helpers,partials,data) {
@@ -461,7 +463,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.templa
   return buffer + "\n<label name=\"notes\">Notes</label>\n<textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\">\n";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["event"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "\n  <div class=\"event-header\">\n  </div>\n\n";
+  var stack1, buffer = "\n  \n  <div class=\"event-header\">\n  </div>\n\n";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   return buffer + "\n  <div class=\"event-info\">\n  </div>\n\n  <div class=\"venue-info\">\n  </div>\n\n";

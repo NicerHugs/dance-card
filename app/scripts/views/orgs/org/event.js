@@ -46,7 +46,7 @@
       var self = this;
       this.model.destroy({
         success: function() {
-          DanceCard.router.navigate('#/orgs/' + self.model.get('urlId'));
+          DanceCard.router.navigate('#/orgs/' + self.model.get('orgUrlId'));
           self.remove();
         },
         fail: function() {
@@ -110,8 +110,7 @@
                     startTime: $('.event-start-time-input').val(),
                     endTime: $('.event-end-time-input').val()
                   },
-          dateAttrs = {},
-          orgUrlId = this.model.get('orgUrlId');
+          dateAttrs = {};
       if ($('.event-start-date-input').val()) {
         dateAttrs.startDate = new Date(moment($('.event-start-date-input').val()).format());
       }
@@ -121,7 +120,7 @@
       } else {
         dateAttrs.endDate = dateAttrs.startDate;
       }
-      this.model.saveHeader(orgUrlId, 1000, attrs, dateAttrs)
+      this.model.saveHeader(attrs, dateAttrs)
       .then(function(model) {
         self.model = model;
         self.templateData.event = self.model.toJSON();
@@ -137,14 +136,13 @@
                       weeklyRpt: $('.weekly-option-input').val(),
                       weeklyRptName: $('.weekly-option-input :selected').text(),
                       monthlyRpt: $('.monthly-option-input').val()
-                    },
-          orgUrlId = this.model.get('orgUrlId');
+                    };
       if ($('.chooseRpt:checked').val() === "true") {
         attrs.recurMonthly = true;
       } else {
         attrs.recurMonthly = false;
       }
-      this.model.saveRecur(orgUrlId, 1000, attrs)
+      this.model.saveRecur(attrs)
       .then(function(model) {
         self.model = model;
         self.templateData.event = self.model.toJSON();
@@ -156,7 +154,6 @@
     saveEventInfo: function(e) {
       e.preventDefault();
       var self = this,
-          orgUrlId = this.model.get('orgUrlId'),
           attrs = {
             price: $('.price-input').val(),
             band: $('.band-name-input').val() || 'TBA',
@@ -166,7 +163,7 @@
             workshopIncl: $('.workshop-incl').prop('checked'),
             notes: $('.notes-input').val()
           };
-      this.model.saveInfo(orgUrlId, 1000, attrs)
+      this.model.saveInfo(attrs)
       .then(function(model) {
         self.model = model;
         self.templateData.event = self.model.toJSON();
@@ -178,7 +175,6 @@
     saveVenueInfo: function(e) {
       e.preventDefault();
       var self = this,
-          orgUrlId = this.model.get('orgUrlId'),
           zipcode = $('.event-zipcode-input').val(),
           address = $('.event-address-input').val(),
           name = $('.venue-name-input').val();
@@ -190,7 +186,7 @@
                       addressParts: location.location.addressParts
                     },
             point = location.point;
-        self.model.saveVenue(orgUrlId, 1000, attrs, point)
+        self.model.saveVenue(attrs, point)
         .then(function(model) {
           self.model= model;
           self.templateData.event = self.model.toJSON();
