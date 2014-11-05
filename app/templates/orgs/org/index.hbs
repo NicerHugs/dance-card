@@ -3,16 +3,24 @@
   <p>Below is a list of your events. Click on any event name to view, add or change the event's info</p>
   <ul class="recurring-event-list">
     <h3>Your Recurring Events</h3>
+    {{#unless events}}
+      You have no recurring events. <a href="#/orgs/{{model.urlId}}/create-event">Click here to add a new event</a>
+    {{/unless}}
   </ul>
 {{else}}
   <h2>{{model.orgName}} Events</h2>
+  {{#if events}}
   <ul class="{{orgUrlId}}-event-list">
-    {{#each events}}
-      <li class="{{orgUrlId}}-event">
-        <a href="#/orgs/{{orgUrlId}}/{{urlId}}">{{name}}</a>
-        {{#dateDisplay}}{{startDate.iso}}{{/dateDisplay}}
-        {{startTime}}-{{endTime}}
-      </li>
-    {{/each}}
-  </ul>
+      {{#each events}}
+        <li class="{{orgUrlId}}-event">
+          <a href="#/orgs/{{orgUrlId}}/{{objectId}}">{{name}}</a>
+          {{#dateDisplay}}{{startDate.iso}}{{/dateDisplay}}
+          {{startTime}}-{{endTime}}
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    {{model.orgName}} has no upcoming events.
+  {{/if}}
+
 {{/if}}

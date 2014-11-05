@@ -35,6 +35,7 @@
             $container: self.$el,
             collection: onetimeCollection
           });
+          console.log(onetimeCollection);
         });
 
       //if the user is not logged in or is viewing another orgs page

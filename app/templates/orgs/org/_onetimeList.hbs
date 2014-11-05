@@ -4,12 +4,12 @@
 
 {{#unless models}}
   You have no one time events.
-  <a href="#/orgs/{{urlId}}/create-event">Click here to add a new event</a>
+  <a href="#/orgs/{{orgUrlId}}/create-event">Click here to add a new event</a>
 {{/unless}}
 
 {{#each models}}
   <li class="{{attributes.orgUrlId}}-event">
-    <a href="#/orgs/{{attributes.orgUrlId}}/{{attributes.urlId}}">{{attributes.name}}</a>
+    <a href="#/orgs/{{attributes.orgUrlId}}/{{id}}">{{attributes.name}}</a>
     {{#dateDisplay}}{{attributes.startDate}}{{/dateDisplay}}
     {{attributes.startTime}}-{{attributes.endTime}}
   </li>

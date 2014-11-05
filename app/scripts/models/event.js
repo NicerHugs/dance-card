@@ -11,17 +11,13 @@ DanceCard.Models.Event = Parse.Object.extend({
       dates = DanceCard.Utility.filterByWeekOfMonth(dates, week);
     }
     _.each(dates, function(date) {
-      var newEvent = new DanceCard.Models.Event(parent),
-          idName = parent.get('name').replace(/[^\w\d\s]/g, ''),
-          dateString = date.toDateString().split(' ').join('_'),
-          id = idName.split(' ').join('_') + '_' + dateString;
+      var newEvent = new DanceCard.Models.Event(parent);
       newEvent.set({
         startDate: date,
         endDate: date,
         recurring: false,
         parentEvent: parent,
         parentEventUrlId: parent.get('urlId'),
-        urlId: id
       });
       newEvent.save();
     });

@@ -63,16 +63,17 @@
         $container: $('main')
       });
     },
-    org: function() {
+    org: function(org) {
       $('main').empty();
       var query = new Parse.Query('User');
-      query.equalTo('urlId', location.hash.slice(7));
+      query.equalTo('urlId', org);
       var user = query.find({
         success: function(user) {
           new DanceCard.Views.Org({
             $container: $('main'),
             model: user[0]
           });
+          console.log(user[0].toJSON())
         }, error: function() {
           console.log('user not found');
           new DanceCard.Views.OrgNotFound({
@@ -81,46 +82,41 @@
         }
       });
     },
-    createEvent: function() {
+    createEvent: function(org) {
       $('main').empty();
       new DanceCard.Views.CreateEvent({
         $container: $('main'),
         model: new DanceCard.Models.Event({
           org: Parse.User.current(),
-          orgUrlId: Parse.User.current().get('urlId')
+          orgUrlId: org
         })
       });
     },
-    evnt: function() {
+    evnt: function(org, evnt) {
       $('main').empty();
-      var urlId = location.hash.split(/\//)[3];
-      var collection = new DanceCard.Collections.currentEvent({
-        urlId: urlId
-      });
-      collection.fetch()
-      .then(function(collection) {
-        var loggedIn,
-            model = collection.models[0];
-        if (model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
+      var query = new Parse.Query('Event');
+      query.get(evnt)
+      .then(function(evt) {
+        if (org === DanceCard.session.get('user').urlId) {
           new DanceCard.Views.Event({
             $container: $('main'),
             model: {
               edit: {},
-              event: model.toJSON(),
+              event: evt.toJSON(),
               loggedIn: true,
               eventOrg: DanceCard.session.get('user')
             }
           });
         } else {
-          model.get('org').fetch().then(function(org){
-            new DanceCard.Views.Event({
-              $container: $('main'),
-              model: {
-                event: model.toJSON(),
-                loggedIn: false,
-                eventOrg: org.toJSON()
-              }
-            });
+          console.log(evt);
+          var orgObj = evt.get('org');
+          new DanceCard.Views.Event({
+            $container: $('main'),
+            model: {
+              event: evt.toJSON(),
+              loggedIn: false,
+              eventOrg: orgObj.toJSON()
+            }
           });
         }
       });

@@ -111,13 +111,10 @@
           beginner = $('.beginner').prop('checked'),
           workshopIncl = $('.workshop-incl').prop('checked'),
           notes = $('.notes-input').val(),
-          idName = name.replace(/[^\w\d\s]/g, ''),
           day = this.model.get('weeklyRpt'),
-          id = idName.split(' ').join('_') + '_recurring_' + day,
           startDate = DanceCard.Utility.nextDateOfWeek(new Date(), day),
           endDate = DanceCard.Utility.addYear(startDate);
       this.model.set({
-        urlId: id,
         name: name,
         type: type,
         startTime: startTime,
@@ -156,8 +153,6 @@
           workshopIncl = $('.workshop-incl').prop('checked'),
           preRegReq = $('.pre-reg-req-input').prop('checked'),
           notes = $('.notes-input').val(),
-          idName = name.replace(/[^\w\d\s]/g, ''),
-          id = idName.split(' ').join('_') + '_' + dateString,
           endDate,
           regLimit,
           genderBal;
@@ -171,7 +166,6 @@
         genderBal = $('.gender-bal-input').prop('checked');
       }
       this.model.set({
-        urlId: id,
         name: name,
         type: type,
         startDate: startDate,
