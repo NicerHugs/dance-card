@@ -5,7 +5,6 @@
     className: 'event',
     template: DanceCard.templates.orgs.org.event,
     render: function() {
-      console.log(this.model);
       this.$el.html(this.template(this.model));
       if (this.model.loggedIn) {
         $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.model));
@@ -38,7 +37,23 @@
       'click .save-event-info'   : 'saveEventInfo',
       'click .save-venue-info'   : 'saveVenueInfo',
       'click .multi-day-input'   : 'multiDay',
-      'click .chooseRpt'         : 'chooseRpt'
+      'click .chooseRpt'         : 'chooseRpt',
+      'click .delete-event'      : 'deleteEvent'
+    },
+
+    deleteEvent: function(e) {
+      e.preventDefault();
+      var self = this;
+      new Parse.Query('Event').get(this.model.event.objectId, {
+        success: function(event) {
+          event.destroy();
+          DanceCard.router.navigate('#/orgs/' + self.model.eventOrg.urlId);
+          self.remove();
+        },
+        fail: function() {
+          console.log('could not find event', arguments);
+        }
+      });
     },
     editEventHeader: function(e) {
       e.preventDefault();

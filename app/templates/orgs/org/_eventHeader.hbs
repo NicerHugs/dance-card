@@ -41,6 +41,7 @@
   <div class="event-header-viewing">
     <span><a href="#" class="edit-event-header">edit</a></span>
     <h2>{{event.name}}</h2>
+      <span><a href="#" class="delete-event">delete this event</a></span>
       <p>Type: {{event.type}}</p>
       {{#if event.multiDay}}<p>This is a multi-day event</p>{{/if}}
       {{#unless event.recurring}}
