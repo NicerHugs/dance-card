@@ -7,23 +7,29 @@
     template: DanceCard.templates.orgs.org._recurList,
     render: function() {
       var self = this;
-      //render the recurringe event
-      this.$el.html(this.template(this.model.toJSON()));
+      //render the recurring event
+      this.$el.html(this.template(this.model));
+
       //render the children of the recurring event
-      var collection = new DanceCard.Collections.OnetimeEventList({
-        orgUrlId: this.model.get('orgUrlId'),
-        parentEvent: this.model.get('urlId')
-      });
-      collection.fetch()
-      .then(function() {
-        new DanceCard.Views.OnetimeEventList({
-          $container: self.$el,
-          collection: collection
-        });
-      });
+      new Parse.Query('Event').get(this.model.objectId, {
+        success: function(model) {
+          var collection = new DanceCard.Collections.OnetimeEventList({
+            orgUrlId: self.model.orgUrlId,
+            parentEvent: model
+          });
+          collection.fetch()
+          .then(function() {
+            new DanceCard.Views.OnetimeEventList({
+              $container: self.$el,
+              collection: collection
+            });
+          });
+        }
+      });  
     },
     events: {
-      'click .recur-event-name' : 'toggleChildren'
+      'click .recur-event-name' : 'toggleChildren',
+      'click .delete-recur'     : 'deleteEvent'
     },
     toggleChildren: function(e) {
       e.preventDefault();
@@ -33,6 +39,28 @@
       else {
         this.$el.children('ul').css('height', 0);
       }
+    },
+    deleteEvent: function(e) {
+      e.preventDefault();
+      var self = this,
+          collection = new DanceCard.Collections.OnetimeEventList({
+        orgUrlId: this.model.orgUrlId,
+        parentEvent: this.model.urlId
+      });
+      collection.fetch()
+      .then(function(){
+        DanceCard.Utility.destroyAll(collection);
+      });
+      new Parse.Query('Event')
+      .get(this.model.objectId, {
+        success: function(event) {
+          event.destroy();
+          self.remove();
+        },
+        fail: function(error) {
+          console.log(error);
+        }
+      });
     }
   });
 

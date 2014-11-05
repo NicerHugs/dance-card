@@ -6,7 +6,6 @@
     className: 'onetime-events',
     template: DanceCard.templates.orgs.org._onetimeList,
     render: function() {
-      console.log(this.collection);
       this.$el.html(this.template(this.collection));
     }
   });

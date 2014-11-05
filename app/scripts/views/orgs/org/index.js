@@ -16,14 +16,25 @@
         var recurringCollection = new DanceCard.Collections.RecurringEventList({
           urlId: this.model.get('urlId')
         });
-        recurringCollection.fetch()
-        .then(function() {
-          _.each(recurringCollection.models, function(event) {
-            new DanceCard.Views.RecurringEventListItem({
-              $container: $('.recurring-event-list'),
-              model: event
-            });
-          });
+        recurringCollection.fetch({
+          success: function() {
+            if (recurringCollection.models.length > 0) {
+              _.each(recurringCollection.models, function(event) {
+                new DanceCard.Views.RecurringEventListItem({
+                  $container: $('.recurring-event-list'),
+                  model: event.toJSON()
+                });
+              });
+            } else {
+              new DanceCard.Views.RecurringEventListItem({
+                $container: $('.recurring-event-list'),
+                model: {urlId: self.model.get('urlId')}
+              });
+            }
+          },
+          fail: function(){
+            console.log('fail');
+          }
         });
         //render a list of their one time events, all in one view
         var onetimeCollection = new DanceCard.Collections.OnetimeEventList({
@@ -35,7 +46,6 @@
             $container: self.$el,
             collection: onetimeCollection
           });
-          console.log(onetimeCollection);
         });
 
       //if the user is not logged in or is viewing another orgs page

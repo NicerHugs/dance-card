@@ -1,5 +1,9 @@
-<h4>
-  <a href="#" class="recur-event-name">{{name}}</a> occurs every {{monthlyRpt}} {{weeklyRptName}}
-  <a href="#/orgs/{{orgUrlId}}/{{objectId}}">manage this event</a>
-  <a href="#" class="delete-recur">delete this event</a>
-</h4>
+{{#if name}}
+  <h4>
+    <a href="#" class="recur-event-name">{{name}}</a> occurs every {{monthlyRpt}} {{weeklyRptName}}
+    <a href="#/orgs/{{orgUrlId}}/{{objectId}}">manage this event</a>
+    <a href="#" class="delete-recur">delete this event</a>
+  </h4>
+{{else}}
+  You have no recurring events. <a href="#/orgs/{{urlId}}/create-event">Click here to add a new event</a>
+{{/if}}

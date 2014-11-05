@@ -73,7 +73,6 @@
             $container: $('main'),
             model: user[0]
           });
-          console.log(user[0].toJSON())
         }, error: function() {
           console.log('user not found');
           new DanceCard.Views.OrgNotFound({

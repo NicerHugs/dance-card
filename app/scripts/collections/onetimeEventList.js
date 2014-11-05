@@ -12,7 +12,7 @@
         .ascending('startDate')
         .equalTo('orgUrlId', this.orgUrlId)
         .equalTo('recurring', false)
-        .equalTo('parentEventUrlId', this.parentEvent)
+        .equalTo('parentEvent', this.parentEvent)
         .greaterThanOrEqualTo('startDate', yesterday)
         .limit(this.limit);
     },
