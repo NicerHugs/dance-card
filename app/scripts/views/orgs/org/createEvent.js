@@ -88,7 +88,6 @@
             point = location.point;
 
         self.model.set({venue: attrs, point: point});
-        $('.submit-event').removeAttr('disabled');
       });
     },
 
@@ -101,8 +100,47 @@
       }
     },
 
+    validateEvent: function() {
+      $('.invalid-form-warning').remove();
+      $('.invalid').removeClass('invalid');
+      if (!this.model.get('name')) {
+        $('label[name="name"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('event name required');
+        $('.event-name-input').addClass('invalid').focus();
+        return false;
+      } else if (!this.model.get('recurring') && !this.model.get('startDate')) {
+        $('label[name="start-date"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('start date is required');
+        $('.event-start-date-input').addClass('invalid').focus();
+        return false;
+      } else if (this.model.get('startDate') < new Date()){
+        $('label[name="start-date"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('start date must be after today');
+        $('.event-start-date-input').addClass('invalid').focus();
+        return false;
+      } else if (!this.model.get('startTime')) {
+        $('label[name="start-time"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('start time is required');
+        $('.event-start-time-input').addClass('invalid').focus();
+        return false;
+      } else if (!this.model.get('endTime')) {
+        $('label[name="end-time"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('end time is required');
+        $('.event-end-time-input').addClass('invalid').focus();
+        return false;
+      } else if (!this.model.get('venue')) {
+        $('label[name="address"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('venue address is required');
+        $('.event-address-input').addClass('invalid').focus();
+        return false;
+      } else {
+        return true;
+      }
+    },
+
     createRecurringEvent: function() {
-      var name = $('.event-name-input').val(),
+      var self = this,
+          name = $('.event-name-input').val(),
           type = $('.event-type-input').val().split('-').join(' '),
           startTime = $('.event-start-time-input').val(),
           endTime = $('.event-end-time-input').val(),
@@ -126,22 +164,33 @@
         startDate: startDate,
         endDate: endDate
       });
-      this.model.set('venue', {
-        name: venueName,
-        addressParts: this.model.attributes.venue.addressParts,
-        fullAddress: this.model.attributes.venue.fullAddress,
-        zipcode: this.model.attributes.venue.zipcode
-      });
-      this.model.save();
-      this.model.createChildren(this.model);
-      DanceCard.router.navigate("#/orgs/" + this.model.get('orgUrlId'), {trigger: true});
+      if ($('.event-address-input').val()) {
+        this.model.set('venue', {
+          name: venueName,
+          addressParts: this.model.attributes.venue.addressParts,
+          fullAddress: this.model.attributes.venue.fullAddress,
+          zipcode: this.model.attributes.venue.zipcode
+        });
+      }
+      if (this.validateEvent()) {
+        this.model.save(null, {
+          success: function() {
+            self.model.createChildren(self.model);
+            self.remove();
+            DanceCard.router.navigate("#/orgs/" + self.model.get('orgUrlId'), {trigger: true});
+          },
+          error: function() {
+            console.log('error saving the event', arguments[1]);
+          }
+        });
+      }
     },
 
     createOnetimeEvent: function() {
-      var name = $('.event-name-input').val(),
+      var self= this,
+          name = $('.event-name-input').val(),
           type = $('.event-type-input').val().split('-').join(' '),
-          startDate = new Date(moment($('.event-start-date-input').val()).format()),
-          dateString = startDate.toDateString().split(' ').join('_'),
+          startDate,
           startTime = $('.event-start-time-input').val(),
           endTime = $('.event-end-time-input').val(),
           venueName = $('.venue-name-input').val(),
@@ -156,6 +205,9 @@
           endDate,
           regLimit,
           genderBal;
+      if ($('.event-start-date-input').val()) {
+        startDate = new Date(moment($('.event-start-date-input').val()).format());
+      }
       if (this.model.get('multiDay')) {
         endDate = new Date(moment($('.event-end-date-input').val()).format());
       } else {
@@ -181,20 +233,31 @@
         preRegReq: preRegReq,
         notes: notes
       });
-      this.model.set('venue', {
-        name: venueName,
-        addressParts: this.model.attributes.venue.addressParts,
-        fullAddress: this.model.attributes.venue.fullAddress,
-        zipcode: this.model.attributes.venue.zipcode
-      });
+      if ($('.event-address-input').val()) {
+        this.model.set('venue', {
+          name: venueName,
+          addressParts: this.model.attributes.venue.addressParts,
+          fullAddress: this.model.attributes.venue.fullAddress,
+          zipcode: this.model.attributes.venue.zipcode
+        });
+      }
       if (preRegReq) {
         this.model.set('regInfo', {
           regLimit: regLimit,
           genderBal: genderBal
         });
       }
-      this.model.save();
-      DanceCard.router.navigate("#/orgs/" + this.model.get('orgUrlId'), {trigger: true});
+      if (this.validateEvent()) {
+        this.model.save(null, {
+          success: function() {
+            self.remove();
+            DanceCard.router.navigate("#/orgs/" + self.model.get('orgUrlId'), {trigger: true});
+          },
+          error: function() {
+            console.log('error saving the event', arguments[1]);
+          }
+        });
+      }
     }
   });
 

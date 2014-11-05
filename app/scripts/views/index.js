@@ -42,6 +42,11 @@
           self.makeMap(collection, location.point);
         });
       } else {
+        if (localStorage.getItem('danceCardLoc')) {
+          var position = JSON.parse(localStorage.getItem('danceCardLoc'));
+          this.children = [];
+          this.userLocSearchResults(position);
+        }
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
     },
@@ -50,6 +55,7 @@
           lng = position.coords.longitude,
           point = new Parse.GeoPoint(lat, lng),
           collection;
+      localStorage.setItem('danceCardLoc', JSON.stringify(position));
       this.searchCollection.location = point;
       collection = new DanceCard.Collections.SearchEventList(this.searchCollection);
       this.removeChildren();

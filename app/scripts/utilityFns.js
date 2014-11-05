@@ -30,16 +30,23 @@
       var geocoder = new google.maps.Geocoder(),
           deferred = new $.Deferred();
       geocoder.geocode({'address': address}, function(results, status) {
-        var lat = results[0].geometry.location.k,
-            lng = results[0].geometry.location.B,
-            point = new Parse.GeoPoint({latitude: lat, longitude: lng}),
-            location = {
-                        addressParts: results[0].address_components,
-                        fullAddress: results[0].formatted_address,
-                        };
-            console.log(results);
+        if (results && results[0]) {
+          var lat = results[0].geometry.location.k,
+              lng = results[0].geometry.location.B,
+              location = {
+                addressParts: results[0].address_components,
+                fullAddress: results[0].formatted_address,
+              },
+              point;
+          if (lat && lng) {
+            point = new Parse.GeoPoint({
+              latitude: lat,
+              longitude: lng
+            });
             deferred.resolve({point: point, location: location});
-          });
+          }
+        }
+      });
       return deferred.promise();
     },
 
@@ -131,9 +138,11 @@
       });
       _.each(ids, function(id) {
         var query = new Parse.Query('Event');
-        query.get(id, {success: function(event){
-          event.destroy({success: function(){
-          }, error: function(error) {
+        query.get(id, {
+          success: function(event){
+            event.destroy({success: function(){
+          },
+          error: function(error) {
             console.log('error', error);
           }});
         }});

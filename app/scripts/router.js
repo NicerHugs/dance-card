@@ -21,12 +21,6 @@
       'orgs/:org/:event/RSVP'  : 'attendEvent', //dynamic
     },
 
-    coolNewMapPage: function() {
-      $('main').empty();
-      new DanceCard.Views.CoolNewMapPage({
-        $container: $('main')
-      });
-    },
     index: function() {
       $('main').empty();
       new DanceCard.Views.Index({
