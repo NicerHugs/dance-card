@@ -5,7 +5,6 @@
     className: 'index',
     template: DanceCard.templates.index,
     render: function() {
-      var self = this;
       this.$el.html(this.template());
       this.searchResults();
     },
@@ -44,7 +43,7 @@
       } else {
         if (localStorage.getItem('danceCardLoc')) {
           var position = JSON.parse(localStorage.getItem('danceCardLoc'));
-          this.children = [];
+          // this.children = [];
           this.userLocSearchResults(position);
         }
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));

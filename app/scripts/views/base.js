@@ -6,8 +6,8 @@
       this.options = options;
       this.$container = options.$container;
       this.$container.append(this.el);
-      this.render();
       this.children = [];
+      this.render();
     },
     remove: function() {
       this.$el.remove();
