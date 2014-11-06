@@ -17,46 +17,15 @@
 
     renderChildren: function(collection) {
       var self = this;
-      _.each(collection.models, function(event) {
-        var position = {
-          lat: event.attributes.point._latitude,
-          lng: event.attributes.point._longitude
-        },
-        color = self.setColor(event),
-        image= "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color,
-        marker = new google.maps.Marker({
-          map: self.map,
-          position: position,
-          icon: image
-        }),
-        infowindow = new google.maps.InfoWindow({
-          content: DanceCard.templates._infoWindow(event.toJSON())
-        });
-
-        google.maps.event.addListener(marker, 'click', function() {
-          infowindow.open(self.map, marker);
-        });
+      _.each(collection.models, function(model) {
+        self.children.push(new DanceCard.Views.MarkerPartial({
+          $container: self.$el,
+          model: model,
+          map: self.map
+        }));
       });
     },
 
-    setColor: function(event) {
-      var iconColors = {
-        a: ['contra dance', '00A79D'],
-        b: ['caller workshop', '21409A'],
-        c: ['dance weekend', '61D515'],
-        d: ['square dance', '00ACEF'],
-        e: ['waltz workshop', '9079DB'],
-        f: ['waltz', 'F36523'],
-        g: ['contra workshop', 'FFDE17'],
-        h: ['advanced contra dance', 'FF0A81']
-      },
-      color = _.filter(iconColors, function(color) {
-        if (event.get('type') === color[0]){
-          return color;
-        }
-      })[0][1];
-      return color;
-    }
   });
 
 })();

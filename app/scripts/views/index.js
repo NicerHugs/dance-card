@@ -12,7 +12,7 @@
       'click .search-submit' : 'searchResults'
     },
     searchResults: function(e) {
-      if (e) e.preventDefaul();
+      if (e) e.preventDefault();
       var self = this,
           startDate = $('.search-start-date').val() || new Date(),
           endDate = $('.search-end-date').val() || DanceCard.Utility.addDays(new Date(), 6),
@@ -45,6 +45,7 @@
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
     },
+
     userLocSearchResults: function(position) {
       var lat = position.coords.latitude,
           lng = position.coords.longitude,
