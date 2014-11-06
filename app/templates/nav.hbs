@@ -1,15 +1,21 @@
 {{#if user}}
-  <div class="left-nav">
-    <a href="#/orgs/{{user.urlId}}" class="manage">manage your events</a>
-    <a href="#/orgs/{{user.urlId}}/create-event" class="create">add an event</a>
-  </div>
+  {{#if user.organizer}}
+    <div class="left-nav">
+      <a href="#/orgs/{{user.urlId}}" class="manage">manage your events</a>
+      <a href="#/orgs/{{user.urlId}}/create-event" class="create">add an event</a>
+    </div>
+  {{else}}
+    <div class="left-nav">
+      <a href="#" class="home-link">search for dances</a>
+    </div>
+  {{/if}}
   <div class="right-nav">
-    <a href="#/logout" class="logout">logout</a>
+    You are logged in as {{user.name}}. If that's not you, <a href="#/logout">logout</a>
   </div>
 {{else}}
   <div class="right-nav">
     <a href="#" class="home-link">search for dances</a>
-    <a href="#/login" class="login">organizer login</a>
+    <a href="#/login" class="login">login</a>
     <a href="#/register" class="signup">register</a>
   </div>
 {{/if}}
