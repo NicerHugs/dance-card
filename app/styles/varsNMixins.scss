@@ -1,0 +1,21 @@
+@import url(http://fonts.googleapis.com/css?family=Reenie+Beanie);
+@import url(http://fonts.googleapis.com/css?family=Vollkorn:400);
+
+$dark: #222130;
+$medium: #464d57;
+$light: #d4e8d3;
+$orange: #ed8917;
+$white: #fff;
+
+$header-font: 'Vollkorn', serif;
+$tagline-font: 'Reenie Beanie', cursive;
+
+nav {
+  background: rgba($orange, .7);
+  margin: rem(50) 0;
+}
+
+a {
+  color: $dark;
+  text-decoration: none;
+}

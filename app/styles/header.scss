@@ -1,0 +1,18 @@
+header {
+  background: $light;
+  color: $dark;
+  font-family: $header-font;
+
+  h1 {
+    font-size: 4rem;
+    margin: 0 0 0 7.6%;
+    padding-top: rem(50);
+  }
+
+  span {
+    color: $medium;
+    font-family: $tagline-font;
+    font-size: 3rem;
+    margin: 0 0 0 15.4%;
+  }
+}
