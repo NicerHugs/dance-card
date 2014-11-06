@@ -10,6 +10,7 @@
       if (Parse.User.current().get('urlId') === this.model.get('urlId')){
         this.$el.html(this.template({
           model: this.model.toJSON(),
+          owner: true,
           loggedIn: true
         }));
         //render a list of their recurring events, each as its own view
