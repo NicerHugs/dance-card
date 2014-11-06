@@ -9,13 +9,10 @@
       this.searchResults();
     },
     events: {
-      'click .search-submit' : 'runSearchResults'
+      'click .search-submit' : 'searchResults'
     },
-    runSearchResults: function(e) {
-      e.preventDefault();
-      this.searchResults();
-    },
-    searchResults: function() {
+    searchResults: function(e) {
+      if (e) e.preventDefaul();
       var self = this,
           startDate = $('.search-start-date').val() || new Date(),
           endDate = $('.search-end-date').val() || DanceCard.Utility.addDays(new Date(), 6),
@@ -43,7 +40,6 @@
       } else {
         if (localStorage.getItem('danceCardLoc')) {
           var position = JSON.parse(localStorage.getItem('danceCardLoc'));
-          // this.children = [];
           this.userLocSearchResults(position);
         }
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));

@@ -41,6 +41,22 @@
       'click .delete-event'      : 'deleteEvent'
     },
 
+    alertRecurWarning: function() {
+      var def = new $.Deferred();
+      $('main').append(DanceCard.templates.orgs.org._saveWarning());
+      $('.save-warning').on('click', '.continue-save', function(e) {
+        e.preventDefault();
+        $('.save-warning').remove();
+        def.resolve();
+      });
+      $('.save-warning').on('click', '.cancel-save', function(e) {
+        e.preventDefault();
+        $('.save-warning').remove();
+        def.reject();
+      });
+      return def.promise();
+    },
+
     deleteEvent: function(e) {
       e.preventDefault();
       var self = this;
@@ -55,7 +71,7 @@
       });
     },
     editEventHeader: function(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       if (this.templateData.edit.eventHeader) {
         this.templateData.edit.eventHeader = false;
         $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.templateData));
@@ -68,7 +84,7 @@
       }
     },
     editEventRecur: function(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       if (this.templateData.edit.eventRecur) {
         this.templateData.edit.eventRecur = false;
         $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.templateData));
@@ -81,7 +97,7 @@
       }
     },
     editEventInfo: function(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       if (this.templateData.edit.eventInfo) {
         this.templateData.edit.eventInfo = false;
         $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(this.templateData));
@@ -91,7 +107,7 @@
       }
     },
     editVenueInfo: function(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       if (this.templateData.edit.venueInfo) {
         this.templateData.edit.venueInfo = false;
         $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.templateData));
@@ -103,10 +119,19 @@
 
     saveEventHeader: function(e) {
       e.preventDefault();
-      var self = this;
-      var attrs = this.setEventHeader();
-      this.model.saveHeader(attrs.attrs, attrs.dateAttrs)
-      .then(_.bind(this.resetAfterSaveHeader, this));
+      var self = this,
+          attrs = this.setEventHeader();
+      if (this.model.get('recurring')) {
+        this.alertRecurWarning()
+        .done(function(){
+          self.model.saveHeader(attrs.attrs, attrs.dateAttrs)
+          .then(_.bind(self.resetAfterSaveHeader, self));
+        })
+        .fail(_.bind(self.editEventHeader, self));
+      } else {
+        self.model.saveHeader(attrs.attrs, attrs.dateAttrs)
+        .then(_.bind(self.resetAfterSaveHeader, self));
+      }
     },
 
     setEventHeader: function() {
@@ -174,8 +199,17 @@
       e.preventDefault();
       var self = this;
       var attrs = this.setEventInfo();
-      this.model.saveInfo(attrs)
-      .then(_.bind(this.resetAfterSaveEventInfo, this));
+      if (this.model.get('recurring')) {
+        this.alertRecurWarning()
+        .done(function(){
+          self.model.saveInfo(attrs)
+          .then(_.bind(self.resetAfterSaveEventInfo, self));
+        })
+        .fail(_.bind(self.editEventInfo, self));
+      } else {
+        self.model.saveInfo(attrs)
+        .then(_.bind(self.resetAfterSaveEventInfo, self));
+      }
     },
 
     setEventInfo: function() {
@@ -203,7 +237,15 @@
       e.preventDefault();
       var self = this;
       var attrs = this.setVenueInfo();
-      this.model.saveVenue(attrs, this);
+      if (this.model.get('recurring')) {
+        this.alertRecurWarning()
+        .done(function(){
+          self.model.saveVenue(attrs, self);
+        })
+        .fail(_.bind(self.editVenueInfo, self));
+      } else {
+        self.model.saveVenue(attrs, self);
+      }
     },
 
     setVenueInfo: function() {
