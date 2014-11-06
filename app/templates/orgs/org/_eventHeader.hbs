@@ -50,7 +50,7 @@
           <p>End Date: {{#dateShort}}{{event.endDate.iso}}{{/dateShort}}</p>
         {{/if}}
       {{/unless}}
-      <p>Start Time: {{event.startTime}}</p>
-      <p>End Time: {{event.endTime}}</p>
+      <p>Start Time: {{#time}}{{event.startTime}}{{/time}}</p>
+      <p>End Time: {{#time}}{{event.endTime}}{{/time}}</p>
   </div>
 {{/if}}

@@ -23,4 +23,16 @@
     return date;
   });
 
+  Handlebars.registerHelper('time', function(options) {
+    var time = options.fn(this);
+    if (time.slice(0,2) > 12) {
+      time = time.slice(0,2)-12 + time.slice(2) + ' pm';
+    } else if (time.slice(0,2) < 10) {
+      time = time.slice(1,2) + time.slice(2) + ' am';
+    } else {
+      time = time + ' am';
+    }
+    return time;
+  });
+
 })();
