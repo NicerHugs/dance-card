@@ -5,21 +5,25 @@
     className: 'event',
     template: DanceCard.templates.orgs.org.event,
     render: function() {
-      var loggedIn;
+      var owner,
+          dancer;
       if (DanceCard.session.get('user')) {
-        loggedIn = (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId);
+        dancer = (!DanceCard.session.get('user').organizer);
+        owner = (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId);
       } else {
-        loggedIn = false;
+        dancer = false;
+        owner = false;
       }
       this.templateData = {
                           edit: {},
                           event: this.model.toJSON(),
-                          loggedIn: loggedIn,
+                          dancer: dancer,
+                          owner: owner,
                           eventOrg: DanceCard.session.get('user')
                           };
       this.$el.html(this.template(this.templateData)
       );
-      if (loggedIn) {
+      if (owner) {
         $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.templateData));
         if (this.model.get('recurring')) {
           $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.templateData));
