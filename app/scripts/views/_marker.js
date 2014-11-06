@@ -4,10 +4,7 @@
   DanceCard.Views.MarkerPartial = DanceCard.Views.Base.extend({
     render: function() {
       var self = this,
-          position = {
-            lat: this.model.get('point')._latitude,
-            lng: this.model.get('point')._longitude
-          },
+          position = new google.maps.LatLng(this.model.get('point')._latitude, this.model.get('point')._longitude),
           color = this.setColor(this.model),
           image= "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color;
       this.infowindow = new google.maps.InfoWindow({
@@ -21,6 +18,7 @@
       google.maps.event.addListener(this.marker, 'click', function() {
         self.infowindow.open(self.options.map, self.marker);
       });
+      this.options.bounds.push(position);
     },
 
     setColor: function(model) {

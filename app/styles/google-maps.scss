@@ -14,3 +14,10 @@ main,
   padding: 0;
   width: 61%;
 }
+
+.venue-info-viewing {
+  #map-canvas {
+    height: 300px;
+    max-width: 300px;
+  }
+}

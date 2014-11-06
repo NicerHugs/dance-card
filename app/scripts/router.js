@@ -65,13 +65,23 @@
         .equalTo('urlId', org)
         .find({
           success: function(user) {
-            self.mainChildren.push(new DanceCard.Views.Org({
-              $container: $('main'),
-              model: user[0]
-            }));
+            if (user.length > 0) {
+              _.invoke(this.mainChildren, 'remove');
+              self.mainChildren.push(new DanceCard.Views.Org({
+                $container: $('main'),
+                model: user[0]
+              }));
+            } else {
+              console.log('user not found');
+              _.invoke(this.mainChildren, 'remove');
+              self.mainChildren.push(new DanceCard.Views.NotFound({
+                $container: $('main')
+              }));
+            }
           }, error: function() {
-            console.log('user not found');
-            self.mainChildren.push(new DanceCard.Views.OrgNotFound({
+            console.log('error retrieving user');
+            _.invoke(this.mainChildren, 'remove');
+            self.mainChildren.push(new DanceCard.Views.NotFound({
               $container: $('main')
             }));
           }
@@ -93,28 +103,10 @@
           query = new Parse.Query('Event');
       query.get(evnt)
       .then(function(evt) {
-        if (org === DanceCard.session.get('user').urlId) {
-          self.mainChildren.push(new DanceCard.Views.Event({
-            $container: $('main'),
-            model: evt
-            // model: {
-              // edit: {},
-              // event: evt.toJSON(),
-              // loggedIn: true,
-              // eventOrg: DanceCard.session.get('user')
-            // }
-          }));
-        } else {
-          var orgObj = evt.get('org');
-          self.mainChildren.push(new DanceCard.Views.Event({
-            $container: $('main'),
-            model: {
-              event: evt.toJSON(),
-              loggedIn: false,
-              eventOrg: orgObj.toJSON()
-            }
-          }));
-        }
+        self.mainChildren.push(new DanceCard.Views.Event({
+          $container: $('main'),
+          model: evt
+        }));
       });
 
     }

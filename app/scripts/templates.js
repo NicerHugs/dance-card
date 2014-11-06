@@ -56,7 +56,7 @@ this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"1":functio
   var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing, lambda=this.lambda, buffer = "<div id=\"content\">\n  <div id=\"siteNotice\">\n  </div>\n  <h1 id=\"firstHeading\" class=\"firstHeading\">\n  <a href=\"#/orgs/"
     + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
     + "/"
-    + escapeExpression(((helper = (helper = helpers.urlId || (depth0 != null ? depth0.urlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"urlId","hash":{},"data":data}) : helper)))
+    + escapeExpression(((helper = (helper = helpers.objectId || (depth0 != null ? depth0.objectId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"objectId","hash":{},"data":data}) : helper)))
     + "\">\n  "
     + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
     + "</a></h1>\n  <div id=\"bodyContent\">\n  <p>";
@@ -93,6 +93,9 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"useData":true});
+this["DanceCard"]["templates"]["notFound"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<h1>Not found <span>:(</span></h1>\n<p>Sorry, but the page you were trying to view does not exist.</p>\n<p>It looks like this was the result of either:</p>\n<ul>\n  <li>a mistyped address</li>\n  <li>an out-of-date link</li>\n</ul>\n";
+  },"useData":true});
 this["DanceCard"]["templates"]["orgs"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "orgs template\n";
   },"useData":true});
@@ -487,7 +490,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["event"] = Handlebars.template({"1
 },"5":function(depth0,helpers,partials,data) {
   return "  <span>sorry, you don't have permission to manage this event</span>\n\n";
   },"7":function(depth0,helpers,partials,data) {
-  var stack1, helper, options, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = "    <div class=\"event-header\">\n      <h2>"
+  var stack1, helper, options, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = "    <div class=\"event-header-viewing\">\n      <h2>"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.name : stack1), depth0))
     + "</h2>\n      <p>\n        ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.multiDay : stack1), {"name":"if","hash":{},"fn":this.program(8, data),"inverse":this.noop,"data":data});
@@ -506,35 +509,37 @@ this["DanceCard"]["templates"]["orgs"]["org"]["event"] = Handlebars.template({"1
   stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(17, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
   if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if (stack1 != null) { buffer += stack1; }
-  buffer += "-"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endTime : stack1), depth0))
-    + "\n      </p>\n      <p>by <a href=\"#/orgs/"
+  buffer += "-";
+  stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(19, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n      </p>\n      <p>by <a href=\"#/orgs/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.eventOrg : depth0)) != null ? stack1.urlId : stack1), depth0))
     + "\">"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.eventOrg : depth0)) != null ? stack1.orgName : stack1), depth0))
-    + "</a></p>\n    </div>\n\n    <div class=\"event-info\">\n      <h3>Event Info</h3>\n      <p>Cost: $"
+    + "</a></p>\n    </div>\n\n    <div class=\"event-info-viewing\">\n      <h3>Event Info</h3>\n      <p>Cost: $"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.price : stack1), depth0))
     + "</p>\n      <p>\n        Band: ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), {"name":"if","hash":{},"fn":this.program(19, data),"inverse":this.program(21, data),"data":data});
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), {"name":"if","hash":{},"fn":this.program(21, data),"inverse":this.program(23, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += "\n      </p>\n";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), {"name":"if","hash":{},"fn":this.program(23, data),"inverse":this.noop,"data":data});
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), {"name":"if","hash":{},"fn":this.program(25, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += "      <p>\n        Caller: ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), {"name":"if","hash":{},"fn":this.program(25, data),"inverse":this.program(21, data),"data":data});
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), {"name":"if","hash":{},"fn":this.program(27, data),"inverse":this.program(23, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += "\n      </p>\n      <p>\n        This "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.type : stack1), depth0))
     + " is\n        ";
-  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.beginnerFrdly : stack1), {"name":"unless","hash":{},"fn":this.program(27, data),"inverse":this.noop,"data":data});
+  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.beginnerFrdly : stack1), {"name":"unless","hash":{},"fn":this.program(29, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += "\n        beginner friendly\n        ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.workshopIncl : stack1), {"name":"if","hash":{},"fn":this.program(29, data),"inverse":this.noop,"data":data});
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.workshopIncl : stack1), {"name":"if","hash":{},"fn":this.program(31, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += "\n      </p>\n";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), {"name":"if","hash":{},"fn":this.program(31, data),"inverse":this.noop,"data":data});
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), {"name":"if","hash":{},"fn":this.program(33, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "    </div>\n\n    <div class=\"venue-info\">\n      <h3>Venue Info</h3>\n      <h4>\n        "
+  return buffer + "    </div>\n\n    <div class=\"venue-info-viewing\">\n      <h3>Venue Info</h3>\n      <h4>\n        "
     + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.name : stack1), depth0))
     + "\n      </h4>\n      <p>\n        "
     + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.fullAddress : stack1), depth0))
@@ -562,22 +567,25 @@ this["DanceCard"]["templates"]["orgs"]["org"]["event"] = Handlebars.template({"1
   return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startTime : stack1), depth0));
   },"19":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), depth0));
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endTime : stack1), depth0));
   },"21":function(depth0,helpers,partials,data) {
-  return "TBA";
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), depth0));
   },"23":function(depth0,helpers,partials,data) {
+  return "TBA";
+  },"25":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "        <p>\n          Musicians: "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), depth0))
     + "\n        </p>\n";
-},"25":function(depth0,helpers,partials,data) {
+},"27":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), depth0));
-  },"27":function(depth0,helpers,partials,data) {
-  return " NOT ";
   },"29":function(depth0,helpers,partials,data) {
-  return " and includes a workshop.";
+  return " NOT ";
   },"31":function(depth0,helpers,partials,data) {
+  return " and includes a workshop.";
+  },"33":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "        <p>\n          Organizer notes: "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), depth0))

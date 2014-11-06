@@ -5,7 +5,12 @@
     className: 'event',
     template: DanceCard.templates.orgs.org.event,
     render: function() {
-      var loggedIn = (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId);
+      var loggedIn;
+      if (DanceCard.session.get('user')) {
+        loggedIn = (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId);
+      } else {
+        loggedIn = false;
+      }
       this.templateData = {
                           edit: {},
                           event: this.model.toJSON(),
@@ -25,6 +30,7 @@
           $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model.templateData));
         }
       }
+      this.makeMap();
     },
 
     events: {
@@ -39,6 +45,17 @@
       'click .multi-day-input'   : 'multiDay',
       'click .chooseRpt'         : 'chooseRpt',
       'click .delete-event'      : 'deleteEvent'
+    },
+
+    makeMap: function() {
+      var lat = this.model.get('point').latitude,
+          lng = this.model.get('point').longitude;
+      this.children.push(new DanceCard.Views.MapPartial({
+        $container: $('.venue-info-viewing'),
+        zoom: 13,
+        loc: {lat: lat, lng: lng},
+        model: this.model
+      }));
     },
 
     alertRecurWarning: function() {
