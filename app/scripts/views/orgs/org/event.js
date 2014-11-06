@@ -103,6 +103,13 @@
 
     saveEventHeader: function(e) {
       e.preventDefault();
+      var self = this;
+      var attrs = this.setEventHeader();
+      this.model.saveHeader(attrs.attrs, attrs.dateAttrs)
+      .then(_.bind(this.resetAfterSaveHeader, this));
+    },
+
+    setEventHeader: function() {
       var self = this,
           attrs = {
                     name: $('.event-name-input').val(),
@@ -120,80 +127,98 @@
       } else {
         dateAttrs.endDate = dateAttrs.startDate;
       }
-      this.model.saveHeader(attrs, dateAttrs)
-      .then(function(model) {
-        self.model = model;
-        self.templateData.event = self.model.toJSON();
-        self.templateData.edit.eventHeader = false;
-        $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(self.templateData));
-      });
+      return {attrs: attrs, dateAttrs: dateAttrs};
+    },
+
+    resetAfterSaveHeader: function(model) {
+      this.model = model;
+      this.templateData.event = this.model.toJSON();
+      this.templateData.edit.eventHeader = false;
+      $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.templateData));
     },
 
     saveEventRecur: function(e) {
       e.preventDefault();
+      var self = this;
+      var attrs = this.setEventRecur();
+      this.model.saveRecur(attrs.attrs, attrs.dateAttrs)
+      .then(_.bind(this.resetAfterSaveEventRecur, this));
+    },
+
+    setEventRecur: function() {
       var self = this,
           attrs = {
-                      weeklyRpt: $('.weekly-option-input').val(),
-                      weeklyRptName: $('.weekly-option-input :selected').text(),
-                      monthlyRpt: $('.monthly-option-input').val()
-                    };
+                    weeklyRpt: $('.weekly-option-input').val(),
+                    weeklyRptName: $('.weekly-option-input :selected').text(),
+                    monthlyRpt: $('.monthly-option-input').val()
+                  },
+          dateAttrs = {
+                    endDate: new Date(moment($('.event-end-date-input').val()).format())
+                  };
       if ($('.chooseRpt:checked').val() === "true") {
         attrs.recurMonthly = true;
       } else {
         attrs.recurMonthly = false;
       }
-      this.model.saveRecur(attrs)
-      .then(function(model) {
-        self.model = model;
-        self.templateData.event = self.model.toJSON();
-        self.templateData.edit.eventRecur = false;
-        $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(self.templateData));
-      });
+      return {attrs: attrs, dateAttrs: dateAttrs};
+    },
+
+    resetAfterSaveEventRecur: function(model) {
+      this.model = model;
+      this.templateData.event = this.model.toJSON();
+      this.templateData.edit.eventRecur = false;
+      $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.templateData));
     },
 
     saveEventInfo: function(e) {
       e.preventDefault();
-      var self = this,
-          attrs = {
-            price: $('.price-input').val(),
-            band: $('.band-name-input').val() || 'TBA',
-            musicians: $('.musicians-input').val(),
-            caller: $('.caller-input').val() || 'TBA',
-            beginnerFrdly: $('.beginner').prop('checked'),
-            workshopIncl: $('.workshop-incl').prop('checked'),
-            notes: $('.notes-input').val()
-          };
+      var self = this;
+      var attrs = this.setEventInfo();
       this.model.saveInfo(attrs)
-      .then(function(model) {
-        self.model = model;
-        self.templateData.event = self.model.toJSON();
-        self.templateData.edit.eventInfo = false;
-        $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(self.templateData));
-      });
+      .then(_.bind(this.resetAfterSaveEventInfo, this));
+    },
+
+    setEventInfo: function() {
+      var self = this,
+        attrs = {
+          price: $('.price-input').val(),
+          band: $('.band-name-input').val() || 'TBA',
+          musicians: $('.musicians-input').val(),
+          caller: $('.caller-input').val() || 'TBA',
+          beginnerFrdly: $('.beginner').prop('checked'),
+          workshopIncl: $('.workshop-incl').prop('checked'),
+          notes: $('.notes-input').val()
+        };
+      return attrs;
+    },
+
+    resetAfterSaveEventInfo: function(model) {
+      this.model = model;
+      this.templateData.event = this.model.toJSON();
+      this.templateData.edit.eventInfo = false;
+      $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(this.templateData));
     },
 
     saveVenueInfo: function(e) {
       e.preventDefault();
-      var self = this,
-          zipcode = $('.event-zipcode-input').val(),
-          address = $('.event-address-input').val(),
-          name = $('.venue-name-input').val();
-      DanceCard.Utility.findLocation(address, zipcode)
-      .done(function(location) {
-        var attrs = {
-                      name: name,
-                      fullAddress: location.location.fullAddress,
-                      addressParts: location.location.addressParts
-                    },
-            point = location.point;
-        self.model.saveVenue(attrs, point)
-        .then(function(model) {
-          self.model= model;
-          self.templateData.event = self.model.toJSON();
-          self.templateData.edit.venueInfo = false;
-          $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(self.templateData));
-        });
-      });
+      var self = this;
+      var attrs = this.setVenueInfo();
+      this.model.saveVenue(attrs, this);
+    },
+
+    setVenueInfo: function() {
+      var attrs = {
+        address: $('.event-address-input').val(),
+        name: $('.venue-name-input').val()
+      };
+      return attrs;
+    },
+
+    resetAfterSaveVenueInfo: function(model) {
+      this.model= model;
+      this.templateData.event = this.model.toJSON();
+      this.templateData.edit.venueInfo = false;
+      $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.templateData));
     },
 
     multiDay: function() {

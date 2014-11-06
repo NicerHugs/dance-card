@@ -29,9 +29,8 @@ DanceCard.Models.Event = Parse.Object.extend({
       this.set(dateAttrs);
     }
     if (this.get('recurring')) {
-
       var collection = new DanceCard.Collections.OnetimeEventList({
-        orgUrlId: this.orgUrlId,
+        orgUrlId: this.get('orgUrlId'),
         parentEvent: this,
         limit: 1000
       });
@@ -46,9 +45,9 @@ DanceCard.Models.Event = Parse.Object.extend({
     return this.save();
   },
 
-  saveRecur: function(attrs) {
+  saveRecur: function(attrs, dateAttrs) {
     var self = this,
-        endDate = new Date(moment($('.event-end-date-input').val()).format()),
+        endDate = dateAttrs.endDate,
         day = attrs.weeklyRpt,
         oldAttrs = {
                       weeklyRpt: this.get('weeklyRpt'),
@@ -64,7 +63,7 @@ DanceCard.Models.Event = Parse.Object.extend({
       recurMonthly = false;
     }
     var collection = new DanceCard.Collections.OnetimeEventList({
-      orgUrlId: this.orgUrlId,
+      orgUrlId: this.get('orgUrlId'),
       parentEvent: this,
       limit: 1000
     });
@@ -109,7 +108,7 @@ DanceCard.Models.Event = Parse.Object.extend({
     this.set(attrs);
     if (this.get('recurring')) {
       var collection = new DanceCard.Collections.OnetimeEventList({
-        orgUrlId: this.orgUrlId,
+        orgUrlId: this.get('orgUrlId'),
         parentEvent: this,
         limit: 1000
       });
@@ -124,28 +123,39 @@ DanceCard.Models.Event = Parse.Object.extend({
     return this.save();
   },
 
-  saveVenue: function(attrs, point) {
-    this.set({
-      venue: attrs,
-      point: point
-    });
-    if (this.get('recurring')) {
-      var collection = new DanceCard.Collections.OnetimeEventList({
-        orgUrlId: this.orgUrlId,
-        parentEvent: this,
-        limit: 1000
+  saveVenue: function(attrs, view) {
+    var self = this;
+    DanceCard.Utility.findLocation(attrs.address)
+    .done(function(location) {
+      var locAttrs = {
+                      name: attrs.name,
+                      fullAddress: location.location.fullAddress,
+                      addressParts: location.location.addressParts
+                    },
+          point = location.point;
+      self.set({
+        venue: locAttrs,
+        point: point
       });
-      collection.fetch()
-      .then(function() {
-        _.each(collection.models, function(event) {
-          event.set({
-            venue: attrs,
-            point: point
-            });
-          event.save();
+      if (self.get('recurring')) {
+        var collection = new DanceCard.Collections.OnetimeEventList({
+          orgUrlId: self.get('orgUrlId'),
+          parentEvent: self,
+          limit: 1000
         });
-      });
-    }
-    return this.save();
+        collection.fetch()
+        .then(function() {
+          _.each(collection.models, function(event) {
+            event.set({
+              venue: locAttrs,
+              point: point
+              });
+            event.save();
+          });
+        });
+      }
+      self.save()
+      .then(_.bind(view.resetAfterSaveVenueInfo, view));
+    });
   }
 });
