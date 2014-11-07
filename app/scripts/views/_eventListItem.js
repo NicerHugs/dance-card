@@ -6,18 +6,76 @@
     className: 'search-result',
     template: DanceCard.templates._eventListItem,
     render: function() {
+      var self = this;
+      this.setTemplateData()
+      .done(function() {
+        self.$el.html(self.template(self.templateData));
+      });
+    },
+
+    setTemplateData: function() {
+      var self = this,
+          def = new $.Deferred();
       this.templateData = {
-        event: this.model.toJSON()};
-      if (DanceCard.session.get('user')) {
-        this.templateData.loggedIn = true;
-        this.templateData.dancer = (!DanceCard.session.get('user').organizer);
-        this.templateData.owner = (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId);
+        loggedIn: !!DanceCard.session.get('user'),
+        event: this.model.toJSON(),
+        dancer: DanceCard.session.get('dancer')
+      };
+      if (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
+        this.templateData.owner = true;
+        this.templateData.eventOrg = DanceCard.session.get('user');
+        def.resolve();
       } else {
-      this.templateData.loggedIn = false;
+        new Parse.Query('User').get(this.model.get('org').id, {
+          success: function(org) {
+            self.templateData.eventOrg = org.toJSON();
+            if (self.templateData.dancer) {
+              var relation = Parse.User.current().relation('attending'),
+                  query = new Parse.Query('Event');
+              relation.query().find()
+              .then(function(events){
+                self.templateData.attending = events;
+                def.resolve();
+              });
+            } else {
+              def.resolve();
+            }
+          }
+        });
       }
-      this.$el.html(this.template(this.templateData));
-    }
-    
+      return def.promise();
+    },
+
+    events: {
+      'click .rsvp'   : 'rsvp',
+      'click .unrsvp' : 'cancelRSVP'
+    },
+
+    rsvp: function(e) {
+      e.preventDefault();
+      var self = this;
+      this.model.rsvp()
+      .done(function() {
+        self.render();
+      })
+      .fail(function() {
+        //what to do when something goes wrong
+        console.log('something went wrong', arguments);
+      });
+    },
+
+    cancelRSVP: function(e) {
+      e.preventDefault();
+      var self = this;
+      this.model.cancelRSVP()
+      .done(function() {
+        self.render();
+      })
+      .fail(function() {
+        console.log('something went wrong', arguments);
+      });
+    },
+
   });
 
 })();
