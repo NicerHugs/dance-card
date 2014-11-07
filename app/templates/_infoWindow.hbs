@@ -5,12 +5,6 @@
   <a href="#/orgs/{{event.orgUrlId}}/{{event.objectId}}">
   {{event.name}}</a></h1>
   <div id="bodyContent">
-    {{#if dancer}}
-      <a href="#" class="rsvp">RSVP</a>
-    {{/if}}
-    {{#unless loggedIn}}
-      <a href="#" class="rsvp">RSVP</a>
-    {{/unless}}
   <p>
     {{#dateDisplay}}{{event.startDate.iso}}{{/dateDisplay}}
     {{#time}}{{event.startTime}}{{/time}}

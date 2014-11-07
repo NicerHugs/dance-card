@@ -7,27 +7,55 @@
           position = new google.maps.LatLng(this.model.get('point')._latitude, this.model.get('point')._longitude),
           color = this.setColor(this.model),
           image= "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color;
-      this.templateData = {
-        event: this.model.toJSON()};
-      if (DanceCard.session.get('user')) {
-        this.templateData.loggedIn = true;
-        this.templateData.dancer = (!DanceCard.session.get('user').organizer);
-        this.templateData.owner = (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId);
-      } else {
-      this.templateData.loggedIn = false;
-      }
-      this.infowindow = new google.maps.InfoWindow({
-        content: DanceCard.templates._infoWindow(this.templateData)
-      });
+      this.options.bounds.push(position);
       this.marker = new google.maps.Marker({
         map: this.options.map,
         position: position,
         icon: image
       });
-      google.maps.event.addListener(this.marker, 'click', function() {
-        self.infowindow.open(self.options.map, self.marker);
+      this.setTemplateData()
+      .done(function() {
+        self.infowindow = new google.maps.InfoWindow({
+          content: DanceCard.templates._infoWindow(self.templateData)
+        });
+        google.maps.event.addListener(self.marker, 'click', function() {
+          self.infowindow.open(self.options.map, self.marker);
+        });
+        self.options.bounds.push(position);
       });
-      this.options.bounds.push(position);
+    },
+
+    setTemplateData: function() {
+      var self = this,
+          def = new $.Deferred();
+      this.templateData = {
+        loggedIn: !!DanceCard.session.get('user'),
+        event: this.model.toJSON(),
+        dancer: DanceCard.session.get('dancer')
+      };
+      if (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
+        this.templateData.owner = true;
+        this.templateData.eventOrg = DanceCard.session.get('user');
+        def.resolve();
+      } else {
+        new Parse.Query('User').get(this.model.get('org').id, {
+          success: function(org) {
+            self.templateData.eventOrg = org.toJSON();
+            if (self.templateData.dancer) {
+              var relation = Parse.User.current().relation('attending'),
+                  query = new Parse.Query('Event');
+              relation.query().find()
+              .then(function(events){
+                self.templateData.attending = events;
+                def.resolve();
+              });
+            } else {
+              def.resolve();
+            }
+          }
+        });
+      }
+      return def.promise();
     },
 
     setColor: function(model) {
