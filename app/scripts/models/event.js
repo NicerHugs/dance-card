@@ -23,6 +23,34 @@ DanceCard.Models.Event = Parse.Object.extend({
     });
   },
 
+  rsvp: function() {
+    var def = new $.Deferred();
+    if (Parse.User.current()) {
+      var eRelation = this.relation('dancers');
+      eRelation.add(Parse.User.current());
+      this.save(null, {
+        success:function(event){
+          uRelation = Parse.User.current().relation('attending');
+          uRelation.add(event);
+          Parse.User.current().save(null, {
+            success: function(user) {
+              def.resolve({event: event, user:user});
+              },
+            fail: function() {
+              def.reject('save user failed');
+              }
+          });
+        },
+        fail: function() {
+          def.reject('save event failed');
+          }
+      });
+    } else {
+      def.reject('no user');
+    }
+    return def.promise();
+  },
+
   saveHeader: function(attrs, dateAttrs) {
     this.set(attrs);
     if (dateAttrs.startDate) {

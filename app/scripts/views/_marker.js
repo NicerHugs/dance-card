@@ -16,7 +16,6 @@
       } else {
       this.templateData.loggedIn = false;
       }
-      console.log(this.templateData)
       this.infowindow = new google.maps.InfoWindow({
         content: DanceCard.templates._infoWindow(this.templateData)
       });

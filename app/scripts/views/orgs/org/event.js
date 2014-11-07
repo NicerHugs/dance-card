@@ -26,7 +26,7 @@
         $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(this.templateData));
         $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.templateData));
         if (this.model.get('recurMonthly')) {
-          $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model.templateData));
+          $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.templateData));
         }
         this.makeMap();
       } else {
@@ -38,6 +38,7 @@
           }
         });
       }
+      console.log(this.templateData);
     },
 
     events: {
@@ -51,7 +52,22 @@
       'click .save-venue-info'   : 'saveVenueInfo',
       'click .multi-day-input'   : 'multiDay',
       'click .chooseRpt'         : 'chooseRpt',
-      'click .delete-event'      : 'deleteEvent'
+      'click .delete-event'      : 'deleteEvent',
+      'click .rsvp'              : 'rsvp'
+    },
+
+    rsvp: function(e) {
+      e.preventDefault();
+      var self = this;
+      this.model.rsvp()
+      .done(function(){
+        //what to do when all the parts successfully save
+        console.log('your save went off without a hitch', arguments);
+      })
+      .fail(function(){
+        //what to do when something goes wrong
+        console.log('something went wrong', arguments);
+      });
     },
 
     makeMap: function() {
