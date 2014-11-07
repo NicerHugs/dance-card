@@ -10,6 +10,9 @@
         this.render();
       },
       render: function() {
+        Parse.Cloud.run('hello').then(function(a){
+          console.log(a)
+        });
         this.headerView = new DanceCard.Views.Header({
           $container: this.$el
         });

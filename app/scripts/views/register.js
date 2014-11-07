@@ -41,7 +41,16 @@
               Parse.User.signUp(email, password, attrs, {
                 success: function() {
                   DanceCard.session.set('user', Parse.User.current());
-                  DanceCard.router.navigate('', {trigger: true});
+                  DanceCard.session.set('dancer', !DanceCard.session.get('user').organizer);
+                  if (DanceCard.session.get('dancer')) {
+                    if (DanceCard.router.routesHit <= 1) {
+                      DanceCard.router.navigate('#', {trigger: true});
+                    } else {
+                      window.history.back();
+                    }
+                  } else {
+                    DanceCard.router.navigate('#/orgs/'+ Parse.User.current().get('urlId'), {trigger: true});
+                  }
                   self.remove();
                 },
                 fail: function() {

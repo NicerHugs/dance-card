@@ -8,7 +8,6 @@
       var self = this;
       this.setTemplateData()
       .done(function() {
-        console.log(self.templateData);
         self.$el.html(self.template(self.templateData));
         if (self.templateData.owner) {
           $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(self.templateData));
@@ -34,7 +33,8 @@
       this.templateData = {
         loggedIn: !!DanceCard.session.get('user'),
         event: this.model.toJSON(),
-        dancer: DanceCard.session.get('dancer')
+        dancer: DanceCard.session.get('dancer'),
+        edit: {}
       };
       if (this.templateData.loggedIn) {
         if (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
@@ -196,6 +196,7 @@
       if (this.templateData.edit.venueInfo) {
         this.templateData.edit.venueInfo = false;
         $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.templateData));
+        this.makeMap();
       } else {
         this.templateData.edit.venueInfo = true;
         $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.templateData));
@@ -346,6 +347,7 @@
       this.templateData.event = this.model.toJSON();
       this.templateData.edit.venueInfo = false;
       $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.templateData));
+      this.makeMap();
     },
 
     multiDay: function() {

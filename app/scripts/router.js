@@ -8,7 +8,6 @@
       this.routesHit = 0;
       Parse.history.on('route', function() {
         self.routesHit++;
-        console.log(self.routesHit);
       });
     },
     routes: {
