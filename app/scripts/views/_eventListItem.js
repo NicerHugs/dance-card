@@ -56,6 +56,8 @@
       'click .unrsvp' : 'cancelRSVP'
     },
 
+
+
     rsvp: function(e) {
       e.preventDefault();
       var self = this;
@@ -64,8 +66,13 @@
         self.render();
       })
       .fail(function() {
-        //what to do when something goes wrong
-        console.log('something went wrong', arguments);
+        // what to do when something goes wrong
+        if (arguments[0] === "user not loggedIn") {
+          $('.index').append(DanceCard.templates._loginRequired());
+
+          // here i should prompt the user to log in or create an account
+          // change login to redirect 'back' when dancer unless first hit
+        }
       });
     },
 

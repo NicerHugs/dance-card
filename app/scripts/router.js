@@ -7,7 +7,9 @@
       new DanceCard.Views.App({});
       this.routesHit = 0;
       Parse.history.on('route', function() {
-        self.routesHit++;}, self);
+        self.routesHit++;
+        console.log(self.routesHit);
+      });
     },
     routes: {
       ''                       : 'index',
@@ -37,6 +39,7 @@
     logout: function() {
       Parse.User.logOut();
       DanceCard.session.set('user', Parse.User.current());
+      DanceCard.session.set('dancer', false);
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren.push(new DanceCard.Views.Logout({
         $container: $('main'),

@@ -9,8 +9,15 @@
       this.searchResults();
     },
     events: {
-      'click .search-submit' : 'searchResults'
+      'click .search-submit' : 'searchResults',
+      'click .cancel' : 'removeAlert'
     },
+
+    removeAlert: function(e) {
+      e.preventDefault();
+      $('.login-req-notif').remove();
+    },
+
     searchResults: function(e) {
       if (e) e.preventDefault();
       var self = this,

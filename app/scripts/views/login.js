@@ -5,7 +5,6 @@
     template: DanceCard.templates.login,
     render: function() {
       this.$el.html(this.template());
-      // console.log(this.undelegateEvents());
     },
     events: {
       'click .login' : 'login'
@@ -22,10 +21,15 @@
             $('.logout-msg').remove();
           }
           DanceCard.session.set('user', Parse.User.current().toJSON());
+          DanceCard.session.set('dancer', !DanceCard.session.get('user').organizer);
           if (Parse.User.current().get('organizer')) {
             DanceCard.router.navigate('#/orgs/'+ Parse.User.current().get('urlId'), {trigger: true});
           } else {
-            DanceCard.router.navigate('#', {trigger: true});
+            if (DanceCard.router.routesHit <= 1) {
+              DanceCard.router.navigate('#', {trigger: true});
+            } else {
+              window.history.back();
+            }
           }
         }
       );

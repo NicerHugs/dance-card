@@ -8,6 +8,7 @@
       var self = this;
       this.setTemplateData()
       .done(function() {
+        console.log(self.templateData);
         self.$el.html(self.template(self.templateData));
         if (self.templateData.owner) {
           $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(self.templateData));
@@ -35,27 +36,31 @@
         event: this.model.toJSON(),
         dancer: DanceCard.session.get('dancer')
       };
-      if (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
-        this.templateData.owner = true;
-        this.templateData.eventOrg = DanceCard.session.get('user');
-        def.resolve();
-      } else {
-        new Parse.Query('User').get(this.model.get('org').id, {
-          success: function(org) {
-            self.templateData.eventOrg = org.toJSON();
-            if (self.templateData.dancer) {
-              var relation = Parse.User.current().relation('attending'),
-                  query = new Parse.Query('Event');
-              relation.query().find()
-              .then(function(events){
-                self.templateData.attending = events;
+      if (this.templateData.loggedIn) {
+        if (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
+          this.templateData.owner = true;
+          this.templateData.eventOrg = DanceCard.session.get('user');
+          def.resolve();
+        } else {
+          new Parse.Query('User').get(this.model.get('org').id, {
+            success: function(org) {
+              self.templateData.eventOrg = org.toJSON();
+              if (self.templateData.dancer) {
+                var relation = Parse.User.current().relation('attending'),
+                    query = new Parse.Query('Event');
+                relation.query().find()
+                .then(function(events){
+                  self.templateData.attending = events;
+                  def.resolve();
+                });
+              } else {
                 def.resolve();
-              });
-            } else {
-              def.resolve();
+              }
             }
-          }
-        });
+          });
+        }
+      } else {
+        def.resolve();
       }
       return def.promise();
     },
@@ -73,7 +78,8 @@
       'click .chooseRpt'         : 'chooseRpt',
       'click .delete-event'      : 'deleteEvent',
       'click .rsvp'              : 'rsvp',
-      'click .unrsvp'            : 'cancelRSVP'
+      'click .unrsvp'            : 'cancelRSVP',
+      'click .cancel'            : 'removeAlert'
     },
 
     rsvp: function(e) {
@@ -84,9 +90,17 @@
         self.render();
       })
       .fail(function() {
-        //what to do when something goes wrong
-        console.log('something went wrong', arguments);
+        // what to do when something goes wrong
+        if (arguments[0] === "user not loggedIn") {
+          self.$el.append(DanceCard.templates._loginRequired());
+          console.log('something went wrong', arguments);
+        }
       });
+    },
+
+    removeAlert: function(e) {
+      e.preventDefault();
+      $('.login-req-notif').remove();
     },
 
     cancelRSVP: function(e) {
