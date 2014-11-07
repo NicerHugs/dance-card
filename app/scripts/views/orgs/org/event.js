@@ -9,7 +9,6 @@
       this.setTemplateData()
       .done(function() {
         self.$el.html(self.template(self.templateData));
-        self.makeMap();
         if (self.templateData.owner) {
           $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(self.templateData));
           if (self.model.get('recurring')) {
@@ -17,9 +16,12 @@
           }
           $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(self.templateData));
           $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(self.templateData));
+          self.makeMap();
           if (self.model.get('recurMonthly')) {
             $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(self.templateData));
           }
+        } else {
+          self.makeMap();
         }
       });
 
@@ -79,6 +81,7 @@
       this.model.rsvp()
       .done(function(){
         //what to do when all the parts successfully save
+        self.render();
         console.log('your save went off without a hitch', arguments);
       })
       .fail(function(){
