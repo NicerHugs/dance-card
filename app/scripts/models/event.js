@@ -29,8 +29,8 @@ DanceCard.Models.Event = Parse.Object.extend({
       var eRelation = this.relation('dancers');
       eRelation.add(Parse.User.current());
       this.save(null, {
-        success:function(event){
-          uRelation = Parse.User.current().relation('attending');
+        success: function(event){
+          var uRelation = Parse.User.current().relation('attending');
           uRelation.add(event);
           Parse.User.current().save(null, {
             success: function(user) {
@@ -48,6 +48,30 @@ DanceCard.Models.Event = Parse.Object.extend({
     } else {
       def.reject('no user');
     }
+    return def.promise();
+  },
+
+  cancelRSVP: function() {
+    var def = new $.Deferred(),
+        eRelation = this.relation('dancers'),
+        uRelation = Parse.User.current().relation('attending');
+    eRelation.remove(Parse.User.current());
+    uRelation.remove(this);
+    this.save(null, {
+      success: function() {
+        Parse.User.current().save(null, {
+          success: function() {
+            def.resolve();
+          },
+          fail: function() {
+            def.reject('save user failed');
+          }
+        });
+      },
+      fail: function() {
+        def.reject('save event failed');
+      }
+    });
     return def.promise();
   },
 

@@ -72,20 +72,31 @@
       'click .multi-day-input'   : 'multiDay',
       'click .chooseRpt'         : 'chooseRpt',
       'click .delete-event'      : 'deleteEvent',
-      'click .rsvp'              : 'rsvp'
+      'click .rsvp'              : 'rsvp',
+      'click .unrsvp'            : 'cancelRSVP'
     },
 
     rsvp: function(e) {
       e.preventDefault();
       var self = this;
       this.model.rsvp()
-      .done(function(){
-        //what to do when all the parts successfully save
+      .done(function() {
         self.render();
-        console.log('your save went off without a hitch', arguments);
       })
-      .fail(function(){
+      .fail(function() {
         //what to do when something goes wrong
+        console.log('something went wrong', arguments);
+      });
+    },
+
+    cancelRSVP: function(e) {
+      e.preventDefault();
+      var self = this;
+      this.model.cancelRSVP()
+      .done(function() {
+        self.render();
+      })
+      .fail(function() {
         console.log('something went wrong', arguments);
       });
     },
