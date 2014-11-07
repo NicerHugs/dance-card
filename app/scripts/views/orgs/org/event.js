@@ -6,39 +6,56 @@
     template: DanceCard.templates.orgs.org.event,
     render: function() {
       var self = this;
+      this.setTemplateData()
+      .done(function() {
+        self.$el.html(self.template(self.templateData));
+        self.makeMap();
+        if (self.templateData.owner) {
+          $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(self.templateData));
+          if (self.model.get('recurring')) {
+            $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(self.templateData));
+          }
+          $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(self.templateData));
+          $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(self.templateData));
+          if (self.model.get('recurMonthly')) {
+            $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(self.templateData));
+          }
+        }
+      });
+
+    },
+
+    setTemplateData: function() {
+      var self = this,
+          def = new $.Deferred();
       this.templateData = {
-        event: this.model.toJSON()
+        loggedIn: !!DanceCard.session.get('user'),
+        event: this.model.toJSON(),
+        dancer: DanceCard.session.get('dancer')
       };
-      if (DanceCard.session.get('user')) {
-        this.templateData.loggedIn = true;
-        this.templateData.dancer = (!DanceCard.session.get('user').organizer);
-        this.templateData.owner = (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId);
-      } else {
-        this.templateData.loggedIn = false;
-      }
-      if (this.templateData.owner) {
-        this.templateData.eventOrg = Parse.User.current();
-        this.$el.html(this.template(this.templateData));
-        $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.templateData));
-        if (this.model.get('recurring')) {
-          $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.templateData));
-        }
-        $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(this.templateData));
-        $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(this.templateData));
-        if (this.model.get('recurMonthly')) {
-          $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.templateData));
-        }
-        this.makeMap();
+      if (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
+        this.templateData.owner = true;
+        this.templateData.eventOrg = DanceCard.session.get('user');
+        def.resolve();
       } else {
         new Parse.Query('User').get(this.model.get('org').id, {
           success: function(org) {
             self.templateData.eventOrg = org.toJSON();
-            self.$el.html(self.template(self.templateData));
-            self.makeMap();
+            if (self.templateData.dancer) {
+              var relation = Parse.User.current().relation('attending'),
+                  query = new Parse.Query('Event');
+              relation.query().find()
+              .then(function(events){
+                self.templateData.attending = events;
+                def.resolve();
+              });
+            } else {
+              def.resolve();
+            }
           }
         });
       }
-      console.log(this.templateData);
+      return def.promise();
     },
 
     events: {
