@@ -5,7 +5,7 @@
     template: DanceCard.templates.orgs.org.index,
     render: function() {
       var self = this;
-
+      console.log(this.model, Parse.User.current());
       //if the user is logged in and viewing thier own page
       if (Parse.User.current().get('urlId') === this.model.get('urlId')){
         this.$el.html(this.template({

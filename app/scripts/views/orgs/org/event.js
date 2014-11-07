@@ -5,25 +5,20 @@
     className: 'event',
     template: DanceCard.templates.orgs.org.event,
     render: function() {
-      var owner,
-          dancer;
-      if (DanceCard.session.get('user')) {
-        dancer = (!DanceCard.session.get('user').organizer);
-        owner = (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId);
-      } else {
-        dancer = false;
-        owner = false;
-      }
+      var self = this;
       this.templateData = {
-                          edit: {},
-                          event: this.model.toJSON(),
-                          dancer: dancer,
-                          owner: owner,
-                          eventOrg: DanceCard.session.get('user')
-                          };
-      this.$el.html(this.template(this.templateData)
-      );
-      if (owner) {
+        event: this.model.toJSON()
+      };
+      if (DanceCard.session.get('user')) {
+        this.templateData.dancer = (!DanceCard.session.get('user').organizer);
+        this.templateData.owner = (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId);
+      } else {
+        this.templateData.dancer = false;
+        this.templateData.owner = false;
+      }
+      if (this.templateData.owner) {
+        this.templateData.eventOrg = Parse.User.current();
+        this.$el.html(this.template(this.templateData));
         $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.templateData));
         if (this.model.get('recurring')) {
           $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(this.templateData));
@@ -33,8 +28,16 @@
         if (this.model.get('recurMonthly')) {
           $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model.templateData));
         }
+        this.makeMap();
+      } else {
+        new Parse.Query('User').get(this.model.get('org').id, {
+          success: function(org) {
+            self.templateData.eventOrg = org.toJSON();
+            self.$el.html(self.template(self.templateData));
+            self.makeMap();
+          }
+        });
       }
-      this.makeMap();
     },
 
     events: {

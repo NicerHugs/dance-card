@@ -5,7 +5,7 @@
       this.$container = options.$container;
       this.$container.append(this.el);
       this.render();
-      this.model.on('change', _.bind(this.render, this));
+      this.model.on('change', this.render, this);
     },
     tagName: 'nav',
     template: DanceCard.templates.nav,
