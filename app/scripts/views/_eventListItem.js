@@ -9,6 +9,7 @@
       var self = this;
       this.setTemplateData()
       .done(function() {
+        console.log(self.templateData)
         self.$el.html(self.template(self.templateData));
       });
     },
@@ -21,27 +22,31 @@
         event: this.model.toJSON(),
         dancer: DanceCard.session.get('dancer')
       };
-      if (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
-        this.templateData.owner = true;
-        this.templateData.eventOrg = DanceCard.session.get('user');
-        def.resolve();
-      } else {
-        new Parse.Query('User').get(this.model.get('org').id, {
-          success: function(org) {
-            self.templateData.eventOrg = org.toJSON();
-            if (self.templateData.dancer) {
-              var relation = Parse.User.current().relation('attending'),
-                  query = new Parse.Query('Event');
-              relation.query().find()
-              .then(function(events){
-                self.templateData.attending = events;
+      if (this.templateData.loggedIn) {
+        if (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
+          this.templateData.owner = true;
+          this.templateData.eventOrg = DanceCard.session.get('user');
+          def.resolve();
+        } else {
+          new Parse.Query('User').get(this.model.get('org').id, {
+            success: function(org) {
+              self.templateData.eventOrg = org.toJSON();
+              if (self.templateData.dancer) {
+                var relation = Parse.User.current().relation('attending'),
+                    query = new Parse.Query('Event');
+                relation.query().find()
+                .then(function(events){
+                  self.templateData.attending = events;
+                  def.resolve();
+                });
+              } else {
                 def.resolve();
-              });
-            } else {
-              def.resolve();
+              }
             }
-          }
-        });
+          });
+        }
+      } else {
+        def.resolve();
       }
       return def.promise();
     },

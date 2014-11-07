@@ -46,7 +46,10 @@ DanceCard.Models.Event = Parse.Object.extend({
           }
       });
     } else {
-      def.reject('no user');
+      def.reject('user not loggedIn');
+      // here i should prompt the user to log in or create an account
+      // reject with notice that user is not logged in
+      // change login to redirect 'back' when dancer unless first hit
     }
     return def.promise();
   },

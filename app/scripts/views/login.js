@@ -5,9 +5,10 @@
     template: DanceCard.templates.login,
     render: function() {
       this.$el.html(this.template());
+      // console.log(this.undelegateEvents());
     },
     events: {
-      'submit' : 'login'
+      'click .login' : 'login'
     },
     login: function(e) {
       e.preventDefault();
