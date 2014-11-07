@@ -2,10 +2,19 @@
   <div id="siteNotice">
   </div>
   <h1 id="firstHeading" class="firstHeading">
-  <a href="#/orgs/{{orgUrlId}}/{{objectId}}">
-  {{name}}</a></h1>
+  <a href="#/orgs/{{event.orgUrlId}}/{{event.objectId}}">
+  {{event.name}}</a></h1>
   <div id="bodyContent">
-  <p>{{#dateDisplay}}{{startDate.iso}}{{/dateDisplay}} {{startTime}}</p>
-  <p>{{venue.fullAddress}}</p>
+    {{#if dancer}}
+      <a href="#" class="rsvp">RSVP</a>
+    {{/if}}
+    {{#unless loggedIn}}
+      <a href="#" class="rsvp">RSVP</a>
+    {{/unless}}
+  <p>
+    {{#dateDisplay}}{{event.startDate.iso}}{{/dateDisplay}}
+    {{#time}}{{event.startTime}}{{/time}}
+  </p>
+  <p>{{event.venue.fullAddress}}</p>
   </div>
 </div>

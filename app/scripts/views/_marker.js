@@ -7,8 +7,18 @@
           position = new google.maps.LatLng(this.model.get('point')._latitude, this.model.get('point')._longitude),
           color = this.setColor(this.model),
           image= "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color;
+      this.templateData = {
+        event: this.model.toJSON()};
+      if (DanceCard.session.get('user')) {
+        this.templateData.loggedIn = true;
+        this.templateData.dancer = (!DanceCard.session.get('user').organizer);
+        this.templateData.owner = (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId);
+      } else {
+      this.templateData.loggedIn = false;
+      }
+      console.log(this.templateData)
       this.infowindow = new google.maps.InfoWindow({
-        content: DanceCard.templates._infoWindow(this.model.toJSON())
+        content: DanceCard.templates._infoWindow(this.templateData)
       });
       this.marker = new google.maps.Marker({
         map: this.options.map,
