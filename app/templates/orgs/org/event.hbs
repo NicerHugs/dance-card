@@ -24,6 +24,12 @@
   {{else}}
   {{!-- user cannot manage this event, only view --}}
     <div class="event-header-viewing">
+      {{#if dancer}}
+        <a href="#" class="rsvp">RSVP</a>
+      {{/if}}
+      {{#unless loggedIn}}
+        <a href="#" class="rsvp">RSVP</a>
+      {{/unless}}
       <h2>{{event.name}}</h2>
       <p>
         {{#if event.multiDay}}From {{/if}}

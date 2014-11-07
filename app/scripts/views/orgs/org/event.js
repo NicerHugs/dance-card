@@ -10,11 +10,11 @@
         event: this.model.toJSON()
       };
       if (DanceCard.session.get('user')) {
+        this.templateData.loggedIn = true;
         this.templateData.dancer = (!DanceCard.session.get('user').organizer);
         this.templateData.owner = (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId);
       } else {
-        this.templateData.dancer = false;
-        this.templateData.owner = false;
+        this.templateData.loggedIn = false;
       }
       if (this.templateData.owner) {
         this.templateData.eventOrg = Parse.User.current();
