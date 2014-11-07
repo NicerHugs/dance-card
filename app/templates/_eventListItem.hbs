@@ -1,2 +1,8 @@
-  <h5><a href="#/orgs/{{orgUrlId}}/{{objectId}}">{{name}}</a></h5>
-  {{#dateDisplay}}{{startDate.iso}}{{/dateDisplay}} {{startTime}}
+  <h5><a href="#/orgs/{{event.orgUrlId}}/{{event.objectId}}">{{event.name}}</a></h5>
+  {{#if dancer}}
+    <a href="#" class="rsvp">RSVP</a>
+  {{/if}}
+  {{#unless loggedIn}}
+    <a href="#" class="rsvp">RSVP</a>
+  {{/unless}}
+  {{#dateDisplay}}{{event.startDate.iso}}{{/dateDisplay}} {{event.startTime}}
