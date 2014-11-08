@@ -196,8 +196,8 @@
       _.each(ids, function(id) {
         var query = new Parse.Query('Event');
         query.get(id, {
-          success: function(event){
-            event.destroy({success: function(){
+          success: function(model){
+            model.destroy({success: function(model){
           },
           error: function(error) {
             console.log('error', error);
@@ -853,7 +853,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.templa
   return buffer + "\n<label name=\"notes\">Notes</label>\n<textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\">\n";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["email"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<form>\n  <label name=\"subject\">Subject</label>\n  <input name=\"subject\" class=\"email-subject\" type=\"textbox\" placeholder=\"subject\">\n  <label name=\"body\">Body</label>\n  <textarea name=\"body\" class=\"email-body\" rows=\"8\" cols=\"40\"></textarea>\n  <input class=\"sendEmail\" type=\"submit\" value=\"Send Email\">\n</form>\n";
+  return "<form>\n  <label name=\"subject\">Subject</label>\n  <input name=\"subject\" class=\"email-subject\" type=\"textbox\" placeholder=\"subject\">\n  <label name=\"body\">Body</label>\n  <textarea name=\"body\" class=\"email-body\" rows=\"8\" cols=\"40\"></textarea>\n  <input class=\"send-email\" type=\"submit\" value=\"Send Email\">\n  <a href=\"#\" class=\"cancel-email\">cancel</a>\n</form>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["event"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
@@ -1009,7 +1009,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
     + "!</h2>\n  <p>Below is a list of your events. Click on any event name to view, add or change the event's info</p>\n  <ul class=\"recurring-event-list\">\n    <h3>Your Recurring Events</h3>\n\n  </ul>\n";
 },"3":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <h2>"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.orgName : stack1), depth0))
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
     + " Events</h2>\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.events : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.program(8, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
@@ -1045,7 +1045,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
   },"8":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "    "
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.orgName : stack1), depth0))
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
     + " has no upcoming events.\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
@@ -1454,7 +1454,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
     template: DanceCard.templates.orgs.org.index,
     render: function() {
       var self = this;
-      console.log(this.model, Parse.User.current());
       //if the user is logged in and viewing thier own page
       if (Parse.User.current().get('urlId') === this.model.get('urlId')){
         this.$el.html(this.template({
@@ -1472,7 +1471,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
               _.each(recurringCollection.models, function(event) {
                 new DanceCard.Views.RecurringEventListItem({
                   $container: $('.recurring-event-list'),
-                  model: event.toJSON()
+                  model: event
                 });
               });
             } else {
@@ -1492,6 +1491,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
         });
         onetimeCollection.fetch()
         .then(function() {
+          console.log(onetimeCollection);
           new DanceCard.Views.OnetimeEventList({
             $container: self.$el,
             collection: onetimeCollection
@@ -1510,7 +1510,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
           self.$el.html(self.template({
             events: events,
             loggedIn: false,
-            model: {orgName: self.model.get('orgName')}
+            model: self.model.toJSON()
           }));
         });
       }
@@ -1529,29 +1529,30 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
     render: function() {
       var self = this;
       //render the recurring event
-      this.$el.html(this.template(this.model));
-
-      //render the children of the recurring event
-      new Parse.Query('Event').get(this.model.objectId, {
-        success: function(model) {
-          var collection = new DanceCard.Collections.OnetimeEventList({
-            orgUrlId: self.model.orgUrlId,
-            parentEvent: model
+      if (this.model.toJSON) {
+        this.$el.html(this.template(this.model.toJSON()));
+        //render the children of the recurring event
+        var collection = new DanceCard.Collections.OnetimeEventList({
+          orgUrlId: this.model.get('orgUrlId'),
+          parentEvent: this.model
+        });
+        collection.fetch()
+        .then(function() {
+          new DanceCard.Views.OnetimeEventList({
+            $container: self.$el,
+            collection: collection
           });
-          collection.fetch()
-          .then(function() {
-            new DanceCard.Views.OnetimeEventList({
-              $container: self.$el,
-              collection: collection
-            });
-          });
-        }
-      });  
+        });
+      } else {
+        this.$el.html(this.template(this.model));
+      }
     },
+
     events: {
       'click .recur-event-name' : 'toggleChildren',
       'click .delete-recur'     : 'deleteEvent'
     },
+
     toggleChildren: function(e) {
       e.preventDefault();
       if (this.$el.children('ul').css('height') === '0px') {
@@ -1565,22 +1566,15 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
       e.preventDefault();
       var self = this,
           collection = new DanceCard.Collections.OnetimeEventList({
-        orgUrlId: this.model.orgUrlId,
-        parentEvent: this.model.urlId
+        orgUrlId: this.model.get('orgUrlId'),
+        parentEvent: this.model,
+        limit: 1000
       });
       collection.fetch()
       .then(function(){
         DanceCard.Utility.destroyAll(collection);
-      });
-      new Parse.Query('Event')
-      .get(this.model.objectId, {
-        success: function(event) {
-          event.destroy();
-          self.remove();
-        },
-        fail: function(error) {
-          console.log(error);
-        }
+        self.model.destroy();
+        self.remove();
       });
     }
   });
@@ -1918,7 +1912,10 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
                     query = new Parse.Query('Event');
                 relation.query().find()
                 .then(function(events){
-                  self.templateData.attending = events;
+                  events = _.map(events, function(event) {
+                    return event.id;
+                  });
+                  self.templateData.attending = _.contains(events, self.model.id);
                   def.resolve();
                 });
               } else {
@@ -1955,6 +1952,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
       var self = this;
       this.model.rsvp()
       .done(function() {
+        console.log('rsvpd')
         self.render();
       })
       .fail(function() {
@@ -2250,7 +2248,19 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
       this.$el.html(this.template());
     },
     events: {
-      'click .sendEmail' : 'sendEmail'
+      'click .send-email'   : 'sendEmail',
+      'click .cancel-email' : 'cancelEmail'
+    },
+
+    cancelEmail: function(e) {
+      e.preventDefault();
+      DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, self);
+      this.remove();
+      if (DanceCard.router.routesHit === 1) {
+        DanceCard.router.navigate('#/orgs/org/' + this.model.id, {trigger: true});
+      } else {
+        window.history.back();
+      }
     },
 
     sendEmail: function(e) {
@@ -2265,7 +2275,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
           subject: subject
         }, {
           success: function() {
-            _.without(DanceCard.router.mainChildren, self);
+            DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, self);
             self.remove();
             if (DanceCard.router.routesHit === 1) {
               DanceCard.router.navigate('#/orgs/org/' + self.model.id, {trigger: true});
@@ -2275,8 +2285,12 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
             $('main').prepend('<div class="email-success">Your message was successfully sent</div>');
             window.setTimeout(function(){
               $('.email-success').remove();
-            }, 5000);
+            }, 4000);
           }, error: function() {
+            $('main').prepend('<div class="email-failure">Your message was not sent. Please try again</div>');
+            window.setTimeout(function(){
+              $('.email-failure').remove();
+            }, 4000);
             console.log('error', arguments);}
         });
       }
@@ -2516,7 +2530,10 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
                     query = new Parse.Query('Event');
                 relation.query().find()
                 .then(function(events){
-                  self.templateData.attending = events;
+                  events = _.map(events, function(event) {
+                    return event.id;
+                  });
+                  self.templateData.attending = _.contains(events, self.model.id);
                   def.resolve();
                 });
               } else {
