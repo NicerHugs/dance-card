@@ -6,7 +6,23 @@
     className: 'onetime-event',
     template: DanceCard.templates.orgs.org._onetimeList,
     render: function() {
-      this.$el.html(this.template(this.collection));
+      if (this.collection.models.length > 0) {
+        this.renderChildren();
+      } else {
+        var owner = this.options.owner,
+            name = this.options.name;
+        this.$el.html(this.template({owner: owner, name: name}));
+      }
+    },
+
+    renderChildren: function() {
+      var self = this;
+      _.each(this.collection.models, function(model) {
+        self.children.push(new DanceCard.Views.EventListItemPartial({
+          $container: self.$el,
+          model: model
+        }));
+      });
     }
   });
 

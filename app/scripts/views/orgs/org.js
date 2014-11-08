@@ -8,15 +8,19 @@
           collection = new DanceCard.Collections.LoggedOutEventList({
             urlId: this.model.get('urlId')
           });
+      this.$el.html(this.template(this.model.toJSON()));
       collection.fetch()
-      .then(function() {
-        self.$el.html(self.template({
-          events: collection.toJSON(),
-          loggedIn: false,
-          model: self.model.toJSON()
-        }));
-      });
+      .then(_.bind(this.renderChildren, this));
     },
+
+    renderChildren: function(collection) {
+      this.children.push(new DanceCard.Views.OnetimeEventList({
+        $container: this.$el,
+        collection: collection,
+        name: this.model.get('name'),
+        owner: this.model.authenticated()
+      }));
+    }
   });
 
 })();

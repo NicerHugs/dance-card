@@ -1,14 +1,5 @@
-<h2>{{model.name}} Events</h2>
-{{#if events}}
-<ul class="{{orgUrlId}}-event-list">
-    {{#each events}}
-      <li class="{{orgUrlId}}-event">
-        <a href="#/orgs/{{orgUrlId}}/{{objectId}}">{{name}}</a>
-        {{#dateDisplay}}{{startDate.iso}}{{/dateDisplay}}
-        {{startTime}}-{{endTime}}
-      </li>
-    {{/each}}
-  </ul>
-{{else}}
+<h2>{{name}} Events</h2>
+
+{{!-- {{else}}
   {{model.name}} has no upcoming events.
-{{/if}}
+{{/if}} --}}

@@ -154,7 +154,7 @@
           DanceCard.router.navigate('#/orgs/' + self.model.get('orgUrlId'));
           self.remove();
         },
-        fail: function() {
+        error: function() {
           console.log('failed to destroy the event');
         }
       });

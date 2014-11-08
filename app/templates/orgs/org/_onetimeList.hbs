@@ -1,14 +1,8 @@
-{{#unless models}}
-  <li>
-  You have no one time events.
-  <a href="#/orgs/{{orgUrlId}}/create-event">Click here to add a new event</a>
-  </li>
-{{/unless}}
-
-{{#each models}}
-  <li class="{{attributes.orgUrlId}}-event">
-    <a href="#/orgs/{{attributes.orgUrlId}}/{{id}}">{{attributes.name}}</a>
-    {{#dateDisplay}}{{attributes.startDate}}{{/dateDisplay}}
-    {{attributes.startTime}}-{{attributes.endTime}}
-  </li>
-{{/each}}
+<li>
+  {{#if owner}}
+    You have no one time events.
+    <a href="#/orgs/{{orgUrlId}}/create-event">Click here to add a new event</a>
+  {{else}}
+    {{name}} has no upcoming events.
+  {{/if}}
+</li>
