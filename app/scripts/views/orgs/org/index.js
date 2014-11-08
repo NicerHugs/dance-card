@@ -42,7 +42,6 @@
         });
         onetimeCollection.fetch()
         .then(function() {
-          console.log(onetimeCollection);
           new DanceCard.Views.OnetimeEventList({
             $container: self.$el,
             collection: onetimeCollection

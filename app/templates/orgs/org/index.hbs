@@ -1,24 +1,14 @@
-{{#if owner}}
-  <h2>Hi, {{model.name}}!</h2>
-  <p>Below is a list of your events. Click on any event name to view, add or change the event's info</p>
-  <ul class="recurring-event-list">
-    <h3>Your Recurring Events</h3>
-
+<h2>{{model.name}} Events</h2>
+{{#if events}}
+<ul class="{{orgUrlId}}-event-list">
+    {{#each events}}
+      <li class="{{orgUrlId}}-event">
+        <a href="#/orgs/{{orgUrlId}}/{{objectId}}">{{name}}</a>
+        {{#dateDisplay}}{{startDate.iso}}{{/dateDisplay}}
+        {{startTime}}-{{endTime}}
+      </li>
+    {{/each}}
   </ul>
 {{else}}
-  <h2>{{model.name}} Events</h2>
-  {{#if events}}
-  <ul class="{{orgUrlId}}-event-list">
-      {{#each events}}
-        <li class="{{orgUrlId}}-event">
-          <a href="#/orgs/{{orgUrlId}}/{{objectId}}">{{name}}</a>
-          {{#dateDisplay}}{{startDate.iso}}{{/dateDisplay}}
-          {{startTime}}-{{endTime}}
-        </li>
-      {{/each}}
-    </ul>
-  {{else}}
-    {{model.name}} has no upcoming events.
-  {{/if}}
-
+  {{model.name}} has no upcoming events.
 {{/if}}

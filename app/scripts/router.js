@@ -61,28 +61,36 @@
       }));
     },
     org: function(org) {
-      _.invoke(this.mainChildren, 'remove');
       var self = this;
       new Parse.Query('User')
         .equalTo('urlId', org)
         .find({
           success: function(user) {
+            //user exists
             if (user.length > 0) {
-              _.invoke(this.mainChildren, 'remove');
-              self.mainChildren.push(new DanceCard.Views.Org({
-                $container: $('main'),
-                model: user[0]
-              }));
+              if (user[0].authenticated()) {
+                _.invoke(self.mainChildren, 'remove');
+                self.mainChildren.push(new DanceCard.Views.OrgManage({
+                  $container: $('main'),
+                  model: user[0]
+                }));
+              } else {
+                _.invoke(self.mainChildren, 'remove');
+                self.mainChildren.push(new DanceCard.Views.Org({
+                  $container: $('main'),
+                  model: user[0]
+                }));
+              }
             } else {
               console.log('user not found');
-              _.invoke(this.mainChildren, 'remove');
+              _.invoke(self.mainChildren, 'remove');
               self.mainChildren.push(new DanceCard.Views.NotFound({
                 $container: $('main')
               }));
             }
           }, error: function() {
             console.log('error retrieving user');
-            _.invoke(this.mainChildren, 'remove');
+            _.invoke(self.mainChildren, 'remove');
             self.mainChildren.push(new DanceCard.Views.NotFound({
               $container: $('main')
             }));
