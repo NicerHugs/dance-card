@@ -362,13 +362,11 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_multiDay"] = Handlebars.template
   return buffer + ">\n";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
-  return "  <h3>Your One Time Events</h3>\n";
-  },"3":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "  You have no one time events.\n  <a href=\"#/orgs/"
+  return "  <li>\n  You have no one time events.\n  <a href=\"#/orgs/"
     + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
-    + "/create-event\">Click here to add a new event</a>\n";
-},"5":function(depth0,helpers,partials,data) {
+    + "/create-event\">Click here to add a new event</a>\n  </li>\n";
+},"3":function(depth0,helpers,partials,data) {
   var stack1, helper, options, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = "  <li class=\""
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.orgUrlId : stack1), depth0))
     + "-event\">\n    <a href=\"#/orgs/"
@@ -378,7 +376,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeList"] = Handlebars.templ
     + "\">"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.name : stack1), depth0))
     + "</a>\n    ";
-  stack1 = ((helper = (helper = helpers.dateDisplay || (depth0 != null ? depth0.dateDisplay : depth0)) != null ? helper : helperMissing),(options={"name":"dateDisplay","hash":{},"fn":this.program(6, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  stack1 = ((helper = (helper = helpers.dateDisplay || (depth0 != null ? depth0.dateDisplay : depth0)) != null ? helper : helperMissing),(options={"name":"dateDisplay","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
   if (!helpers.dateDisplay) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if (stack1 != null) { buffer += stack1; }
   return buffer + "\n    "
@@ -386,18 +384,15 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeList"] = Handlebars.templ
     + "-"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.endTime : stack1), depth0))
     + "\n  </li>\n";
-},"6":function(depth0,helpers,partials,data) {
+},"4":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.startDate : stack1), depth0));
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.parentEvent : depth0), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.models : depth0), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += "\n";
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.models : depth0), {"name":"unless","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n";
-  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.models : depth0), {"name":"each","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data});
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.models : depth0), {"name":"each","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"useData":true});
@@ -701,5 +696,5 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "<h2>Hi, "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
-    + "!</h2>\n<p>Below is a list of your events. Click on any event name to view, add or change the event's info</p>\n<ul class=\"recurring-event-list\">\n  <h3>Your Recurring Events</h3>\n\n</ul>\n";
+    + "!</h2>\n<p>Below is a list of your events. Click on any event name to view, add or change the event's info</p>\n<h3>Your Recurring Events</h3>\n<ul class=\"recurring-event-list\">\n</ul>\n<h3>Your One Time Events</h3>\n";
 },"useData":true});

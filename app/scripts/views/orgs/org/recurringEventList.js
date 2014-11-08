@@ -36,8 +36,7 @@
       e.preventDefault();
       if (this.$el.children('ul').css('height') === '0px') {
         this.$el.children('ul').css('height', 'auto');
-      }
-      else {
+      } else {
         this.$el.children('ul').css('height', 0);
       }
     },

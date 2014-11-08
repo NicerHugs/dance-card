@@ -1,10 +1,8 @@
-{{#unless parentEvent}}
-  <h3>Your One Time Events</h3>
-{{/unless}}
-
 {{#unless models}}
+  <li>
   You have no one time events.
   <a href="#/orgs/{{orgUrlId}}/create-event">Click here to add a new event</a>
+  </li>
 {{/unless}}
 
 {{#each models}}
