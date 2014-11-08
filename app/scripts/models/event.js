@@ -1,6 +1,48 @@
 DanceCard.Models.Event = Parse.Object.extend({
   className: 'Event',
 
+  setTemplateData: function(view) {
+    var self = this,
+        def = new $.Deferred();
+    view.templateData = {
+      loggedIn: !!DanceCard.session.get('user'),
+      event: this.toJSON(),
+      dancer: DanceCard.session.get('dancer'),
+      edit: {}
+    };
+    if (view.templateData.loggedIn && !view.templateData.dancer) {
+      if (this.get('orgUrlId') === Parse.User.current().get('urlId')) {
+        view.templateData.owner = true;
+        view.templateData.eventOrg = Parse.User.current();
+        def.resolve();
+      } else {
+        view.templateData.owner = false;
+      }
+    }
+    new Parse.Query('User').get(this.get('org').id, {
+      success: function(org) {
+        view.templateData.eventOrg = org.toJSON();
+        if (view.templateData.dancer) {
+          var relation = Parse.User.current().relation('attending'),
+              query = new Parse.Query('Event');
+          relation.query().find()
+          .then(function(events){
+            events = _.map(events, function(event) {
+              return event.id;
+            });
+            view.templateData.attending = _.contains(events, self.id);
+            def.resolve();
+          });
+        } else {
+          def.resolve();
+        }
+      }, fail: function() {
+        console.log('didnot get the org');
+      }
+    });
+    return def.promise();
+  },
+
   createChildren: function(parent, startDate) {
     var week = parent.get('monthlyRpt'),
         endDate = parent.get('endDate'),

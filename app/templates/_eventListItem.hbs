@@ -12,4 +12,4 @@
   {{#unless loggedIn}}
     <a href="#" class="rsvp">RSVP</a>
   {{/unless}}
-  {{#dateDisplay}}{{event.startDate.iso}}{{/dateDisplay}} {{event.startTime}}
+  {{#dateDisplay}}{{event.startDate.iso}}{{/dateDisplay}} {{#time}}{{event.startTime}}{{/time}}

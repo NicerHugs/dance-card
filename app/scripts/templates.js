@@ -47,6 +47,9 @@ this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"1":func
   },"10":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startDate : stack1)) != null ? stack1.iso : stack1), depth0));
+  },"12":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startTime : stack1), depth0));
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, helper, options, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = "  <h5><a href=\"#/orgs/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.orgUrlId : stack1), depth0))
@@ -65,9 +68,11 @@ this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"1":func
   stack1 = ((helper = (helper = helpers.dateDisplay || (depth0 != null ? depth0.dateDisplay : depth0)) != null ? helper : helperMissing),(options={"name":"dateDisplay","hash":{},"fn":this.program(10, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
   if (!helpers.dateDisplay) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if (stack1 != null) { buffer += stack1; }
-  return buffer + " "
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startTime : stack1), depth0))
-    + "\n";
+  buffer += " ";
+  stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(12, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "\n";
 },"useData":true});
 this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
