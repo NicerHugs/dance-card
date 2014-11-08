@@ -65,20 +65,21 @@
       new Parse.Query('User')
         .equalTo('urlId', org)
         .find({
-          success: function(user) {
-            //user exists
-            if (user.length > 0) {
-              if (user[0].authenticated()) {
+          success: function(org) {
+            // org exists
+            if (org.length > 0) {
+              if (org[0].authenticated()) {
+                // current user is the org being viewed
                 _.invoke(self.mainChildren, 'remove');
                 self.mainChildren.push(new DanceCard.Views.OrgManage({
                   $container: $('main'),
-                  model: user[0]
+                  model: org[0]
                 }));
               } else {
                 _.invoke(self.mainChildren, 'remove');
                 self.mainChildren.push(new DanceCard.Views.Org({
                   $container: $('main'),
-                  model: user[0]
+                  model: org[0]
                 }));
               }
             } else {
