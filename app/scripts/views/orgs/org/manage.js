@@ -16,7 +16,7 @@
         urlId: this.model.get('urlId')
       });
       recurringCollection.fetch()
-      .then(this.renderRecur);
+      .then(_.bind(this.renderRecur, this));
 
       //render a list of their one time events, all in one view
       var onetimeCollection = new DanceCard.Collections.OnetimeEventList({
@@ -34,6 +34,7 @@
     },
 
     renderRecur: function(collection) {
+      var self = this;
       if (collection.models.length > 0) {
         _.each(collection.models, function(model) {
           new DanceCard.Views.RecurringEventListItem({

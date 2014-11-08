@@ -7,21 +7,14 @@
     template: DanceCard.templates.orgs.org._recurList,
     render: function() {
       var self = this;
-      //render the recurring event
       if (this.model.toJSON) {
         this.$el.html(this.template(this.model.toJSON()));
-        //render the children of the recurring event
         var collection = new DanceCard.Collections.OnetimeEventList({
           orgUrlId: this.model.get('orgUrlId'),
           parentEvent: this.model
         });
         collection.fetch()
-        .then(function() {
-          new DanceCard.Views.OnetimeEventList({
-            $container: self.$el,
-            collection: collection
-          });
-        });
+        .then(_.bind(this.renderChildren, this));
       } else {
         this.$el.html(this.template(this.model));
       }
@@ -30,6 +23,13 @@
     events: {
       'click .recur-event-name' : 'toggleChildren',
       'click .delete-recur'     : 'deleteEvent'
+    },
+
+    renderChildren: function(collection) {
+      this.children.push(new DanceCard.Views.OnetimeEventList({
+        $container: this.$el,
+        collection: collection
+      }));
     },
 
     toggleChildren: function(e) {
