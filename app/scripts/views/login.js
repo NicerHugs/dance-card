@@ -14,8 +14,8 @@
       var self = this;
       var email = this.$('.email-input').val();
       var password = this.$('.password-input').val();
-      Parse.User.logIn(email, password).then(
-        function() {
+      Parse.User.logIn(email, password, {
+        success: function() {
           self.remove();
           if ($('.logout-msg')) {
             $('.logout-msg').remove();
@@ -31,8 +31,11 @@
               window.history.back();
             }
           }
+        }, error: function() {
+          self.$el.append('<div class="invalid-form-warning invalid"></div>');
+          $('.invalid-form-warning').html('username or password was not found');
         }
-      );
+      });
     }
   });
 })();
