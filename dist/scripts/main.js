@@ -274,28 +274,37 @@
       }));
     },
     org: function(org) {
-      _.invoke(this.mainChildren, 'remove');
       var self = this;
       new Parse.Query('User')
         .equalTo('urlId', org)
         .find({
-          success: function(user) {
-            if (user.length > 0) {
-              _.invoke(this.mainChildren, 'remove');
-              self.mainChildren.push(new DanceCard.Views.Org({
-                $container: $('main'),
-                model: user[0]
-              }));
+          success: function(org) {
+            // org exists
+            if (org.length > 0) {
+              if (org[0].authenticated()) {
+                // current user is the org being viewed
+                _.invoke(self.mainChildren, 'remove');
+                self.mainChildren.push(new DanceCard.Views.OrgManage({
+                  $container: $('main'),
+                  model: org[0]
+                }));
+              } else {
+                _.invoke(self.mainChildren, 'remove');
+                self.mainChildren.push(new DanceCard.Views.Org({
+                  $container: $('main'),
+                  model: org[0]
+                }));
+              }
             } else {
               console.log('user not found');
-              _.invoke(this.mainChildren, 'remove');
+              _.invoke(self.mainChildren, 'remove');
               self.mainChildren.push(new DanceCard.Views.NotFound({
                 $container: $('main')
               }));
             }
           }, error: function() {
             console.log('error retrieving user');
-            _.invoke(this.mainChildren, 'remove');
+            _.invoke(self.mainChildren, 'remove');
             self.mainChildren.push(new DanceCard.Views.NotFound({
               $container: $('main')
             }));
@@ -387,8 +396,10 @@ this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"1":func
   },"4":function(depth0,helpers,partials,data) {
   return "      <a href=\"#\" class=\"rsvp\">RSVP</a>\n";
   },"6":function(depth0,helpers,partials,data) {
-  return "    <a href=\"#\" class=\"rsvp\">RSVP</a>\n";
+  return "    <a href=\"#\" class=\"delete-event\">delete this event</a>\n";
   },"8":function(depth0,helpers,partials,data) {
+  return "    <a href=\"#\" class=\"rsvp\">RSVP</a>\n";
+  },"10":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startDate : stack1)) != null ? stack1.iso : stack1), depth0));
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -401,10 +412,12 @@ this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"1":func
     + "</a></h5>\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.dancer : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.loggedIn : depth0), {"name":"unless","hash":{},"fn":this.program(6, data),"inverse":this.noop,"data":data});
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.owner : depth0), {"name":"if","hash":{},"fn":this.program(6, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.loggedIn : depth0), {"name":"unless","hash":{},"fn":this.program(8, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += "  ";
-  stack1 = ((helper = (helper = helpers.dateDisplay || (depth0 != null ? depth0.dateDisplay : depth0)) != null ? helper : helperMissing),(options={"name":"dateDisplay","hash":{},"fn":this.program(8, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  stack1 = ((helper = (helper = helpers.dateDisplay || (depth0 != null ? depth0.dateDisplay : depth0)) != null ? helper : helperMissing),(options={"name":"dateDisplay","hash":{},"fn":this.program(10, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
   if (!helpers.dateDisplay) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if (stack1 != null) { buffer += stack1; }
   return buffer + " "
@@ -708,44 +721,20 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_multiDay"] = Handlebars.template
   return buffer + ">\n";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
-  return "  <h3>Your One Time Events</h3>\n";
-  },"3":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "  You have no one time events.\n  <a href=\"#/orgs/"
+  return "    You have no one time events.\n    <a href=\"#/orgs/"
     + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
     + "/create-event\">Click here to add a new event</a>\n";
-},"5":function(depth0,helpers,partials,data) {
-  var stack1, helper, options, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = "  <li class=\""
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.orgUrlId : stack1), depth0))
-    + "-event\">\n    <a href=\"#/orgs/"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.orgUrlId : stack1), depth0))
-    + "/"
-    + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
-    + "\">"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.name : stack1), depth0))
-    + "</a>\n    ";
-  stack1 = ((helper = (helper = helpers.dateDisplay || (depth0 != null ? depth0.dateDisplay : depth0)) != null ? helper : helperMissing),(options={"name":"dateDisplay","hash":{},"fn":this.program(6, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
-  if (!helpers.dateDisplay) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+},"3":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "    "
+    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
+    + " has no upcoming events.\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "<li>\n";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.owner : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n    "
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.startTime : stack1), depth0))
-    + "-"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.endTime : stack1), depth0))
-    + "\n  </li>\n";
-},"6":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.attributes : depth0)) != null ? stack1.startDate : stack1), depth0));
-  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "";
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.parentEvent : depth0), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n";
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.models : depth0), {"name":"unless","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n";
-  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.models : depth0), {"name":"each","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer;
+  return buffer + "</li>\n";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_recurList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
@@ -1002,56 +991,17 @@ this["DanceCard"]["templates"]["orgs"]["org"]["event"] = Handlebars.template({"1
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"useData":true});
-this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return "  <h2>Hi, "
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
-    + "!</h2>\n  <p>Below is a list of your events. Click on any event name to view, add or change the event's info</p>\n  <ul class=\"recurring-event-list\">\n    <h3>Your Recurring Events</h3>\n\n  </ul>\n";
-},"3":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <h2>"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
-    + " Events</h2>\n";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.events : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.program(8, data),"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n";
-},"4":function(depth0,helpers,partials,data) {
-  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "  <ul class=\""
-    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
-    + "-event-list\">\n";
-  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.events : depth0), {"name":"each","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + "    </ul>\n";
-},"5":function(depth0,helpers,partials,data) {
-  var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing, buffer = "        <li class=\""
-    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
-    + "-event\">\n          <a href=\"#/orgs/"
-    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
-    + "/"
-    + escapeExpression(((helper = (helper = helpers.objectId || (depth0 != null ? depth0.objectId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"objectId","hash":{},"data":data}) : helper)))
-    + "\">"
+this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "<h2>"
     + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
-    + "</a>\n          ";
-  stack1 = ((helper = (helper = helpers.dateDisplay || (depth0 != null ? depth0.dateDisplay : depth0)) != null ? helper : helperMissing),(options={"name":"dateDisplay","hash":{},"fn":this.program(6, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
-  if (!helpers.dateDisplay) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n          "
-    + escapeExpression(((helper = (helper = helpers.startTime || (depth0 != null ? depth0.startTime : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"startTime","hash":{},"data":data}) : helper)))
-    + "-"
-    + escapeExpression(((helper = (helper = helpers.endTime || (depth0 != null ? depth0.endTime : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"endTime","hash":{},"data":data}) : helper)))
-    + "\n        </li>\n";
-},"6":function(depth0,helpers,partials,data) {
+    + " Events</h2>\n\n";
+},"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.startDate : depth0)) != null ? stack1.iso : stack1), depth0));
-  },"8":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return "    "
+  return "<h2>Hi, "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
-    + " has no upcoming events.\n";
-},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.owner : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer;
+    + "!</h2>\n<p>Below is a list of your events. Click on any event name to view, add or change the event's info</p>\n<h3>Your Recurring Events</h3>\n<ul class=\"recurring-event-list\">\n</ul>\n<h3>Your One Time Events</h3>\n";
 },"useData":true});
 (function(){
   'use strict';
@@ -1221,8 +1171,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
           distance = $('.search-distance').val() || 50,
           type = $('.search-type :selected').val().split('-').join(' '),
           collection;
-
-      this.searchCollection = {
+      this.attrs = {
             startDate: new Date(startDate),
             endDate: DanceCard.Utility.addDays(new Date(endDate), 1),
             distance: distance,
@@ -1231,8 +1180,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
       if (location) {
         DanceCard.Utility.findLocation(location)
         .done(function(location) {
-          self.searchCollection.location = location.point;
-          collection = new DanceCard.Collections.SearchEventList(self.searchCollection);
+          self.attrs.location = location.point;
+          collection = new DanceCard.Collections.SearchEventList(self.attrs);
           _.invoke(this.children, 'remove');
           self.removeChildren();
           self.makeList(collection, location);
@@ -1253,8 +1202,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
           point = new Parse.GeoPoint(lat, lng),
           collection;
       localStorage.setItem('danceCardLoc', JSON.stringify(position));
-      this.searchCollection.location = point;
-      collection = new DanceCard.Collections.SearchEventList(this.searchCollection);
+      this.attrs.location = point;
+      collection = new DanceCard.Collections.SearchEventList(this.attrs);
       this.removeChildren();
       this.makeList(collection);
       this.makeMap(collection, point);
@@ -1274,7 +1223,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
       this.children.push(new DanceCard.Views.EventListPartial({
         $container: this.$el,
         collection: collection,
-        searchResults: this.searchCollection,
+        searchResults: this.attrs,
         location: loc
       }));
     }
@@ -1423,98 +1372,83 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
 
 (function() {
 
-  DanceCard.Views.OrgsIndex = DanceCard.Views.Base.extend({
-    className: 'orgs-index',
-    template: DanceCard.templates.orgs,
-    render: function() {
-      this.$el.html(this.template());
-    },
-  });
-
-})();
-
-(function() {
-
   DanceCard.Views.Org = DanceCard.Views.Base.extend({
     className: 'org',
+    template: DanceCard.templates.orgs.org.index,
     render: function() {
-      new DanceCard.Views.OrgIndex({
-        $container: this.$el,
-        model: this.model
-      });
+      var self = this,
+          collection = new DanceCard.Collections.LoggedOutEventList({
+            urlId: this.model.get('urlId')
+          });
+      this.$el.html(this.template(this.model.toJSON()));
+      collection.fetch()
+      .then(_.bind(this.renderChildren, this));
     },
+
+    renderChildren: function(collection) {
+      this.children.push(new DanceCard.Views.OnetimeEventList({
+        $container: this.$el,
+        collection: collection,
+        name: this.model.get('name'),
+        owner: this.model.authenticated()
+      }));
+    }
   });
 
 })();
 
 (function() {
 
-  DanceCard.Views.OrgIndex = DanceCard.Views.Base.extend({
-    className: 'org-index',
-    template: DanceCard.templates.orgs.org.index,
+  DanceCard.Views.OrgManage = DanceCard.Views.Base.extend({
+    className: 'org-manage',
+    template: DanceCard.templates.orgs.org.manage,
     render: function() {
       var self = this;
-      //if the user is logged in and viewing thier own page
-      if (Parse.User.current().get('urlId') === this.model.get('urlId')){
-        this.$el.html(this.template({
-          model: this.model.toJSON(),
-          owner: true,
-          loggedIn: true
-        }));
-        //render a list of their recurring events, each as its own view
-        var recurringCollection = new DanceCard.Collections.RecurringEventList({
-          urlId: this.model.get('urlId')
-        });
-        recurringCollection.fetch({
-          success: function() {
-            if (recurringCollection.models.length > 0) {
-              _.each(recurringCollection.models, function(event) {
-                new DanceCard.Views.RecurringEventListItem({
-                  $container: $('.recurring-event-list'),
-                  model: event
-                });
-              });
-            } else {
-              new DanceCard.Views.RecurringEventListItem({
-                $container: $('.recurring-event-list'),
-                model: {urlId: self.model.get('urlId')}
-              });
-            }
-          },
-          fail: function(){
-            console.log('fail');
-          }
-        });
-        //render a list of their one time events, all in one view
-        var onetimeCollection = new DanceCard.Collections.OnetimeEventList({
-          orgUrlId: this.model.get('urlId')
-        });
-        onetimeCollection.fetch()
-        .then(function() {
-          console.log(onetimeCollection);
-          new DanceCard.Views.OnetimeEventList({
-            $container: self.$el,
-            collection: onetimeCollection
+      this.$el.html(this.template({
+        model: this.model.toJSON(),
+        owner: true,
+        loggedIn: true
+      }));
+
+      //render a list of their recurring events, each as its own view
+      var recurringCollection = new DanceCard.Collections.RecurringEventList({
+        urlId: this.model.get('urlId')
+      });
+      recurringCollection.fetch()
+      .then(_.bind(this.renderRecur, this));
+
+      //render a list of their one time events, all in one view
+      var onetimeCollection = new DanceCard.Collections.OnetimeEventList({
+        orgUrlId: this.model.get('urlId')
+      });
+      onetimeCollection.fetch()
+      .then(_.bind(this.renderOnetime, this));
+    },
+
+    renderOnetime: function(collection) {
+      new DanceCard.Views.OnetimeEventList({
+        $container: this.$el,
+        collection: collection,
+        owner: true
+      });
+    },
+
+    renderRecur: function(collection) {
+      var self = this;
+      if (collection.models.length > 0) {
+        _.each(collection.models, function(model) {
+          new DanceCard.Views.RecurringEventListItem({
+            $container: $('.recurring-event-list'),
+            model: model
           });
         });
-
-      //if the user is not logged in or is viewing another orgs page
       } else {
-        //render a list of their next 10 upcoming events
-        var collection = new DanceCard.Collections.LoggedOutEventList({
-          urlId: this.model.get('urlId')
-        });
-        collection.fetch()
-        .then(function() {
-          var events = collection.toJSON();
-          self.$el.html(self.template({
-            events: events,
-            loggedIn: false,
-            model: self.model.toJSON()
-          }));
+        new DanceCard.Views.RecurringEventListItem({
+          $container: $('.recurring-event-list'),
+          model: {urlId: self.model.get('urlId')}
         });
       }
-    },
+    }
   });
 
 })();
@@ -1528,21 +1462,14 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
     template: DanceCard.templates.orgs.org._recurList,
     render: function() {
       var self = this;
-      //render the recurring event
       if (this.model.toJSON) {
         this.$el.html(this.template(this.model.toJSON()));
-        //render the children of the recurring event
         var collection = new DanceCard.Collections.OnetimeEventList({
           orgUrlId: this.model.get('orgUrlId'),
           parentEvent: this.model
         });
         collection.fetch()
-        .then(function() {
-          new DanceCard.Views.OnetimeEventList({
-            $container: self.$el,
-            collection: collection
-          });
-        });
+        .then(_.bind(this.renderChildren, this));
       } else {
         this.$el.html(this.template(this.model));
       }
@@ -1553,12 +1480,18 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
       'click .delete-recur'     : 'deleteEvent'
     },
 
+    renderChildren: function(collection) {
+      this.children.push(new DanceCard.Views.OnetimeEventList({
+        $container: this.$el,
+        collection: collection
+      }));
+    },
+
     toggleChildren: function(e) {
       e.preventDefault();
       if (this.$el.children('ul').css('height') === '0px') {
         this.$el.children('ul').css('height', 'auto');
-      }
-      else {
+      } else {
         this.$el.children('ul').css('height', 0);
       }
     },
@@ -1586,10 +1519,26 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
 
   DanceCard.Views.OnetimeEventList = DanceCard.Views.Base.extend({
     tagName: 'ul',
-    className: 'onetime-events',
+    className: 'onetime-event',
     template: DanceCard.templates.orgs.org._onetimeList,
     render: function() {
-      this.$el.html(this.template(this.collection));
+      if (this.collection.models.length > 0) {
+        this.renderChildren();
+      } else {
+        var owner = this.options.owner,
+            name = this.options.name;
+        this.$el.html(this.template({owner: owner, name: name}));
+      }
+    },
+
+    renderChildren: function() {
+      var self = this;
+      _.each(this.collection.models, function(model) {
+        self.children.push(new DanceCard.Views.EventListItemPartial({
+          $container: self.$el,
+          model: model
+        }));
+      });
     }
   });
 
@@ -2016,7 +1965,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
           DanceCard.router.navigate('#/orgs/' + self.model.get('orgUrlId'));
           self.remove();
         },
-        fail: function() {
+        error: function() {
           console.log('failed to destroy the event');
         }
       });
@@ -2465,28 +2414,27 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
         location: this.options.location,
         searchResults: this.options.searchResults
       }));
-      this.renderChildren();
-    },
-    renderChildren: function() {
-      var self = this;
       this.collection.fetch()
-      .then(function(){
-        if (self.collection.models.length > 0) {
-          if (self.collection.models.length === 1) {
-            self.$el.append('<h4>1 result matches your search</h4>');
-          } else {
-            self.$el.append('<h4>' + self.collection.models.length + ' results match your search</h4>');
-          }
-          _.each(self.collection.models, function(child){
-            self.children.push(new DanceCard.Views.EventListItemPartial({
-              $container: self.$el,
-              model: child
-            }));
-          });
+      .then(_.bind(this.renderChildren, this));
+    },
+    renderChildren: function(collection) {
+      var self = this;
+      if (collection.models.length > 0) {
+        if (collection.models.length === 1) {
+          self.$el.append('<h4>1 result matches your search</h4>');
         } else {
-          self.$el.append('<h4>sorry, there are no results that match your search</h4>');
+          self.$el.append('<h4>' + self.collection.models.length + ' results match your search</h4>');
         }
-      });
+        _.each(collection.models, function(model){
+          self.children.push(new DanceCard.Views.EventListItemPartial({
+            $container: self.$el,
+            model: model,
+            parent: self
+          }));
+        });
+      } else {
+        self.$el.append('<h4>sorry, there are no results that match your search</h4>');
+      }
     }
   });
 
@@ -2503,7 +2451,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
       var self = this;
       this.setTemplateData()
       .done(function() {
-        console.log(self.templateData)
+        console.log(self.templateData);
         self.$el.html(self.template(self.templateData));
       });
     },
@@ -2549,11 +2497,21 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
     },
 
     events: {
-      'click .rsvp'   : 'rsvp',
-      'click .unrsvp' : 'cancelRSVP'
+      'click .rsvp'         : 'rsvp',
+      'click .unrsvp'       : 'cancelRSVP',
+      'click .delete-event' : 'delete'
     },
 
-
+    delete: function(e) {
+      e.preventDefault();
+      var self = this;
+      this.model.destroy({
+        success: function(){
+          self.remove();
+          self.options.parent.render();
+        }
+      });
+    },
 
     rsvp: function(e) {
       e.preventDefault();
@@ -2584,6 +2542,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"1
         console.log('something went wrong', arguments);
       });
     },
+
+
 
   });
 
