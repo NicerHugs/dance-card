@@ -7,7 +7,19 @@
       this.$el.html(this.template());
     },
     events: {
-      'click .sendEmail' : 'sendEmail'
+      'click .send-email'   : 'sendEmail',
+      'click .cancel-email' : 'cancelEmail'
+    },
+
+    cancelEmail: function(e) {
+      e.preventDefault();
+      DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, self);
+      this.remove();
+      if (DanceCard.router.routesHit === 1) {
+        DanceCard.router.navigate('#/orgs/org/' + this.model.id, {trigger: true});
+      } else {
+        window.history.back();
+      }
     },
 
     sendEmail: function(e) {
@@ -22,7 +34,7 @@
           subject: subject
         }, {
           success: function() {
-            _.without(DanceCard.router.mainChildren, self);
+            DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, self);
             self.remove();
             if (DanceCard.router.routesHit === 1) {
               DanceCard.router.navigate('#/orgs/org/' + self.model.id, {trigger: true});
@@ -32,8 +44,12 @@
             $('main').prepend('<div class="email-success">Your message was successfully sent</div>');
             window.setTimeout(function(){
               $('.email-success').remove();
-            }, 5000);
+            }, 4000);
           }, error: function() {
+            $('main').prepend('<div class="email-failure">Your message was not sent. Please try again</div>');
+            window.setTimeout(function(){
+              $('.email-failure').remove();
+            }, 4000);
             console.log('error', arguments);}
         });
       }

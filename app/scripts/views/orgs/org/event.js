@@ -50,7 +50,10 @@
                     query = new Parse.Query('Event');
                 relation.query().find()
                 .then(function(events){
-                  self.templateData.attending = events;
+                  events = _.map(events, function(event) {
+                    return event.id;
+                  });
+                  self.templateData.attending = _.contains(events, self.model.id);
                   def.resolve();
                 });
               } else {
@@ -87,6 +90,7 @@
       var self = this;
       this.model.rsvp()
       .done(function() {
+        console.log('rsvpd')
         self.render();
       })
       .fail(function() {
