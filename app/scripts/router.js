@@ -19,7 +19,7 @@
       'orgs/:org'              : 'org', //dynamic, for validated user will allow user to manage events, otherwise will show the org and their events
       'orgs/:org/create-event' : 'createEvent', //dynamic
       'orgs/:org/:event'       : 'evnt', //dynamic, for validated user will be manage event page, otherwise will show the event info
-      'orgs/:org/:event/RSVP'  : 'attendEvent', //dynamic
+      'orgs/:org/:event/email' : 'emailAttendees'
     },
     mainChildren: [],
 
@@ -110,7 +110,22 @@
           model: evt
         }));
       });
+    },
 
+    emailAttendees: function(org, evnt) {
+      var self = this,
+          query = new Parse.Query('Event');
+      if ( DanceCard.session.get('user') && Parse.User.current().get('urlId') === org) {
+        query.get(evnt)
+        .then(function(evt) {
+          self.mainChildren.push(new DanceCard.Views.Email({
+            $container: $('main'),
+            model: evt
+          }));
+        });
+      } else {
+        window.history.back();
+      }
     }
   });
 

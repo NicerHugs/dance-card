@@ -1,6 +1,8 @@
 {{#if owner}}
   {{!-- use able to manage this event --}}
-
+  {{#unless event.recurring}}
+    <a href="#/orgs/{{event.orgUrlId}}/{{event.objectId}}/email">Email attendees</a>
+  {{/unless}}
 
   <div class="event-header">
   </div>
