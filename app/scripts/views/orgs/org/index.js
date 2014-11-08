@@ -22,7 +22,7 @@
               _.each(recurringCollection.models, function(event) {
                 new DanceCard.Views.RecurringEventListItem({
                   $container: $('.recurring-event-list'),
-                  model: event.toJSON()
+                  model: event
                 });
               });
             } else {

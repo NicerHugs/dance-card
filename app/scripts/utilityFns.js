@@ -139,8 +139,8 @@
       _.each(ids, function(id) {
         var query = new Parse.Query('Event');
         query.get(id, {
-          success: function(event){
-            event.destroy({success: function(){
+          success: function(model){
+            model.destroy({success: function(model){
           },
           error: function(error) {
             console.log('error', error);
