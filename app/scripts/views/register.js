@@ -10,6 +10,7 @@
       'submit'                 : 'register',
       'keyup .verify-password' : 'verifyPassword'
     },
+
     register: function(e) {
       e.preventDefault();
       var self = this,
@@ -37,7 +38,6 @@
         .find({
           success: function(user) {
             if (user.length === 0) {
-              console.log(email, password, attrs);
               Parse.User.signUp(email, password, attrs, {
                 success: function() {
                   DanceCard.session.set('user', Parse.User.current());
@@ -53,8 +53,15 @@
                   }
                   self.remove();
                 },
-                fail: function() {
-                  console.log('error', arguments);
+                error: function() {
+                  if (arguments[1].code === 202) {
+                    $('label[name="email"]').append('<div class="invalid-form-warning"></div>');
+                    $('.invalid-form-warning').html('this email is already registered');
+                    $('.email-input').addClass('invalid').focus();
+                  } else {
+                    self.$el.append('<div class="invalid-form-warning invalid"></div>');
+                    $('.invalid-form-warning').html('something went wrong, please try again');
+                  }
                 }
               });
             } else {
@@ -67,6 +74,7 @@
       }
 
     },
+
     validateUser: function(attrs, password) {
       $('.invalid-form-warning').remove();
       $('.invalid').removeClass('invalid');
@@ -94,6 +102,7 @@
         return true;
       }
     },
+
     verifyPassword: function(e) {
       if ($('.password-input').val() !== $('.verify-password').val()) {
         $(e.target).addClass('invalid');
