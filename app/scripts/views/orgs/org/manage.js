@@ -30,7 +30,8 @@
       new DanceCard.Views.OnetimeEventList({
         $container: this.$el,
         collection: collection,
-        owner: true
+        owner: true,
+        urlId: this.model.get('urlId')
       });
     },
 

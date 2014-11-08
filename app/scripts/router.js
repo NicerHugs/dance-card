@@ -114,10 +114,24 @@
           query = new Parse.Query('Event');
       query.get(evnt)
       .then(function(evt) {
-        self.mainChildren.push(new DanceCard.Views.Event({
-          $container: $('main'),
-          model: evt
-        }));
+        if (DanceCard.session.get('user') && !DanceCard.session.get('dancer')) {
+          if (evt.get('orgUrlId') === Parse.User.current().get('urlId')) {
+            self.mainChildren.push(new DanceCard.Views.EventManage({
+              $container: $('main'),
+              model: evt
+            }));
+          } else {
+            self.mainChildren.push(new DanceCard.Views.Event({
+              $container: $('main'),
+              model: evt
+            }));
+          }
+        } else {
+          self.mainChildren.push(new DanceCard.Views.Event({
+            $container: $('main'),
+            model: evt
+          }));
+        }
       });
     },
 

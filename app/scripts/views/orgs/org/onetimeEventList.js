@@ -10,8 +10,9 @@
         this.renderChildren();
       } else {
         var owner = this.options.owner,
-            name = this.options.name;
-        this.$el.html(this.template({owner: owner, name: name}));
+            name = this.options.name,
+            urlId = this.options.urlId;
+        this.$el.html(this.template({owner: owner, name: name, urlId: urlId}));
       }
     },
 
