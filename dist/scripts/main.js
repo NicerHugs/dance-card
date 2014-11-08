@@ -402,6 +402,9 @@ this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"1":func
   },"10":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startDate : stack1)) != null ? stack1.iso : stack1), depth0));
+  },"12":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startTime : stack1), depth0));
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, helper, options, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = "  <h5><a href=\"#/orgs/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.orgUrlId : stack1), depth0))
@@ -420,9 +423,11 @@ this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"1":func
   stack1 = ((helper = (helper = helpers.dateDisplay || (depth0 != null ? depth0.dateDisplay : depth0)) != null ? helper : helperMissing),(options={"name":"dateDisplay","hash":{},"fn":this.program(10, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
   if (!helpers.dateDisplay) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if (stack1 != null) { buffer += stack1; }
-  return buffer + " "
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startTime : stack1), depth0))
-    + "\n";
+  buffer += " ";
+  stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(12, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "\n";
 },"useData":true});
 this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
@@ -1817,7 +1822,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     template: DanceCard.templates.orgs.org.event,
     render: function() {
       var self = this;
-      this.setTemplateData()
+      this.model.setTemplateData(this)
       .done(function() {
         self.$el.html(self.template(self.templateData));
         if (self.templateData.owner) {
@@ -1836,47 +1841,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
         }
       });
 
-    },
-
-    setTemplateData: function() {
-      var self = this,
-          def = new $.Deferred();
-      this.templateData = {
-        loggedIn: !!DanceCard.session.get('user'),
-        event: this.model.toJSON(),
-        dancer: DanceCard.session.get('dancer'),
-        edit: {}
-      };
-      if (this.templateData.loggedIn) {
-        if (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
-          this.templateData.owner = true;
-          this.templateData.eventOrg = DanceCard.session.get('user');
-          def.resolve();
-        } else {
-          new Parse.Query('User').get(this.model.get('org').id, {
-            success: function(org) {
-              self.templateData.eventOrg = org.toJSON();
-              if (self.templateData.dancer) {
-                var relation = Parse.User.current().relation('attending'),
-                    query = new Parse.Query('Event');
-                relation.query().find()
-                .then(function(events){
-                  events = _.map(events, function(event) {
-                    return event.id;
-                  });
-                  self.templateData.attending = _.contains(events, self.model.id);
-                  def.resolve();
-                });
-              } else {
-                def.resolve();
-              }
-            }
-          });
-        }
-      } else {
-        def.resolve();
-      }
-      return def.promise();
     },
 
     events: {
@@ -2449,57 +2413,18 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     template: DanceCard.templates._eventListItem,
     render: function() {
       var self = this;
-      this.setTemplateData()
+      this.model.setTemplateData(this)
       .done(function() {
-        console.log(self.templateData);
         self.$el.html(self.template(self.templateData));
       });
-    },
-
-    setTemplateData: function() {
-      var self = this,
-          def = new $.Deferred();
-      this.templateData = {
-        loggedIn: !!DanceCard.session.get('user'),
-        event: this.model.toJSON(),
-        dancer: DanceCard.session.get('dancer')
-      };
-      if (this.templateData.loggedIn) {
-        if (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
-          this.templateData.owner = true;
-          this.templateData.eventOrg = DanceCard.session.get('user');
-          def.resolve();
-        } else {
-          new Parse.Query('User').get(this.model.get('org').id, {
-            success: function(org) {
-              self.templateData.eventOrg = org.toJSON();
-              if (self.templateData.dancer) {
-                var relation = Parse.User.current().relation('attending'),
-                    query = new Parse.Query('Event');
-                relation.query().find()
-                .then(function(events){
-                  events = _.map(events, function(event) {
-                    return event.id;
-                  });
-                  self.templateData.attending = _.contains(events, self.model.id);
-                  def.resolve();
-                });
-              } else {
-                def.resolve();
-              }
-            }
-          });
-        }
-      } else {
-        def.resolve();
-      }
-      return def.promise();
     },
 
     events: {
       'click .rsvp'         : 'rsvp',
       'click .unrsvp'       : 'cancelRSVP',
-      'click .delete-event' : 'delete'
+      'click .delete-event' : 'delete',
+      'click .cancel'       : 'removeAlert'
+
     },
 
     delete: function(e) {
@@ -2513,6 +2438,11 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       });
     },
 
+    removeAlert: function(e) {
+      e.preventDefault();
+      $('.login-req-notif').remove();
+    },
+
     rsvp: function(e) {
       e.preventDefault();
       var self = this;
@@ -2523,8 +2453,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       .fail(function() {
         // what to do when something goes wrong
         if (arguments[0] === "user not loggedIn") {
-          $('.index').append(DanceCard.templates._loginRequired());
-
+          self.$el.append(DanceCard.templates._loginRequired());
+          console.log('something went wrong', arguments);
           // here i should prompt the user to log in or create an account
           // change login to redirect 'back' when dancer unless first hit
         }
@@ -2567,6 +2497,48 @@ DanceCard.Models.Activity = Parse.Object.extend({
 
 DanceCard.Models.Event = Parse.Object.extend({
   className: 'Event',
+
+  setTemplateData: function(view) {
+    var self = this,
+        def = new $.Deferred();
+    view.templateData = {
+      loggedIn: !!DanceCard.session.get('user'),
+      event: this.toJSON(),
+      dancer: DanceCard.session.get('dancer'),
+      edit: {}
+    };
+    if (view.templateData.loggedIn && !view.templateData.dancer) {
+      if (this.get('orgUrlId') === Parse.User.current().get('urlId')) {
+        view.templateData.owner = true;
+        view.templateData.eventOrg = Parse.User.current();
+        def.resolve();
+      } else {
+        view.templateData.owner = false;
+      }
+    }
+    new Parse.Query('User').get(this.get('org').id, {
+      success: function(org) {
+        view.templateData.eventOrg = org.toJSON();
+        if (view.templateData.dancer) {
+          var relation = Parse.User.current().relation('attending'),
+              query = new Parse.Query('Event');
+          relation.query().find()
+          .then(function(events){
+            events = _.map(events, function(event) {
+              return event.id;
+            });
+            view.templateData.attending = _.contains(events, self.id);
+            def.resolve();
+          });
+        } else {
+          def.resolve();
+        }
+      }, fail: function() {
+        console.log('didnot get the org');
+      }
+    });
+    return def.promise();
+  },
 
   createChildren: function(parent, startDate) {
     var week = parent.get('monthlyRpt'),
