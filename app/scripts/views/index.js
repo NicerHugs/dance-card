@@ -27,8 +27,7 @@
           distance = $('.search-distance').val() || 50,
           type = $('.search-type :selected').val().split('-').join(' '),
           collection;
-
-      this.searchCollection = {
+      this.attrs = {
             startDate: new Date(startDate),
             endDate: DanceCard.Utility.addDays(new Date(endDate), 1),
             distance: distance,
@@ -37,8 +36,8 @@
       if (location) {
         DanceCard.Utility.findLocation(location)
         .done(function(location) {
-          self.searchCollection.location = location.point;
-          collection = new DanceCard.Collections.SearchEventList(self.searchCollection);
+          self.attrs.location = location.point;
+          collection = new DanceCard.Collections.SearchEventList(self.attrs);
           _.invoke(this.children, 'remove');
           self.removeChildren();
           self.makeList(collection, location);
@@ -59,8 +58,8 @@
           point = new Parse.GeoPoint(lat, lng),
           collection;
       localStorage.setItem('danceCardLoc', JSON.stringify(position));
-      this.searchCollection.location = point;
-      collection = new DanceCard.Collections.SearchEventList(this.searchCollection);
+      this.attrs.location = point;
+      collection = new DanceCard.Collections.SearchEventList(this.attrs);
       this.removeChildren();
       this.makeList(collection);
       this.makeMap(collection, point);
@@ -80,7 +79,7 @@
       this.children.push(new DanceCard.Views.EventListPartial({
         $container: this.$el,
         collection: collection,
-        searchResults: this.searchCollection,
+        searchResults: this.attrs,
         location: loc
       }));
     }

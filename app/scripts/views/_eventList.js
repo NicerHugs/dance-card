@@ -10,28 +10,27 @@
         location: this.options.location,
         searchResults: this.options.searchResults
       }));
-      this.renderChildren();
-    },
-    renderChildren: function() {
-      var self = this;
       this.collection.fetch()
-      .then(function(){
-        if (self.collection.models.length > 0) {
-          if (self.collection.models.length === 1) {
-            self.$el.append('<h4>1 result matches your search</h4>');
-          } else {
-            self.$el.append('<h4>' + self.collection.models.length + ' results match your search</h4>');
-          }
-          _.each(self.collection.models, function(child){
-            self.children.push(new DanceCard.Views.EventListItemPartial({
-              $container: self.$el,
-              model: child
-            }));
-          });
+      .then(_.bind(this.renderChildren, this));
+    },
+    renderChildren: function(collection) {
+      var self = this;
+      if (collection.models.length > 0) {
+        if (collection.models.length === 1) {
+          self.$el.append('<h4>1 result matches your search</h4>');
         } else {
-          self.$el.append('<h4>sorry, there are no results that match your search</h4>');
+          self.$el.append('<h4>' + self.collection.models.length + ' results match your search</h4>');
         }
-      });
+        _.each(collection.models, function(model){
+          self.children.push(new DanceCard.Views.EventListItemPartial({
+            $container: self.$el,
+            model: model,
+            parent: self
+          }));
+        });
+      } else {
+        self.$el.append('<h4>sorry, there are no results that match your search</h4>');
+      }
     }
   });
 

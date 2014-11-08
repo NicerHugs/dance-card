@@ -9,6 +9,7 @@
       var self = this;
       this.setTemplateData()
       .done(function() {
+        console.log(self.templateData);
         self.$el.html(self.template(self.templateData));
       });
     },
@@ -54,11 +55,21 @@
     },
 
     events: {
-      'click .rsvp'   : 'rsvp',
-      'click .unrsvp' : 'cancelRSVP'
+      'click .rsvp'         : 'rsvp',
+      'click .unrsvp'       : 'cancelRSVP',
+      'click .delete-event' : 'delete'
     },
 
-
+    delete: function(e) {
+      e.preventDefault();
+      var self = this;
+      this.model.destroy({
+        success: function(){
+          self.remove();
+          self.options.parent.render();
+        }
+      });
+    },
 
     rsvp: function(e) {
       e.preventDefault();
@@ -89,6 +100,8 @@
         console.log('something went wrong', arguments);
       });
     },
+
+
 
   });
 
