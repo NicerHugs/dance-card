@@ -6,7 +6,7 @@
 
   </ul>
 {{else}}
-  <h2>{{model.orgName}} Events</h2>
+  <h2>{{model.name}} Events</h2>
   {{#if events}}
   <ul class="{{orgUrlId}}-event-list">
       {{#each events}}
@@ -18,7 +18,7 @@
       {{/each}}
     </ul>
   {{else}}
-    {{model.orgName}} has no upcoming events.
+    {{model.name}} has no upcoming events.
   {{/if}}
 
 {{/if}}

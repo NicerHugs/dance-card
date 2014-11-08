@@ -60,7 +60,7 @@
           self.$el.html(self.template({
             events: events,
             loggedIn: false,
-            model: {orgName: self.model.get('orgName')}
+            model: self.model.toJSON()
           }));
         });
       }
