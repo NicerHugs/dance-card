@@ -327,10 +327,24 @@
           query = new Parse.Query('Event');
       query.get(evnt)
       .then(function(evt) {
-        self.mainChildren.push(new DanceCard.Views.Event({
-          $container: $('main'),
-          model: evt
-        }));
+        if (DanceCard.session.get('user') && !DanceCard.session.get('dancer')) {
+          if (evt.get('orgUrlId') === Parse.User.current().get('urlId')) {
+            self.mainChildren.push(new DanceCard.Views.EventManage({
+              $container: $('main'),
+              model: evt
+            }));
+          } else {
+            self.mainChildren.push(new DanceCard.Views.Event({
+              $container: $('main'),
+              model: evt
+            }));
+          }
+        } else {
+          self.mainChildren.push(new DanceCard.Views.Event({
+            $container: $('main'),
+            model: evt
+          }));
+        }
       });
     },
 
@@ -457,11 +471,14 @@ this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"1":functio
 this["DanceCard"]["templates"]["_loginRequired"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<div class=\"login-req-notif\">\n  <p>You must be logged in to use this feature</p>\n  <a href=\"#/login\" class=\"visit-login\">log in</a>\n  <a href=\"#/register\" class=\"visit-register\">register</a>\n  <a href=\"#\" class=\"cancel\">cancel</a>\n</div>\n";
   },"useData":true});
+this["DanceCard"]["templates"]["forgotPassword"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<div class=\"reset-password\">\n  <form>\n    <a href=\"#\" class=\"close-modal\">x</a>\n    <h3>Reset your password</h3>\n    <label name=\"email\">Email</label>\n      <input type=\"email\" name=\"email\" class=\"email-reset-password\">\n    <input type=\"submit\" class=\"send-reset-request\">\n  </form>\n</div>\n";
+  },"useData":true});
 this["DanceCard"]["templates"]["index"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<div class=\"searchBox\">\n  <form>\n    <input class=\"search-location\" type=\"text\" placeholder=\"location\">\n    <input class=\"search-distance\" type=\"text\" placeholder=\"within miles\">\n    <input class=\"search-start-date\" type=\"date\">\n    <input class=\"search-end-date\"type=\"date\">\n    <select class=\"search-type\">\n      <option value=\"all\">all</option>\n      <option value=\"contra-dance\">Contra Dance</option>\n      <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n      <option value=\"contra-workshop\">Contra Workshop</option>\n      <option value=\"waltz\">Waltz Dance</option>\n      <option value=\"waltz-workshop\">Waltz Workshop</option>\n      <option value=\"square-dance\">Square Dance</option>\n      <option value=\"dance-weekend\">Dance Weekend</option>\n      <option value=\"caller-workshop\">Caller Workshop</option>\n    </select>\n    <input class=\"search-submit\" type=\"submit\">\n</form>\n</div>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["login"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<h2>Log In</h2>\n<label name=\"email\">Email:</label>\n  <input name=\"email\" type=\"text\" class=\"email-input\" placeholder=\"email\">\n<label name=\"password\">Password:</label>\n  <input name=\"password\" type=\"password\" class=\"password-input\" placeholder=\"password\">\n<input class=\"login\" type=\"submit\" value=\"login\">\n";
+  return "<h2>Log In</h2>\n<label name=\"email\">Email:</label>\n  <input name=\"email\" type=\"text\" class=\"email-input\" placeholder=\"email\">\n<label name=\"password\">Password:</label>\n  <input name=\"password\" type=\"password\" class=\"password-input\" placeholder=\"password\">\n<input class=\"login\" type=\"submit\" value=\"login\">\n<a href=\"#\" class=\"forgot-password\">forgot password?</a>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["logout"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<p>You have successfully logged out</p>\n";
@@ -728,7 +745,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_multiDay"] = Handlebars.template
 this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "    You have no one time events.\n    <a href=\"#/orgs/"
-    + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
+    + escapeExpression(((helper = (helper = helpers.urlId || (depth0 != null ? depth0.urlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"urlId","hash":{},"data":data}) : helper)))
     + "/create-event\">Click here to add a new event</a>\n";
 },"3":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
@@ -850,151 +867,147 @@ this["DanceCard"]["templates"]["orgs"]["org"]["email"] = Handlebars.template({"c
   return "<form>\n  <label name=\"subject\">Subject</label>\n  <input name=\"subject\" class=\"email-subject\" type=\"textbox\" placeholder=\"subject\">\n  <label name=\"body\">Body</label>\n  <textarea name=\"body\" class=\"email-body\" rows=\"8\" cols=\"40\"></textarea>\n  <input class=\"send-email\" type=\"submit\" value=\"Send Email\">\n  <a href=\"#\" class=\"cancel-email\">cancel</a>\n</form>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["event"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  return "<span>sorry, you don't have permission to manage this event</span>\n\n";
+  },"3":function(depth0,helpers,partials,data) {
+  var stack1, helper, options, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = "<div class=\"event-header-viewing\">\n";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.dancer : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.loggedIn : depth0), {"name":"unless","hash":{},"fn":this.program(9, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "  <h2>"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.name : stack1), depth0))
+    + "</h2>\n  <p>\n    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.multiDay : stack1), {"name":"if","hash":{},"fn":this.program(11, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n    ";
+  stack1 = ((helper = (helper = helpers.dateShort || (depth0 != null ? depth0.dateShort : depth0)) != null ? helper : helperMissing),(options={"name":"dateShort","hash":{},"fn":this.program(13, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.dateShort) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.multiDay : stack1), {"name":"if","hash":{},"fn":this.program(15, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.weeklyRptName : stack1), {"name":"if","hash":{},"fn":this.program(18, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += " from\n    ";
+  stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(20, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "-";
+  stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(22, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n  </p>\n  <p>by <a href=\"#/orgs/"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.eventOrg : depth0)) != null ? stack1.urlId : stack1), depth0))
+    + "\">"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.eventOrg : depth0)) != null ? stack1.name : stack1), depth0))
+    + "</a></p>\n</div>\n\n<div class=\"event-info-viewing\">\n  <h3>Event Info</h3>\n  <p>Cost: $"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.price : stack1), depth0))
+    + "</p>\n  <p>\n    Band: ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), {"name":"if","hash":{},"fn":this.program(24, data),"inverse":this.program(26, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n  </p>\n";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), {"name":"if","hash":{},"fn":this.program(28, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "  <p>\n    Caller: ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), {"name":"if","hash":{},"fn":this.program(30, data),"inverse":this.program(26, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n  </p>\n  <p>\n    This "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.type : stack1), depth0))
+    + " is\n    ";
+  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.beginnerFrdly : stack1), {"name":"unless","hash":{},"fn":this.program(32, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n    beginner friendly\n    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.workshopIncl : stack1), {"name":"if","hash":{},"fn":this.program(34, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "\n  </p>\n";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), {"name":"if","hash":{},"fn":this.program(36, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "</div>\n\n<div class=\"venue-info-viewing\">\n  <h3>Venue Info</h3>\n  <h4>\n    "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.name : stack1), depth0))
+    + "\n  </h4>\n  <p>\n    "
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.fullAddress : stack1), depth0))
+    + "\n  </p>\n</div>\n\n";
+},"4":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
-  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"unless","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.attending : depth0), {"name":"if","hash":{},"fn":this.program(5, data),"inverse":this.program(7, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
-  buffer += "\n  <div class=\"event-header\">\n  </div>\n\n";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n  <div class=\"event-info\">\n  </div>\n\n  <div class=\"venue-info\">\n  </div>\n\n";
-},"2":function(depth0,helpers,partials,data) {
+  return buffer;
+},"5":function(depth0,helpers,partials,data) {
+  return "      You are attending this event <a href=\"#\" class=\"unrsvp\">cancel your RSVP</a>\n";
+  },"7":function(depth0,helpers,partials,data) {
+  return "      <a href=\"#\" class=\"rsvp\">RSVP</a>\n";
+  },"9":function(depth0,helpers,partials,data) {
+  return "    <a href=\"#\" class=\"rsvp\">RSVP</a>\n";
+  },"11":function(depth0,helpers,partials,data) {
+  return "From ";
+  },"13":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return "    <a href=\"#/orgs/"
+  return escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startDate : stack1)) != null ? stack1.iso : stack1), depth0));
+  },"15":function(depth0,helpers,partials,data) {
+  var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = " to ";
+  stack1 = ((helper = (helper = helpers.dateShort || (depth0 != null ? depth0.dateShort : depth0)) != null ? helper : helperMissing),(options={"name":"dateShort","hash":{},"fn":this.program(16, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.dateShort) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
+},"16":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endDate : stack1)) != null ? stack1.iso : stack1), depth0));
+  },"18":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return " and every "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.weeklyRptName : stack1), depth0));
+},"20":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startTime : stack1), depth0));
+  },"22":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endTime : stack1), depth0));
+  },"24":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), depth0));
+  },"26":function(depth0,helpers,partials,data) {
+  return "TBA";
+  },"28":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "    <p>\n      Musicians: "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), depth0))
+    + "\n    </p>\n";
+},"30":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), depth0));
+  },"32":function(depth0,helpers,partials,data) {
+  return " NOT ";
+  },"34":function(depth0,helpers,partials,data) {
+  return " and includes a workshop.";
+  },"36":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "    <p>\n      Organizer notes: "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), depth0))
+    + "\n    </p>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer;
+},"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["eventManage"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "  <a href=\"#/orgs/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.orgUrlId : stack1), depth0))
     + "/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.objectId : stack1), depth0))
     + "/email\">Email attendees</a>\n";
-},"4":function(depth0,helpers,partials,data) {
-  return "    <div class=\"event-recur\">\n    </div>\n";
-  },"6":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "\n";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"if","hash":{},"fn":this.program(7, data),"inverse":this.program(9, data),"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n";
-},"7":function(depth0,helpers,partials,data) {
-  return "  <span>sorry, you don't have permission to manage this event</span>\n\n";
-  },"9":function(depth0,helpers,partials,data) {
-  var stack1, helper, options, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = "    <div class=\"event-header-viewing\">\n";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.dancer : depth0), {"name":"if","hash":{},"fn":this.program(10, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.loggedIn : depth0), {"name":"unless","hash":{},"fn":this.program(15, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "      <h2>"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.name : stack1), depth0))
-    + "</h2>\n      <p>\n        ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.multiDay : stack1), {"name":"if","hash":{},"fn":this.program(17, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n        ";
-  stack1 = ((helper = (helper = helpers.dateShort || (depth0 != null ? depth0.dateShort : depth0)) != null ? helper : helperMissing),(options={"name":"dateShort","hash":{},"fn":this.program(19, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
-  if (!helpers.dateShort) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n        ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.multiDay : stack1), {"name":"if","hash":{},"fn":this.program(21, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n        ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.weeklyRptName : stack1), {"name":"if","hash":{},"fn":this.program(24, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += " from\n        ";
-  stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(26, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
-  if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "-";
-  stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(28, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
-  if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n      </p>\n      <p>by <a href=\"#/orgs/"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.eventOrg : depth0)) != null ? stack1.urlId : stack1), depth0))
-    + "\">"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.eventOrg : depth0)) != null ? stack1.name : stack1), depth0))
-    + "</a></p>\n    </div>\n\n    <div class=\"event-info-viewing\">\n      <h3>Event Info</h3>\n      <p>Cost: $"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.price : stack1), depth0))
-    + "</p>\n      <p>\n        Band: ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), {"name":"if","hash":{},"fn":this.program(30, data),"inverse":this.program(32, data),"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n      </p>\n";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), {"name":"if","hash":{},"fn":this.program(34, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "      <p>\n        Caller: ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), {"name":"if","hash":{},"fn":this.program(36, data),"inverse":this.program(32, data),"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n      </p>\n      <p>\n        This "
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.type : stack1), depth0))
-    + " is\n        ";
-  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.beginnerFrdly : stack1), {"name":"unless","hash":{},"fn":this.program(38, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n        beginner friendly\n        ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.workshopIncl : stack1), {"name":"if","hash":{},"fn":this.program(40, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n      </p>\n";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), {"name":"if","hash":{},"fn":this.program(42, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + "    </div>\n\n    <div class=\"venue-info-viewing\">\n      <h3>Venue Info</h3>\n      <h4>\n        "
-    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.name : stack1), depth0))
-    + "\n      </h4>\n      <p>\n        "
-    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.fullAddress : stack1), depth0))
-    + "\n      </p>\n    </div>\n\n";
-},"10":function(depth0,helpers,partials,data) {
+},"3":function(depth0,helpers,partials,data) {
+  return "  <div class=\"event-recur\">\n  </div>\n";
+  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.attending : depth0), {"name":"if","hash":{},"fn":this.program(11, data),"inverse":this.program(13, data),"data":data});
+  stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer;
-},"11":function(depth0,helpers,partials,data) {
-  return "          You are attending this event <a href=\"#\" class=\"unrsvp\">cancel your RSVP</a>\n";
-  },"13":function(depth0,helpers,partials,data) {
-  return "          <a href=\"#\" class=\"rsvp\">RSVP</a>\n";
-  },"15":function(depth0,helpers,partials,data) {
-  return "        <a href=\"#\" class=\"rsvp\">RSVP</a>\n";
-  },"17":function(depth0,helpers,partials,data) {
-  return "From ";
-  },"19":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startDate : stack1)) != null ? stack1.iso : stack1), depth0));
-  },"21":function(depth0,helpers,partials,data) {
-  var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = " to ";
-  stack1 = ((helper = (helper = helpers.dateShort || (depth0 != null ? depth0.dateShort : depth0)) != null ? helper : helperMissing),(options={"name":"dateShort","hash":{},"fn":this.program(22, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
-  if (!helpers.dateShort) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  buffer += "\n<div class=\"event-header\">\n</div>\n\n";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer;
-},"22":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endDate : stack1)) != null ? stack1.iso : stack1), depth0));
-  },"24":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return " and every "
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.weeklyRptName : stack1), depth0));
-},"26":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.startTime : stack1), depth0));
-  },"28":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.endTime : stack1), depth0));
-  },"30":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.band : stack1), depth0));
-  },"32":function(depth0,helpers,partials,data) {
-  return "TBA";
-  },"34":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return "        <p>\n          Musicians: "
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.musicians : stack1), depth0))
-    + "\n        </p>\n";
-},"36":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.caller : stack1), depth0));
-  },"38":function(depth0,helpers,partials,data) {
-  return " NOT ";
-  },"40":function(depth0,helpers,partials,data) {
-  return " and includes a workshop.";
-  },"42":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return "        <p>\n          Organizer notes: "
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.notes : stack1), depth0))
-    + "\n        </p>\n";
-},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.owner : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(6, data),"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer;
+  return buffer + "\n<div class=\"event-info\">\n</div>\n\n<div class=\"venue-info\">\n</div>\n";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
@@ -1096,15 +1109,56 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       this.$el.html(this.template());
     },
     events: {
-      'click .login' : 'login'
+      'click .login'              : 'login',
+      'click .forgot-password'    : 'forgotPassword',
+      'click .send-reset-request' : 'resetPassword',
+      'click .close-modal'        : 'closeModal'
     },
+
+    closeModal: function(e) {
+      e.preventDefault();
+      $('.reset-password').remove();
+    },
+
+    resetPassword: function(e) {
+      e.preventDefault();
+      $('.invalid-form-warning').remove();
+      var email = $('.email-reset-password').val();
+      Parse.User.requestPasswordReset(email, {
+        success: function() {
+          $('.reset-password').append('<div class="success-msg"></div>');
+          $('.success-msg').html('Please check your email to reset your password.');
+          window.setTimeout(function(){
+            $('.success-msg').remove();
+            $('.reset-password').remove();
+          }, 5000);
+        },
+        error: function() {
+          if (arguments[0].code === 125) {
+            $('.reset-password').append('<div class="invalid-form-warning invalid"></div>');
+            $('.invalid-form-warning').html('please enter a valid email address');
+          } else if (arguments[0].code === 205) {
+            $('.reset-password').append('<div class="invalid-form-warning invalid"></div>');
+            $('.invalid-form-warning').html('sorry, that email address was not found');
+          }
+        }
+      });
+    },
+
+    forgotPassword: function(e) {
+      e.preventDefault();
+      this.$el.append(DanceCard.templates.forgotPassword());
+
+    },
+
     login: function(e) {
       e.preventDefault();
+      $('.invalid-form-warning').remove();
       var self = this;
       var email = this.$('.email-input').val();
       var password = this.$('.password-input').val();
-      Parse.User.logIn(email, password).then(
-        function() {
+      Parse.User.logIn(email, password, {
+        success: function() {
           self.remove();
           if ($('.logout-msg')) {
             $('.logout-msg').remove();
@@ -1120,8 +1174,11 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
               window.history.back();
             }
           }
+        }, error: function() {
+          self.$el.append('<div class="invalid-form-warning invalid"></div>');
+          $('.invalid-form-warning').html('username or password was not found');
         }
-      );
+      });
     }
   });
 })();
@@ -1266,6 +1323,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       'submit'                 : 'register',
       'keyup .verify-password' : 'verifyPassword'
     },
+
     register: function(e) {
       e.preventDefault();
       var self = this,
@@ -1293,7 +1351,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
         .find({
           success: function(user) {
             if (user.length === 0) {
-              console.log(email, password, attrs);
               Parse.User.signUp(email, password, attrs, {
                 success: function() {
                   DanceCard.session.set('user', Parse.User.current());
@@ -1309,8 +1366,15 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
                   }
                   self.remove();
                 },
-                fail: function() {
-                  console.log('error', arguments);
+                error: function() {
+                  if (arguments[1].code === 202) {
+                    $('label[name="email"]').append('<div class="invalid-form-warning"></div>');
+                    $('.invalid-form-warning').html('this email is already registered');
+                    $('.email-input').addClass('invalid').focus();
+                  } else {
+                    self.$el.append('<div class="invalid-form-warning invalid"></div>');
+                    $('.invalid-form-warning').html('something went wrong, please try again');
+                  }
                 }
               });
             } else {
@@ -1323,6 +1387,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       }
 
     },
+
     validateUser: function(attrs, password) {
       $('.invalid-form-warning').remove();
       $('.invalid').removeClass('invalid');
@@ -1350,6 +1415,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
         return true;
       }
     },
+
     verifyPassword: function(e) {
       if ($('.password-input').val() !== $('.verify-password').val()) {
         $(e.target).addClass('invalid');
@@ -1434,7 +1500,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       new DanceCard.Views.OnetimeEventList({
         $container: this.$el,
         collection: collection,
-        owner: true
+        owner: true,
+        urlId: this.model.get('urlId')
       });
     },
 
@@ -1531,8 +1598,9 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
         this.renderChildren();
       } else {
         var owner = this.options.owner,
-            name = this.options.name;
-        this.$el.html(this.template({owner: owner, name: name}));
+            name = this.options.name,
+            urlId = this.options.urlId;
+        this.$el.html(this.template({owner: owner, name: name, urlId: urlId}));
       }
     },
 
@@ -1825,36 +1893,11 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       this.model.setTemplateData(this)
       .done(function() {
         self.$el.html(self.template(self.templateData));
-        if (self.templateData.owner) {
-          $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(self.templateData));
-          if (self.model.get('recurring')) {
-            $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(self.templateData));
-          }
-          $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(self.templateData));
-          $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(self.templateData));
-          self.makeMap();
-          if (self.model.get('recurMonthly')) {
-            $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(self.templateData));
-          }
-        } else {
-          self.makeMap();
-        }
+        self.makeMap();
       });
-
     },
 
     events: {
-      'click .edit-event-header' : 'editEventHeader',
-      'click .edit-event-recur'  : 'editEventRecur',
-      'click .edit-event-info'   : 'editEventInfo',
-      'click .edit-venue-info'   : 'editVenueInfo',
-      'click .save-event-header' : 'saveEventHeader',
-      'click .save-event-recur'  : 'saveEventRecur',
-      'click .save-event-info'   : 'saveEventInfo',
-      'click .save-venue-info'   : 'saveVenueInfo',
-      'click .multi-day-input'   : 'multiDay',
-      'click .chooseRpt'         : 'chooseRpt',
-      'click .delete-event'      : 'deleteEvent',
       'click .rsvp'              : 'rsvp',
       'click .unrsvp'            : 'cancelRSVP',
       'click .cancel'            : 'removeAlert'
@@ -1865,7 +1908,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       var self = this;
       this.model.rsvp()
       .done(function() {
-        console.log('rsvpd')
         self.render();
       })
       .fail(function() {
@@ -1892,6 +1934,59 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       .fail(function() {
         console.log('something went wrong', arguments);
       });
+    },
+
+    makeMap: function() {
+      var lat = this.model.get('point').latitude,
+          lng = this.model.get('point').longitude;
+      this.children.push(new DanceCard.Views.MapPartial({
+        $container: $('.venue-info-viewing'),
+        zoom: 13,
+        loc: {lat: lat, lng: lng},
+        model: this.model
+      }));
+    },
+
+  });
+
+})();
+
+(function(){
+  'use strict';
+
+  DanceCard.Views.EventManage = DanceCard.Views.Base.extend({
+    className: 'event-manage',
+    template: DanceCard.templates.orgs.org.eventManage,
+    render: function() {
+      var self = this;
+      this.$el.html(this.template());
+      this.model.setTemplateData(this)
+      .then(function(){
+        $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(self.templateData));
+        if (self.model.get('recurring')) {
+          $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(self.templateData));
+        }
+        $('.event-info').html(DanceCard.templates.orgs.org._eventInfo(self.templateData));
+        $('.venue-info').html(DanceCard.templates.orgs.org._venueInfo(self.templateData));
+        self.makeMap();
+        if (self.model.get('recurMonthly')) {
+          $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(self.templateData));
+        }
+      });
+    },
+
+    events: {
+      'click .edit-event-header' : 'editEventHeader',
+      'click .edit-event-recur'  : 'editEventRecur',
+      'click .edit-event-info'   : 'editEventInfo',
+      'click .edit-venue-info'   : 'editVenueInfo',
+      'click .save-event-header' : 'saveEventHeader',
+      'click .save-event-recur'  : 'saveEventRecur',
+      'click .save-event-info'   : 'saveEventInfo',
+      'click .save-venue-info'   : 'saveVenueInfo',
+      'click .multi-day-input'   : 'multiDay',
+      'click .chooseRpt'         : 'chooseRpt',
+      'click .delete-event'      : 'deleteEvent'
     },
 
     makeMap: function() {
