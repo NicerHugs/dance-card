@@ -6,9 +6,10 @@
     template: DanceCard.templates.orgs.org.eventManage,
     render: function() {
       var self = this;
-      this.$el.html(this.template());
       this.model.setTemplateData(this)
       .then(function(){
+        self.$el.html(self.template(self.templateData));
+
         $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(self.templateData));
         if (self.model.get('recurring')) {
           $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(self.templateData));

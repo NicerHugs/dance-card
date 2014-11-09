@@ -152,10 +152,10 @@ this["DanceCard"]["templates"]["settings"] = Handlebars.template({"1":function(d
   var stack1, buffer = "    <h4>Cancel Notifications</h4>\n      <input type=\"checkbox\" class=\"delete-msg\" ";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.cancelNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  buffer += ">\n      <p>Send email notification to event attendees when I cancel the event</p>\n    <h4>Change Notifications</h4>\n      <input type=\"checkbox\" class=\"change-msg\" ";
+  buffer += ">\n      <p>Send email notification to event attendees if I cancel the event</p>\n    <h4>Change Notifications</h4>\n      <input type=\"checkbox\" class=\"change-msg\" ";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.changeNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + ">\n      <p>Send email notification to event attendees when I make changes to the event</p>\n\n";
+  return buffer + ">\n      <p>Send email notification to event attendees if I make changes to the event</p>\n\n";
 },"4":function(depth0,helpers,partials,data) {
   return "checked";
   },"6":function(depth0,helpers,partials,data) {

@@ -27,7 +27,7 @@
       this.model.destroy({
         success: function(){
           self.remove();
-          self.options.parent.render();
+          if (self.options.parent) self.options.parent.render();
         }
       });
     },

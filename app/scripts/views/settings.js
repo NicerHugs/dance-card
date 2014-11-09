@@ -106,10 +106,17 @@
             }, 4000);
           },
           error: function() {
-            $('.email-settings').prepend('<div class="email-error">Something went wrong, please try again</div>');
-            window.setTimeout(function(){
-              $('.email-error').remove();
-            }, 4000);
+            if (arguments[1].code === 203) {
+              $('.email-settings').prepend('<div class="email-error">Sorry, that email is already registered with another user</div>');
+              window.setTimeout(function(){
+                $('.email-error').remove();
+              }, 4000);
+            } else {
+              $('.email-settings').prepend('<div class="email-error">Something went wrong, please try again</div>');
+              window.setTimeout(function(){
+                $('.email-error').remove();
+              }, 4000);
+            }
           }
         });
       }
