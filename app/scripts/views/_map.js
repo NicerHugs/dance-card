@@ -47,7 +47,6 @@
     },
 
     getMapUrl: function(model) {
-      console.log(model);
       var position = JSON.parse(localStorage.getItem('danceCardLoc')),
           start = position.coords.latitude + ',' + position.coords.longitude,
           end = model.get('venue').fullAddress.split(' ').join('+'),

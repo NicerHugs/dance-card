@@ -9,6 +9,7 @@
       {{#dateDisplay}}{{event.startDate.iso}}{{/dateDisplay}}
       {{#time}}{{event.startTime}}{{/time}}
     </p>
-    <p><a href="{{mapUrl}}" class="address">{{event.venue.fullAddress}}</a></p>
+    <p>{{event.venue.fullAddress}}</p>
+    <a href="{{mapUrl}}">get directions</a>
   </div>
 </div>
