@@ -480,7 +480,9 @@ this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"1":functio
   stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
   if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n    </p>\n    <p><a href=\"#\" class=\"address\">"
+  return buffer + "\n    </p>\n    <p><a href=\""
+    + escapeExpression(((helper = (helper = helpers.mapUrl || (depth0 != null ? depth0.mapUrl : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"mapUrl","hash":{},"data":data}) : helper)))
+    + "\" class=\"address\">"
     + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.fullAddress : stack1), depth0))
     + "</a></p>\n  </div>\n</div>\n";
 },"useData":true});
@@ -2578,62 +2580,25 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     renderChildren: function(collection) {
       var self = this;
       _.each(collection.models, function(model) {
+        var mapUrl = self.getMapUrl(model);
         self.children.push(new DanceCard.Views.MarkerPartial({
           $container: self.$el,
           model: model,
           map: self.map,
-          bounds: self.zoomArray
+          bounds: self.zoomArray,
+          mapUrl: mapUrl
         }));
       });
     },
 
-    events: {
-      'click .address' : 'getDirections'
-    },
-
-    getDirections: function(e) {
-      e.preventDefault();
-      var self = this;
-      _.each(this.children, function(child) {
-        child.marker.setMap(null);
-      });
-      if (localStorage.getItem('danceCardLoc')) {
-        var position = JSON.parse(localStorage.getItem('danceCardLoc')),
-            lat = position.coords.latitude,
-            lng = position.coords.longitude,
-            latLng = new google.maps.LatLng(lat, lng);
-      }
-
-      var directionsDisplay;
-      var directionsService = new google.maps.DirectionsService();
-      var map = this.map;
-
-      function initialize() {
-        directionsDisplay = new google.maps.DirectionsRenderer();
-        directionsDisplay.setMap(map);
-        self.$el.append('<div id="directionsPanel"></div>');
-        directionsDisplay.setPanel(document.getElementById("directionsPanel"));
-      }
-
-      function calcRoute() {
-        var start = latLng;
-        var end = $(e.target).text();
-        var request = {
-          origin:start,
-          destination:end,
-          travelMode: google.maps.TravelMode.DRIVING
-        };
-        directionsService.route(request, function(result, status) {
-          if (status == google.maps.DirectionsStatus.OK) {
-            directionsDisplay.setDirections(result);
-          }
-        });
-      }
-      initialize();
-      calcRoute();
+    getMapUrl: function(model) {
+      console.log(model);
+      var position = JSON.parse(localStorage.getItem('danceCardLoc')),
+          start = position.coords.latitude + ',' + position.coords.longitude,
+          end = model.get('venue').fullAddress.split(' ').join('+'),
+          url = 'https://www.google.com/maps/dir/' + start + '/' +  end;
+      return url;
     }
-
-
 
   });
 
@@ -2656,6 +2621,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       });
       this.setTemplateData()
       .done(function() {
+        self.templateData.mapUrl = self.options.mapUrl;
         self.infowindow = new google.maps.InfoWindow({
           content: DanceCard.templates._infoWindow(self.templateData)
         });
