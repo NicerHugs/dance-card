@@ -20,7 +20,8 @@
       'orgs/:org'              : 'org', //dynamic, for validated user will allow user to manage events, otherwise will show the org and their events
       'orgs/:org/create-event' : 'createEvent', //dynamic
       'orgs/:org/:event'       : 'evnt', //dynamic, for validated user will be manage event page, otherwise will show the event info
-      'orgs/:org/:event/email' : 'emailAttendees'
+      'orgs/:org/:event/email' : 'emailAttendees',
+      'dancers/:dancer'        : 'dancer'
     },
     mainChildren: [],
 
@@ -72,7 +73,7 @@
 
     orgs: function() {
       _.invoke(this.mainChildren, 'remove');
-      this.mainChildren.push(new DanceCard.Views.Orgs({
+      this.mainChildren.push(new DanceCard.Views.NotFound({
         $container: $('main')
       }));
     },
@@ -83,7 +84,7 @@
         .find({
           success: function(org) {
             // org exists
-            if (org.length > 0) {
+            if (org.length > 0 && org[0].get('organizer')) {
               if (org[0].authenticated()) {
                 // current user is the org being viewed
                 _.invoke(self.mainChildren, 'remove');
@@ -165,7 +166,38 @@
       } else {
         window.history.back();
       }
-    }
+    },
+
+    dancer: function(dancer) {
+      var self = this;
+      new Parse.Query('User')
+        .equalTo('urlId', dancer)
+        .find({
+          success: function(dancer) {
+            // dancer exists
+            if (dancer.length > 0 && !dancer[0].get('organizer')) {
+              _.invoke(self.mainChildren, 'remove');
+              self.mainChildren.push(new DanceCard.Views.Dancer({
+                $container: $('main'),
+                model: dancer[0]
+              }));
+            } else {
+              _.invoke(self.mainChildren, 'remove');
+              self.mainChildren.push(new DanceCard.Views.NotFound({
+                $container: $('main'),
+                model: dancer[0]
+              }));
+            }
+          }, error: function() {
+            console.log('error retrieving user');
+            _.invoke(self.mainChildren, 'remove');
+            self.mainChildren.push(new DanceCard.Views.NotFound({
+              $container: $('main'),
+            }));
+          }
+        });
+    },
+
   });
 
 })();

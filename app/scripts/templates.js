@@ -37,7 +37,7 @@ this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"1":func
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"2":function(depth0,helpers,partials,data) {
-  return "      You are attending this event <a href=\"#\" class=\"unrsvp\">cancel your RSVP</a>\n";
+  return "      <a href=\"#\" class=\"unrsvp\">cancel your RSVP</a>\n";
   },"4":function(depth0,helpers,partials,data) {
   return "      <a href=\"#\" class=\"rsvp\">RSVP</a>\n";
   },"6":function(depth0,helpers,partials,data) {
@@ -104,6 +104,27 @@ this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"1":functio
 this["DanceCard"]["templates"]["_loginRequired"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<div class=\"login-req-notif\">\n  <p>You must be logged in to use this feature</p>\n  <a href=\"#/login\" class=\"visit-login\">log in</a>\n  <a href=\"#/register\" class=\"visit-register\">register</a>\n  <a href=\"#\" class=\"cancel\">cancel</a>\n</div>\n";
   },"useData":true});
+this["DanceCard"]["templates"]["dancer"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  return "Your";
+  },"3":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
+    + "'s";
+},"5":function(depth0,helpers,partials,data) {
+  return "you are";
+  },"7":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
+    + " is";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "\n<h2>";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.owner : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += " dance card</h2>\n<h3>Dances ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.owner : depth0), {"name":"if","hash":{},"fn":this.program(5, data),"inverse":this.program(7, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + " attending: </h3>\n<ul class='dancer-attending'>\n</ul>\n";
+},"useData":true});
 this["DanceCard"]["templates"]["forgotPassword"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<div class=\"reset-password\">\n  <form>\n    <a href=\"#\" class=\"close-modal\">x</a>\n    <h3>Reset your password</h3>\n    <label name=\"email\">Email</label>\n      <input type=\"email\" name=\"email\" class=\"email-reset-password\">\n    <input type=\"submit\" class=\"send-reset-request\">\n  </form>\n</div>\n";
   },"useData":true});
@@ -120,7 +141,9 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"left-nav\">\n";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.organizer : stack1), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "        <a href=\"#\" class=\"home-link\">search for dances</a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    You are logged in as "
+  return buffer + "        <a href=\"#\" class=\"home-link\">search for dances</a>\n        <a href=\"#/dancers/"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
+    + "\">view your dance card</a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    You are logged in as "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
     + ". If that's not you, <a href=\"#/logout\">logout</a>\n    <a href=\"#/settings\">settings</a>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {

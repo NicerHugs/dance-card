@@ -60,7 +60,11 @@
       var self = this;
       this.model.cancelRSVP()
       .done(function() {
-        self.render();
+        if (window.location.hash === '#/dancers/' + Parse.User.current().get('urlId')) {
+          self.remove();
+        } else {
+          self.render();
+        }
       })
       .fail(function() {
         console.log('something went wrong', arguments);

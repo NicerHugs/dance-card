@@ -1,4 +1,6 @@
 (function() {
+  'use strict';
+
   DanceCard.Views.Register = DanceCard.Views.Base.extend({
     tagName: 'form',
     className: 'register-form',
@@ -23,16 +25,14 @@
             email: email,
             name: name,
             cancelNotify: true,
-            changeNotify: true
+            changeNotify: true,
+            urlId: urlId
           };
       if ($('.organizer-input:checked').val() === "true") {
         attrs.organizer = true;
       } else {
         attrs.organizer = false;
         attrs.customNotify = true;
-      }
-      if (attrs.organizer) {
-        attrs.urlId = urlId;
       }
       if (this.validateUser(attrs, password)) {
         //check to see if the name already exists as a user

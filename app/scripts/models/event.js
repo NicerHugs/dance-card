@@ -94,6 +94,7 @@ DanceCard.Models.Event = Parse.Object.extend({
   },
 
   cancelRSVP: function() {
+    var self = this;
     var def = new $.Deferred(),
         eRelation = this.relation('dancers'),
         uRelation = Parse.User.current().relation('attending');
@@ -103,7 +104,8 @@ DanceCard.Models.Event = Parse.Object.extend({
       success: function() {
         Parse.User.current().save(null, {
           success: function() {
-            def.resolve();
+            self.save().then(def.resolve);
+            // def.resolve();
           },
           fail: function() {
             def.reject('save user failed');

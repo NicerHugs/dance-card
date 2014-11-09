@@ -1,4 +1,5 @@
 (function() {
+  'use strict';
 
   DanceCard.Views.NotFound = DanceCard.Views.Base.extend({
     className: '404',

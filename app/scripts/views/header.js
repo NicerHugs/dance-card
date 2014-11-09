@@ -1,4 +1,6 @@
 (function() {
+  'use strict';
+
   DanceCard.Views.Header = DanceCard.Views.Base.extend({
     tagName: 'header',
     render: function() {
@@ -16,7 +18,9 @@
 
     viewIndex: function(e) {
       e.preventDefault();
-      DanceCard.router.navigate('/', {trigger: true})
-;    }
+      DanceCard.router.navigate('/', {trigger: true});
+    }
+
   });
+
 })();

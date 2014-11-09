@@ -1,4 +1,6 @@
 (function() {
+  'use strict';
+
   DanceCard.Views.Login = DanceCard.Views.Base.extend({
     tagName: 'form',
     className: 'login-form',

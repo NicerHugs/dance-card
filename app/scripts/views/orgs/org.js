@@ -1,4 +1,5 @@
 (function() {
+  'use strict';
 
   DanceCard.Views.Org = DanceCard.Views.Base.extend({
     className: 'org',

@@ -1,4 +1,5 @@
 (function() {
+  'use strict';
 
   DanceCard.Views.Settings = DanceCard.Views.Base.extend({
 
