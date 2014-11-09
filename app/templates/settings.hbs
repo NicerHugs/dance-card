@@ -22,21 +22,21 @@
 
   {{#if organizer}}
     <h4>Cancel Notifications</h4>
-      <input type="checkbox" class="delete-msg">
+      <input type="checkbox" class="delete-msg" {{#if cancelNotify}}checked{{/if}}>
       <p>Send email notification to event attendees when I cancel the event</p>
     <h4>Change Notifications</h4>
-      <input type="checkbox" class="change-msg">
+      <input type="checkbox" class="change-msg" {{#if changeNotify}}checked{{/if}}>
       <p>Send email notification to event attendees when I make changes to the event</p>
 
   {{else}}
     <h4>Cancel Notifications</h4>
-      <input type="checkbox" class="delete-msg">
+      <input type="checkbox" class="delete-msg" {{#if cancelNotify}}checked{{/if}}>
       <p>Receive email notification when an event I plan to attend is cancelled</p>
     <h4>Change Notifications</h4>
-      <input type="checkbox" class="change-msg">
+      <input type="checkbox" class="change-msg" {{#if changeNotify}}checked{{/if}}>
       <p>Allow email notification when an event I plan to attend is changed by the event organizer</p>
     <h4>Special Notifications</h4>
-      <input type="checkbox" class="custom-msg">
+      <input type="checkbox" class="custom-msg" {{#if customNotify}}checked{{/if}}>
       <p>Allow other emails from the event organzier for events I plan to attend</p>
   {{/if}}
 </form>

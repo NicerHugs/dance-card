@@ -5,7 +5,6 @@
     className: 'settings',
     template: DanceCard.templates.settings,
     render: function() {
-      console.log(this.model.toJSON());
       this.$el.html(this.template(this.model.toJSON()));
     },
 
@@ -117,15 +116,33 @@
     },
 
     deleteMsgSettings: function() {
-      console.log($('.delete-msg:checked').val());
+      if (this.model.get('cancelNotify')) {
+        this.model.set('cancelNotify', false);
+      } else {
+        this.model.set('cancelNotify', true);
+      }
+      this.model.save()
+      .then(_.bind(this.render, this));
     },
 
     changeMsgSettings: function() {
-      console.log($('.change-msg:checked').val());
+      if (this.model.get('changeNotify')) {
+        this.model.set('changeNotify', false);
+      } else {
+        this.model.set('changeNotify', true);
+      }
+      this.model.save()
+      .then(_.bind(this.render, this));
     },
 
     customMsgSettings: function() {
-      console.log($('.custom-msg:checked').val());
+      if (this.model.get('customNotify')) {
+        this.model.set('customNotify', false);
+      } else {
+        this.model.set('customNotify', true);
+      }
+      this.model.save()
+      .then(_.bind(this.render, this));
     }
 
   });

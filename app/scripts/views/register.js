@@ -21,12 +21,15 @@
           urlId = name.replace(/[^\w\d\s]/g, '').split(' ').join('_'),
           attrs = {
             email: email,
-            name: name
+            name: name,
+            cancelNotify: true,
+            changeNotify: true
           };
       if ($('.organizer-input:checked').val() === "true") {
         attrs.organizer = true;
       } else {
         attrs.organizer = false;
+        attrs.customNotify = true;
       }
       if (attrs.organizer) {
         attrs.urlId = urlId;
