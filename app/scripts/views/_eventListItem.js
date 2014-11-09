@@ -9,6 +9,7 @@
       var self = this;
       this.model.setTemplateData(this)
       .done(function() {
+        console.log(self.templateData);
         self.$el.html(self.template(self.templateData));
       });
     },

@@ -21,6 +21,8 @@
             model: model
           }));
         });
+      } else {
+        self.$el.append("<p>You have not RSVP'd to any events yet.</p>");
       }
     },
 
