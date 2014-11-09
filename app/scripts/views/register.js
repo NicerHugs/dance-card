@@ -43,7 +43,7 @@
             if (user.length === 0) {
               Parse.User.signUp(email, password, attrs, {
                 success: function() {
-                  DanceCard.session.set('user', Parse.User.current());
+                  DanceCard.session.set('user', Parse.User.current().toJSON());
                   DanceCard.session.set('dancer', !DanceCard.session.get('user').organizer);
                   if (DanceCard.session.get('dancer')) {
                     if (DanceCard.router.routesHit <= 1) {
