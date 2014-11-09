@@ -22,7 +22,11 @@
           }));
         });
       } else {
-        self.$el.append("<p>You have not RSVP'd to any events yet.</p>");
+        if (this.templateData.owner) {
+          self.$el.append("<p>You have not RSVP'd to any events yet.</p>");
+        } else {
+          self.$el.append("<p>" + this.model.get('name') + " has not RSVP'd to any events yet.</p>");
+        }
       }
     },
 
