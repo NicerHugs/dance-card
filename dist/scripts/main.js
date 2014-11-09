@@ -233,7 +233,8 @@
       'orgs/:org'              : 'org', //dynamic, for validated user will allow user to manage events, otherwise will show the org and their events
       'orgs/:org/create-event' : 'createEvent', //dynamic
       'orgs/:org/:event'       : 'evnt', //dynamic, for validated user will be manage event page, otherwise will show the event info
-      'orgs/:org/:event/email' : 'emailAttendees'
+      'orgs/:org/:event/email' : 'emailAttendees',
+      'dancers/:dancer'        : 'dancer'
     },
     mainChildren: [],
 
@@ -285,7 +286,7 @@
 
     orgs: function() {
       _.invoke(this.mainChildren, 'remove');
-      this.mainChildren.push(new DanceCard.Views.Orgs({
+      this.mainChildren.push(new DanceCard.Views.NotFound({
         $container: $('main')
       }));
     },
@@ -296,7 +297,7 @@
         .find({
           success: function(org) {
             // org exists
-            if (org.length > 0) {
+            if (org.length > 0 && org[0].get('organizer')) {
               if (org[0].authenticated()) {
                 // current user is the org being viewed
                 _.invoke(self.mainChildren, 'remove');
@@ -378,7 +379,38 @@
       } else {
         window.history.back();
       }
-    }
+    },
+
+    dancer: function(dancer) {
+      var self = this;
+      new Parse.Query('User')
+        .equalTo('urlId', dancer)
+        .find({
+          success: function(dancer) {
+            // dancer exists
+            if (dancer.length > 0 && !dancer[0].get('organizer')) {
+              _.invoke(self.mainChildren, 'remove');
+              self.mainChildren.push(new DanceCard.Views.Dancer({
+                $container: $('main'),
+                model: dancer[0]
+              }));
+            } else {
+              _.invoke(self.mainChildren, 'remove');
+              self.mainChildren.push(new DanceCard.Views.NotFound({
+                $container: $('main'),
+                model: dancer[0]
+              }));
+            }
+          }, error: function() {
+            console.log('error retrieving user');
+            _.invoke(self.mainChildren, 'remove');
+            self.mainChildren.push(new DanceCard.Views.NotFound({
+              $container: $('main'),
+            }));
+          }
+        });
+    },
+
   });
 
 })();
@@ -422,7 +454,7 @@ this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"1":func
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"2":function(depth0,helpers,partials,data) {
-  return "      You are attending this event <a href=\"#\" class=\"unrsvp\">cancel your RSVP</a>\n";
+  return "      <a href=\"#\" class=\"unrsvp\">cancel your RSVP</a>\n";
   },"4":function(depth0,helpers,partials,data) {
   return "      <a href=\"#\" class=\"rsvp\">RSVP</a>\n";
   },"6":function(depth0,helpers,partials,data) {
@@ -489,6 +521,27 @@ this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"1":functio
 this["DanceCard"]["templates"]["_loginRequired"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<div class=\"login-req-notif\">\n  <p>You must be logged in to use this feature</p>\n  <a href=\"#/login\" class=\"visit-login\">log in</a>\n  <a href=\"#/register\" class=\"visit-register\">register</a>\n  <a href=\"#\" class=\"cancel\">cancel</a>\n</div>\n";
   },"useData":true});
+this["DanceCard"]["templates"]["dancer"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  return "Your";
+  },"3":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
+    + "'s";
+},"5":function(depth0,helpers,partials,data) {
+  return "you are";
+  },"7":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
+    + " is";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "\n<h2>";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.owner : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += " dance card</h2>\n<h3>Dances ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.owner : depth0), {"name":"if","hash":{},"fn":this.program(5, data),"inverse":this.program(7, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + " attending: </h3>\n<ul class='dancer-attending'>\n</ul>\n";
+},"useData":true});
 this["DanceCard"]["templates"]["forgotPassword"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<div class=\"reset-password\">\n  <form>\n    <a href=\"#\" class=\"close-modal\">x</a>\n    <h3>Reset your password</h3>\n    <label name=\"email\">Email</label>\n      <input type=\"email\" name=\"email\" class=\"email-reset-password\">\n    <input type=\"submit\" class=\"send-reset-request\">\n  </form>\n</div>\n";
   },"useData":true});
@@ -505,7 +558,9 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"left-nav\">\n";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.organizer : stack1), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "        <a href=\"#\" class=\"home-link\">search for dances</a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    You are logged in as "
+  return buffer + "        <a href=\"#\" class=\"home-link\">search for dances</a>\n        <a href=\"#/dancers/"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
+    + "\">view your dance card</a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    You are logged in as "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
     + ". If that's not you, <a href=\"#/logout\">logout</a>\n    <a href=\"#/settings\">settings</a>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
@@ -1069,7 +1124,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"c
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "<h2>"
     + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
-    + " Events</h2>\n\n";
+    + " Events</h2>\n";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
@@ -1128,12 +1183,16 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 })();
 
 (function() {
+  'use strict';
+
   DanceCard.Views.Footer = DanceCard.Views.Base.extend({
     tagName: 'footer',
   });
 })();
 
 (function() {
+  'use strict';
+
   DanceCard.Views.Header = DanceCard.Views.Base.extend({
     tagName: 'header',
     render: function() {
@@ -1151,12 +1210,16 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 
     viewIndex: function(e) {
       e.preventDefault();
-      DanceCard.router.navigate('/', {trigger: true})
-;    }
+      DanceCard.router.navigate('/', {trigger: true});
+    }
+
   });
+
 })();
 
 (function() {
+  'use strict';
+
   DanceCard.Views.Login = DanceCard.Views.Base.extend({
     tagName: 'form',
     className: 'login-form',
@@ -1253,6 +1316,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 })();
 
 (function() {
+  'use strict';
 
   DanceCard.Views.Main = DanceCard.Views.Base.extend({
     tagName: 'main',
@@ -1351,6 +1415,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 })();
 
 (function() {
+  'use strict';
 
   DanceCard.Views.Nav = Parse.View.extend({
     initialize: function(options) {
@@ -1362,6 +1427,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     tagName: 'nav',
     template: DanceCard.templates.nav,
     render: function() {
+      console.log(this.model.toJSON())
       this.$el.html(this.template(this.model.toJSON()));
     }
   });
@@ -1369,6 +1435,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 })();
 
 (function() {
+  'use strict';
+
   DanceCard.Views.Register = DanceCard.Views.Base.extend({
     tagName: 'form',
     className: 'register-form',
@@ -1393,16 +1461,14 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
             email: email,
             name: name,
             cancelNotify: true,
-            changeNotify: true
+            changeNotify: true,
+            urlId: urlId
           };
       if ($('.organizer-input:checked').val() === "true") {
         attrs.organizer = true;
       } else {
         attrs.organizer = false;
         attrs.customNotify = true;
-      }
-      if (attrs.organizer) {
-        attrs.urlId = urlId;
       }
       if (this.validateUser(attrs, password)) {
         //check to see if the name already exists as a user
@@ -1413,7 +1479,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
             if (user.length === 0) {
               Parse.User.signUp(email, password, attrs, {
                 success: function() {
-                  DanceCard.session.set('user', Parse.User.current());
+                  DanceCard.session.set('user', Parse.User.current().toJSON());
                   DanceCard.session.set('dancer', !DanceCard.session.get('user').organizer);
                   if (DanceCard.session.get('dancer')) {
                     if (DanceCard.router.routesHit <= 1) {
@@ -1489,6 +1555,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 })();
 
 (function() {
+  'use strict';
 
   DanceCard.Views.Settings = DanceCard.Views.Base.extend({
 
@@ -1647,6 +1714,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 })();
 
 (function() {
+  'use strict';
 
   DanceCard.Views.Orgs = DanceCard.Views.Base.extend({
     className: 'orgs',
@@ -1659,7 +1727,50 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 
 })();
 
+(function(){
+  'use strict';
+
+  DanceCard.Views.Dancer = DanceCard.Views.Base.extend({
+
+    className: 'dancer',
+    template: DanceCard.templates.dancer,
+    render: function() {
+      this.templateData = this.model.setTemplateData();
+      this.$el.html(this.template(this.templateData));
+      this.getDances()
+      .then(_.bind(this.renderChildren, this));
+    },
+
+    renderChildren: function(collection) {
+      var self = this;
+      if (collection.models.length > 0) {
+        _.each(collection.models, function(model) {
+          self.children.push(new DanceCard.Views.EventListItemPartial({
+            $container: $('.dancer-attending'),
+            model: model
+          }));
+        });
+      } else {
+        if (this.templateData.owner) {
+          self.$el.append("<p>You have not RSVP'd to any events yet.</p>");
+        } else {
+          self.$el.append("<p>" + this.model.get('name') + " has not RSVP'd to any events yet.</p>");
+        }
+      }
+    },
+
+    getDances: function() {
+      return new DanceCard.Collections.Attending({
+        dancer: this.model
+      }).fetch();
+    }
+
+  });
+
+})();
+
 (function() {
+  'use strict';
 
   DanceCard.Views.Org = DanceCard.Views.Base.extend({
     className: 'org',
@@ -2740,6 +2851,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       var self = this;
       this.model.setTemplateData(this)
       .done(function() {
+        console.log(self.templateData);
         self.$el.html(self.template(self.templateData));
       });
     },
@@ -2791,7 +2903,11 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       var self = this;
       this.model.cancelRSVP()
       .done(function() {
-        self.render();
+        if (window.location.hash === '#/dancers/' + Parse.User.current().get('urlId')) {
+          self.remove();
+        } else {
+          self.render();
+        }
       })
       .fail(function() {
         console.log('something went wrong', arguments);
@@ -2805,6 +2921,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 })();
 
 (function() {
+  'use strict';
 
   DanceCard.Views.NotFound = DanceCard.Views.Base.extend({
     className: '404',
@@ -2916,6 +3033,7 @@ DanceCard.Models.Event = Parse.Object.extend({
   },
 
   cancelRSVP: function() {
+    var self = this;
     var def = new $.Deferred(),
         eRelation = this.relation('dancers'),
         uRelation = Parse.User.current().relation('attending');
@@ -2925,7 +3043,8 @@ DanceCard.Models.Event = Parse.Object.extend({
       success: function() {
         Parse.User.current().save(null, {
           success: function() {
-            def.resolve();
+            self.save().then(def.resolve);
+            // def.resolve();
           },
           fail: function() {
             def.reject('save user failed');
@@ -3100,6 +3219,16 @@ DanceCard.Models.User = Parse.Object.extend({
       return false;
     }
   },
+
+  setTemplateData: function() {
+    var owner = Parse.User.current().get('urlId') === window.location.hash.split('/')[2];
+
+    var templateData = {
+      model: this.toJSON(),
+      owner: owner
+    };
+    return templateData;
+  }
 });
 
 (function() {
@@ -3189,6 +3318,29 @@ DanceCard.Models.User = Parse.Object.extend({
         }
     },
     model: DanceCard.Models.Event,
+  });
+
+})();
+
+(function(){
+  'use strict';
+
+  DanceCard.Collections.Attending = Parse.Collection.extend({
+    initialize: function(options){
+      this.dancer = options.dancer;
+      var relation = this.dancer.relation('attending');
+      var yesterday = new Date();
+      yesterday.setDate(yesterday.getDate()-1);
+      var query = new Parse.Query('Event')
+        .ascending('startDate')
+        .equalTo('orgUrlId', this.orgUrlId)
+        .equalTo('recurring', false)
+        .greaterThan('startDate', yesterday)
+        .limit(10);
+      this.query = relation.query();
+    },
+    model: DanceCard.Models.Event,
+
   });
 
 })();
