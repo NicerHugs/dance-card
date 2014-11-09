@@ -1,14 +1,14 @@
 <div id="content">
   <div id="siteNotice">
   </div>
-  <h1 id="firstHeading" class="firstHeading">
-  <a href="#/orgs/{{event.orgUrlId}}/{{event.objectId}}">
-  {{event.name}}</a></h1>
+    <h1 id="firstHeading" class="firstHeading">
+    <a href="#/orgs/{{event.orgUrlId}}/{{event.objectId}}">
+    {{event.name}}</a></h1>
   <div id="bodyContent">
-  <p>
-    {{#dateDisplay}}{{event.startDate.iso}}{{/dateDisplay}}
-    {{#time}}{{event.startTime}}{{/time}}
-  </p>
-  <p>{{event.venue.fullAddress}}</p>
+    <p>
+      {{#dateDisplay}}{{event.startDate.iso}}{{/dateDisplay}}
+      {{#time}}{{event.startTime}}{{/time}}
+    </p>
+    <p><a href="#" class="address">{{event.venue.fullAddress}}</a></p>
   </div>
 </div>

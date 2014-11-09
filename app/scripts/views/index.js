@@ -10,8 +10,9 @@
     },
     events: {
       'click .search-submit' : 'searchResults',
-      'click .cancel' : 'removeAlert'
+      'click .cancel'        : 'removeAlert'
     },
+
 
     removeAlert: function(e) {
       e.preventDefault();

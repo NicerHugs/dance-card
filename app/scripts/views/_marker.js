@@ -33,7 +33,7 @@
         event: this.model.toJSON(),
         dancer: DanceCard.session.get('dancer')
       };
-      if (this.templateData.loggedIn) {
+      if (DanceCard.session.get('loggedIn') && DanceCard.session.get('user').urlId) {
         if (this.model.get('orgUrlId') === DanceCard.session.get('user').urlId) {
           this.templateData.owner = true;
           this.templateData.eventOrg = DanceCard.session.get('user');
