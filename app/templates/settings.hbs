@@ -1,0 +1,42 @@
+<h2>{{name}}</h2>
+<p>member since {{#dateDisplay}}{{createdAt}}{{/dateDisplay}}</p>
+
+<form class="password-change">
+  <h3>Update Password</h3>
+  <label name="new-password">New password</label>
+    <input class="new-password" type="password" placeholder="new password">
+  <label name="ver-password">Verify new password</label>
+    <input class="verify-password" type="password" placeholder="verify new password">
+  <label name="old-password">Old password</label>
+    <input class="old-password" type="password" placeholder="old password">
+  <input type="submit" name="change-password" value="update" class="change-password">
+</form>
+
+<form class="email-settings">
+  <h3>Email settings</h3>
+  <label>Current email:</label>
+  {{email}}
+  <label name="email">Update your email address:</label>
+    <input type="email" class="new-email" placeholder="new email"></a>
+    <input type="submit" value="update" class="change-email">
+
+  {{#if organizer}}
+    <h4>Cancel Notifications</h4>
+      <input type="checkbox" class="delete-msg">
+      <p>Send email notification to event attendees when I cancel the event</p>
+    <h4>Change Notifications</h4>
+      <input type="checkbox" class="change-msg">
+      <p>Send email notification to event attendees when I make changes to the event</p>
+
+  {{else}}
+    <h4>Cancel Notifications</h4>
+      <input type="checkbox" class="delete-msg">
+      <p>Receive email notification when an event I plan to attend is cancelled</p>
+    <h4>Change Notifications</h4>
+      <input type="checkbox" class="change-msg">
+      <p>Allow email notification when an event I plan to attend is changed by the event organizer</p>
+    <h4>Special Notifications</h4>
+      <input type="checkbox" class="custom-msg">
+      <p>Allow other emails from the event organzier for events I plan to attend</p>
+  {{/if}}
+</form>

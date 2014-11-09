@@ -120,7 +120,7 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
   if (stack1 != null) { buffer += stack1; }
   return buffer + "        <a href=\"#\" class=\"home-link\">search for dances</a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    You are logged in as "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
-    + ". If that's not you, <a href=\"#/logout\">logout</a>\n  </div>\n";
+    + ". If that's not you, <a href=\"#/logout\">logout</a>\n    <a href=\"#/settings\">settings</a>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "        <a href=\"#/orgs/"
@@ -145,6 +145,27 @@ this["DanceCard"]["templates"]["orgs"] = Handlebars.template({"compiler":[6,">= 
 this["DanceCard"]["templates"]["register"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<h2>Register</h2>\n<label name=\"name\">Username:</label>\n  <input name=\"name\" type=\"text\" class=\"name-input\" placeholder=\"Username\">\n<label name=\"email\">Contact Email:</label>\n  <input name=\"email\" type=\"email\" class=\"email-input\" placeholder=\"email\">\n<label class=\"organizer-label\" name=\"organizer\">Are you a...\n  <label>dance organizer</label>\n    <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"true\">\n  <label >dancer</label>\n    <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"false\">\n</label>\n<label name=\"password\">Password:</label>\n  <input type=\"password\" class=\"password-input\" placeholder=\"password\">\n  <input type=\"password\" class=\"verify-password\" placeholder=\"verify password\">\n<input class=\"submit-register\" type=\"submit\" value=\"create account\" disabled>\n";
   },"useData":true});
+this["DanceCard"]["templates"]["settings"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return escapeExpression(((helper = (helper = helpers.createdAt || (depth0 != null ? depth0.createdAt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"createdAt","hash":{},"data":data}) : helper)));
+  },"3":function(depth0,helpers,partials,data) {
+  return "    <h4>Cancel Notifications</h4>\n      <input type=\"checkbox\" class=\"delete-msg\">\n      <p>Send email notification to event attendees when I cancel the event</p>\n    <h4>Change Notifications</h4>\n      <input type=\"checkbox\" class=\"change-msg\">\n      <p>Send email notification to event attendees when I make changes to the event</p>\n\n";
+  },"5":function(depth0,helpers,partials,data) {
+  return "    <h4>Cancel Notifications</h4>\n      <input type=\"checkbox\" class=\"delete-msg\">\n      <p>Receive email notification when an event I plan to attend is cancelled</p>\n    <h4>Change Notifications</h4>\n      <input type=\"checkbox\" class=\"change-msg\">\n      <p>Allow email notification when an event I plan to attend is changed by the event organizer</p>\n    <h4>Special Notifications</h4>\n      <input type=\"checkbox\" class=\"custom-msg\">\n      <p>Allow other emails from the event organzier for events I plan to attend</p>\n";
+  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing, buffer = "<h2>"
+    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
+    + "</h2>\n<p>member since ";
+  stack1 = ((helper = (helper = helpers.dateDisplay || (depth0 != null ? depth0.dateDisplay : depth0)) != null ? helper : helperMissing),(options={"name":"dateDisplay","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.dateDisplay) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "</p>\n\n<form class=\"password-change\">\n  <h3>Update Password</h3>\n  <label name=\"new-password\">New password</label>\n    <input class=\"new-password\" type=\"password\" placeholder=\"new password\">\n  <label name=\"ver-password\">Verify new password</label>\n    <input class=\"verify-password\" type=\"password\" placeholder=\"verify new password\">\n  <label name=\"old-password\">Old password</label>\n    <input class=\"old-password\" type=\"password\" placeholder=\"old password\">\n  <input type=\"submit\" name=\"change-password\" value=\"update\" class=\"change-password\">\n</form>\n\n<form class=\"email-settings\">\n  <h3>Email settings</h3>\n  <label>Current email:</label>\n  "
+    + escapeExpression(((helper = (helper = helpers.email || (depth0 != null ? depth0.email : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"email","hash":{},"data":data}) : helper)))
+    + "\n  <label name=\"email\">Update your email address:</label>\n    <input type=\"email\" class=\"new-email\" placeholder=\"new email\"></a>\n    <input type=\"submit\" value=\"update\" class=\"change-email\">\n\n";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.organizer : depth0), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.program(5, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "</form>\n";
+},"useData":true});
 this["DanceCard"]["templates"]["orgs"] = this["DanceCard"]["templates"]["orgs"] || {};
 this["DanceCard"]["templates"]["orgs"]["org"] = this["DanceCard"]["templates"]["orgs"]["org"] || {};
 this["DanceCard"]["templates"]["orgs"]["org"]["_eventHeader"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {

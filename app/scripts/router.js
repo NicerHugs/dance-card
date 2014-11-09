@@ -15,6 +15,7 @@
       'login'                  : 'login',
       'logout'                 : 'logout',
       'register'               : 'register',
+      'settings'               : 'settings',
       'orgs'                   : 'orgs',
       'orgs/:org'              : 'org', //dynamic, for validated user will allow user to manage events, otherwise will show the org and their events
       'orgs/:org/create-event' : 'createEvent', //dynamic
@@ -54,6 +55,21 @@
         model: new DanceCard.Models.User()
       }));
     },
+
+    settings: function() {
+      _.invoke(this.mainChildren, 'remove');
+      if (Parse.User.current()) {
+        this.mainChildren.push(new DanceCard.Views.Settings({
+          $container: $('main'),
+          model: Parse.User.current()
+        }));
+      } else {
+        this.mainChildren.push(new DanceCard.Views.NotFound({
+          $container: $('main')
+        }));
+      }
+    },
+
     orgs: function() {
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren.push(new DanceCard.Views.Orgs({
