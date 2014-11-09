@@ -73,9 +73,9 @@
             }, 4000);
           },
           error: function() {
-            $('.password-change').append('<div class="email-success">Something went wrong, please try again</div>');
+            $('.password-change').append('<div class="password-error">Something went wrong, please try again</div>');
             window.setTimeout(function(){
-              $('.password-change').remove();
+              $('.password-error').remove();
             }, 4000);
           }
         });
@@ -84,7 +84,36 @@
 
     changeEmail: function(e) {
       e.preventDefault();
-      console.log($('.new-email').val());
+      var self = this;
+      $('.invalid-form-warning').remove();
+      $('.invalid').removeClass('invalid');
+      var email = $('.new-email').val();
+      if (!email) {
+        $('label[name="email"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('email is is required');
+        $('.new-email').addClass('invalid').focus();
+      } else if (email.indexOf('.') === -1 || email.indexOf('@') === -1) {
+        $('label[name="email"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('please enter a valid email address');
+        $('.new-email').addClass('invalid').focus();
+      } else {
+        this.model.setEmail(email);
+        this.model.save(null, {
+          success: function() {
+            self.render();
+            $('.email-settings').prepend('<div class="email-success">Your email was successfully changed</div>');
+            window.setTimeout(function(){
+              $('.email-success').remove();
+            }, 4000);
+          },
+          error: function() {
+            $('.email-settings').prepend('<div class="email-error">Something went wrong, please try again</div>');
+            window.setTimeout(function(){
+              $('.email-error').remove();
+            }, 4000);
+          }
+        });
+      }
     },
 
     deleteMsgSettings: function() {
