@@ -228,6 +228,7 @@
       'login'                  : 'login',
       'logout'                 : 'logout',
       'register'               : 'register',
+      'settings'               : 'settings',
       'orgs'                   : 'orgs',
       'orgs/:org'              : 'org', //dynamic, for validated user will allow user to manage events, otherwise will show the org and their events
       'orgs/:org/create-event' : 'createEvent', //dynamic
@@ -267,6 +268,21 @@
         model: new DanceCard.Models.User()
       }));
     },
+
+    settings: function() {
+      _.invoke(this.mainChildren, 'remove');
+      if (Parse.User.current()) {
+        this.mainChildren.push(new DanceCard.Views.Settings({
+          $container: $('main'),
+          model: Parse.User.current()
+        }));
+      } else {
+        this.mainChildren.push(new DanceCard.Views.NotFound({
+          $container: $('main')
+        }));
+      }
+    },
+
     orgs: function() {
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren.push(new DanceCard.Views.Orgs({
@@ -489,7 +505,7 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
   if (stack1 != null) { buffer += stack1; }
   return buffer + "        <a href=\"#\" class=\"home-link\">search for dances</a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    You are logged in as "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
-    + ". If that's not you, <a href=\"#/logout\">logout</a>\n  </div>\n";
+    + ". If that's not you, <a href=\"#/logout\">logout</a>\n    <a href=\"#/settings\">settings</a>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "        <a href=\"#/orgs/"
@@ -514,6 +530,44 @@ this["DanceCard"]["templates"]["orgs"] = Handlebars.template({"compiler":[6,">= 
 this["DanceCard"]["templates"]["register"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<h2>Register</h2>\n<label name=\"name\">Username:</label>\n  <input name=\"name\" type=\"text\" class=\"name-input\" placeholder=\"Username\">\n<label name=\"email\">Contact Email:</label>\n  <input name=\"email\" type=\"email\" class=\"email-input\" placeholder=\"email\">\n<label class=\"organizer-label\" name=\"organizer\">Are you a...\n  <label>dance organizer</label>\n    <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"true\">\n  <label >dancer</label>\n    <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"false\">\n</label>\n<label name=\"password\">Password:</label>\n  <input type=\"password\" class=\"password-input\" placeholder=\"password\">\n  <input type=\"password\" class=\"verify-password\" placeholder=\"verify password\">\n<input class=\"submit-register\" type=\"submit\" value=\"create account\" disabled>\n";
   },"useData":true});
+this["DanceCard"]["templates"]["settings"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return escapeExpression(((helper = (helper = helpers.createdAt || (depth0 != null ? depth0.createdAt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"createdAt","hash":{},"data":data}) : helper)));
+  },"3":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "    <h4>Cancel Notifications</h4>\n      <input type=\"checkbox\" class=\"delete-msg\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.cancelNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">\n      <p>Send email notification to event attendees when I cancel the event</p>\n    <h4>Change Notifications</h4>\n      <input type=\"checkbox\" class=\"change-msg\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.changeNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + ">\n      <p>Send email notification to event attendees when I make changes to the event</p>\n\n";
+},"4":function(depth0,helpers,partials,data) {
+  return "checked";
+  },"6":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "    <h4>Cancel Notifications</h4>\n      <input type=\"checkbox\" class=\"delete-msg\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.cancelNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">\n      <p>Receive email notification when an event I plan to attend is cancelled</p>\n    <h4>Change Notifications</h4>\n      <input type=\"checkbox\" class=\"change-msg\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.changeNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">\n      <p>Allow email notification when an event I plan to attend is changed by the event organizer</p>\n    <h4>Special Notifications</h4>\n      <input type=\"checkbox\" class=\"custom-msg\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.customNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + ">\n      <p>Allow other emails from the event organzier for events I plan to attend</p>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing, buffer = "<h2>"
+    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
+    + "</h2>\n<p>member since ";
+  stack1 = ((helper = (helper = helpers.dateDisplay || (depth0 != null ? depth0.dateDisplay : depth0)) != null ? helper : helperMissing),(options={"name":"dateDisplay","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.dateDisplay) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "</p>\n\n<form class=\"password-change\">\n  <h3>Update Password</h3>\n  <label name=\"new-password\">New password</label>\n    <input class=\"new-password\" type=\"password\" placeholder=\"new password\">\n  <label name=\"ver-password\">Verify new password</label>\n    <input class=\"verify-password\" type=\"password\" placeholder=\"verify new password\">\n  <label name=\"old-password\">Old password</label>\n    <input class=\"old-password\" type=\"password\" placeholder=\"old password\">\n  <input type=\"submit\" name=\"change-password\" value=\"update\" class=\"change-password\">\n</form>\n\n<form class=\"email-settings\">\n  <h3>Email settings</h3>\n  <label>Current email:</label>\n  "
+    + escapeExpression(((helper = (helper = helpers.email || (depth0 != null ? depth0.email : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"email","hash":{},"data":data}) : helper)))
+    + "\n  <label name=\"email\">Update your email address:</label>\n    <input type=\"email\" class=\"new-email\" placeholder=\"new email\"></a>\n    <input type=\"submit\" value=\"update\" class=\"change-email\">\n\n";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.organizer : depth0), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.program(6, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "</form>\n";
+},"useData":true});
 this["DanceCard"]["templates"]["orgs"] = this["DanceCard"]["templates"]["orgs"] || {};
 this["DanceCard"]["templates"]["orgs"]["org"] = this["DanceCard"]["templates"]["orgs"]["org"] || {};
 this["DanceCard"]["templates"]["orgs"]["org"]["_eventHeader"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
@@ -1334,12 +1388,15 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
           urlId = name.replace(/[^\w\d\s]/g, '').split(' ').join('_'),
           attrs = {
             email: email,
-            name: name
+            name: name,
+            cancelNotify: true,
+            changeNotify: true
           };
       if ($('.organizer-input:checked').val() === "true") {
         attrs.organizer = true;
       } else {
         attrs.organizer = false;
+        attrs.customNotify = true;
       }
       if (attrs.organizer) {
         attrs.urlId = urlId;
@@ -1424,6 +1481,157 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
         $('.submit-register').removeAttr('disabled');
       }
     }
+  });
+
+})();
+
+(function() {
+
+  DanceCard.Views.Settings = DanceCard.Views.Base.extend({
+
+    className: 'settings',
+    template: DanceCard.templates.settings,
+    render: function() {
+      this.$el.html(this.template(this.model.toJSON()));
+    },
+
+    events: {
+      'click .change-password' : 'changePassword',
+      'click .change-email'    : 'changeEmail',
+      'click .delete-msg'      : 'deleteMsgSettings',
+      'click .change-msg'      : 'changeMsgSettings',
+      'click .custom-msg'      : 'customMsgSettings'
+    },
+
+    validatePassword: function(attrs) {
+      var def = new $.Deferred();
+      $('.invalid-form-warning').remove();
+      $('.invalid').removeClass('invalid');
+      if (!attrs.newPassword) {
+        $('label[name="new-password"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('new password is required');
+        $('.new-password').addClass('invalid').focus();
+        def.reject();
+      } else if (attrs.newPassword !== attrs.verPassword) {
+        $('label[name="ver-password"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('passwords do not match');
+        $('.verify-password').addClass('invalid').focus();
+      } else if (!attrs.oldPassword) {
+        $('label[name="old-password"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('old password is required');
+        $('.old-password').addClass('invalid').focus();
+      } else {
+        Parse.User.logIn(this.model.get('email'), attrs.oldPassword, {
+          success: function() {
+            def.resolve();
+          },
+          error: function(a) {
+            $('label[name="old-password"]').append('<div class="invalid-form-warning"></div>');
+            $('.invalid-form-warning').html('old password is invalid');
+            $('.old-password').addClass('invalid').focus();
+            def.reject();
+          }
+        });
+      }
+      return def.promise();
+    },
+
+    changePassword: function(e) {
+      e.preventDefault();
+      var self = this,
+          newPassword = $('.new-password').val(),
+          oldPassword = $('.old-password').val(),
+          verPassword = $('.verify-password').val(),
+          attrs = {
+            newPassword: newPassword,
+            oldPassword: oldPassword,
+            verPassword: verPassword
+          };
+      this.validatePassword(attrs)
+      .done(function(){
+        self.model.setPassword(attrs.newPassword);
+        self.model.save(null, {
+          success: function() {
+            $('.password-change')[0].reset();
+            $('.password-change').append('<div class="password-success">Your password was successfully changed</div>');
+            window.setTimeout(function(){
+              $('.password-success').remove();
+            }, 4000);
+          },
+          error: function() {
+            $('.password-change').append('<div class="password-error">Something went wrong, please try again</div>');
+            window.setTimeout(function(){
+              $('.password-error').remove();
+            }, 4000);
+          }
+        });
+      });
+    },
+
+    changeEmail: function(e) {
+      e.preventDefault();
+      var self = this;
+      $('.invalid-form-warning').remove();
+      $('.invalid').removeClass('invalid');
+      var email = $('.new-email').val();
+      if (!email) {
+        $('label[name="email"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('email is is required');
+        $('.new-email').addClass('invalid').focus();
+      } else if (email.indexOf('.') === -1 || email.indexOf('@') === -1) {
+        $('label[name="email"]').append('<div class="invalid-form-warning"></div>');
+        $('.invalid-form-warning').html('please enter a valid email address');
+        $('.new-email').addClass('invalid').focus();
+      } else {
+        this.model.setEmail(email);
+        this.model.save(null, {
+          success: function() {
+            self.render();
+            $('.email-settings').prepend('<div class="email-success">Your email was successfully changed</div>');
+            window.setTimeout(function(){
+              $('.email-success').remove();
+            }, 4000);
+          },
+          error: function() {
+            $('.email-settings').prepend('<div class="email-error">Something went wrong, please try again</div>');
+            window.setTimeout(function(){
+              $('.email-error').remove();
+            }, 4000);
+          }
+        });
+      }
+    },
+
+    deleteMsgSettings: function() {
+      if (this.model.get('cancelNotify')) {
+        this.model.set('cancelNotify', false);
+      } else {
+        this.model.set('cancelNotify', true);
+      }
+      this.model.save()
+      .then(_.bind(this.render, this));
+    },
+
+    changeMsgSettings: function() {
+      if (this.model.get('changeNotify')) {
+        this.model.set('changeNotify', false);
+      } else {
+        this.model.set('changeNotify', true);
+      }
+      this.model.save()
+      .then(_.bind(this.render, this));
+    },
+
+    customMsgSettings: function() {
+      if (this.model.get('customNotify')) {
+        this.model.set('customNotify', false);
+      } else {
+        this.model.set('customNotify', true);
+      }
+      this.model.save()
+      .then(_.bind(this.render, this));
+    }
+
   });
 
 })();
