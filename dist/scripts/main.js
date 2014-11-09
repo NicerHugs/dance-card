@@ -537,10 +537,10 @@ this["DanceCard"]["templates"]["settings"] = Handlebars.template({"1":function(d
   var stack1, buffer = "    <h4>Cancel Notifications</h4>\n      <input type=\"checkbox\" class=\"delete-msg\" ";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.cancelNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  buffer += ">\n      <p>Send email notification to event attendees when I cancel the event</p>\n    <h4>Change Notifications</h4>\n      <input type=\"checkbox\" class=\"change-msg\" ";
+  buffer += ">\n      <p>Send email notification to event attendees if I cancel the event</p>\n    <h4>Change Notifications</h4>\n      <input type=\"checkbox\" class=\"change-msg\" ";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.changeNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + ">\n      <p>Send email notification to event attendees when I make changes to the event</p>\n\n";
+  return buffer + ">\n      <p>Send email notification to event attendees if I make changes to the event</p>\n\n";
 },"4":function(depth0,helpers,partials,data) {
   return "checked";
   },"6":function(depth0,helpers,partials,data) {
@@ -1593,10 +1593,17 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
             }, 4000);
           },
           error: function() {
-            $('.email-settings').prepend('<div class="email-error">Something went wrong, please try again</div>');
-            window.setTimeout(function(){
-              $('.email-error').remove();
-            }, 4000);
+            if (arguments[1].code === 203) {
+              $('.email-settings').prepend('<div class="email-error">Sorry, that email is already registered with another user</div>');
+              window.setTimeout(function(){
+                $('.email-error').remove();
+              }, 4000);
+            } else {
+              $('.email-settings').prepend('<div class="email-error">Something went wrong, please try again</div>');
+              window.setTimeout(function(){
+                $('.email-error').remove();
+              }, 4000);
+            }
           }
         });
       }
@@ -2167,9 +2174,10 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     template: DanceCard.templates.orgs.org.eventManage,
     render: function() {
       var self = this;
-      this.$el.html(this.template());
       this.model.setTemplateData(this)
       .then(function(){
+        self.$el.html(self.template(self.templateData));
+
         $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(self.templateData));
         if (self.model.get('recurring')) {
           $('.event-recur').html(DanceCard.templates.orgs.org._eventRecur(self.templateData));
@@ -2736,7 +2744,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       this.model.destroy({
         success: function(){
           self.remove();
-          self.options.parent.render();
+          if (self.options.parent) self.options.parent.render();
         }
       });
     },
