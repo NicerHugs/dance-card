@@ -95,7 +95,9 @@ this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"1":functio
   stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
   if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n    </p>\n    <p><a href=\"#\" class=\"address\">"
+  return buffer + "\n    </p>\n    <p><a href=\""
+    + escapeExpression(((helper = (helper = helpers.mapUrl || (depth0 != null ? depth0.mapUrl : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"mapUrl","hash":{},"data":data}) : helper)))
+    + "\" class=\"address\">"
     + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.fullAddress : stack1), depth0))
     + "</a></p>\n  </div>\n</div>\n";
 },"useData":true});

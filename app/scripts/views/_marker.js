@@ -15,6 +15,7 @@
       });
       this.setTemplateData()
       .done(function() {
+        self.templateData.mapUrl = self.options.mapUrl;
         self.infowindow = new google.maps.InfoWindow({
           content: DanceCard.templates._infoWindow(self.templateData)
         });
