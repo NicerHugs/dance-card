@@ -426,7 +426,7 @@ this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"1":func
   },"4":function(depth0,helpers,partials,data) {
   return "      <a href=\"#\" class=\"rsvp\">RSVP</a>\n";
   },"6":function(depth0,helpers,partials,data) {
-  return "    <a href=\"#\" class=\"delete-event\">delete this event</a>\n";
+  return "    <a href=\"#\" class=\"delete-event\">cancel this event</a>\n";
   },"8":function(depth0,helpers,partials,data) {
   return "    <a href=\"#\" class=\"rsvp\">RSVP</a>\n";
   },"10":function(depth0,helpers,partials,data) {
@@ -480,11 +480,11 @@ this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"1":functio
   stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
   if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n    </p>\n    <p><a href=\""
-    + escapeExpression(((helper = (helper = helpers.mapUrl || (depth0 != null ? depth0.mapUrl : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"mapUrl","hash":{},"data":data}) : helper)))
-    + "\" class=\"address\">"
+  return buffer + "\n    </p>\n    <p>"
     + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.venue : stack1)) != null ? stack1.fullAddress : stack1), depth0))
-    + "</a></p>\n  </div>\n</div>\n";
+    + "</p>\n    <a href=\""
+    + escapeExpression(((helper = (helper = helpers.mapUrl || (depth0 != null ? depth0.mapUrl : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"mapUrl","hash":{},"data":data}) : helper)))
+    + "\">get directions</a>\n  </div>\n</div>\n";
 },"useData":true});
 this["DanceCard"]["templates"]["_loginRequired"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<div class=\"login-req-notif\">\n  <p>You must be logged in to use this feature</p>\n  <a href=\"#/login\" class=\"visit-login\">log in</a>\n  <a href=\"#/register\" class=\"visit-register\">register</a>\n  <a href=\"#\" class=\"cancel\">cancel</a>\n</div>\n";
@@ -603,7 +603,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_eventHeader"] = Handlebars.templ
   },"7":function(depth0,helpers,partials,data) {
   return "checked";
   },"9":function(depth0,helpers,partials,data) {
-  var stack1, helper, options, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = "  <span><a href=\"#\" class=\"delete-event\">delete this event</a></span>\n  <div class=\"event-header-viewing\">\n    <span><a href=\"#\" class=\"edit-event-header\">edit</a></span>\n    <h2>"
+  var stack1, helper, options, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = "  <div class=\"event-header-viewing\">\n    <span><a href=\"#\" class=\"edit-event-header\">edit</a></span>\n    <h2>"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.name : stack1), depth0))
     + "</h2>\n      <p>Type: "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.type : stack1), depth0))
@@ -1060,7 +1060,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["eventManage"] = Handlebars.templa
   var stack1, buffer = "";
   stack1 = helpers.unless.call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  buffer += "\n<div class=\"event-header\">\n</div>\n\n";
+  buffer += "  <span><a href=\"#\" class=\"delete-event\">cancel this event</a></span>\n\n<div class=\"event-header\">\n</div>\n\n";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.recurring : stack1), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   return buffer + "\n<div class=\"event-info\">\n</div>\n\n<div class=\"venue-info\">\n</div>\n";
@@ -2592,7 +2592,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     },
 
     getMapUrl: function(model) {
-      console.log(model);
       var position = JSON.parse(localStorage.getItem('danceCardLoc')),
           start = position.coords.latitude + ',' + position.coords.longitude,
           end = model.get('venue').fullAddress.split(' ').join('+'),
