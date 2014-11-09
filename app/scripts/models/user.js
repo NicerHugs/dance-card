@@ -9,12 +9,10 @@ DanceCard.Models.User = Parse.Object.extend({
   },
 
   setTemplateData: function() {
-    var owner = Parse.User.current().get('urlId') === window.location.hash.split('/')[2];
-
-    var templateData = {
-      model: this.toJSON(),
-      owner: owner
-    };
+    var owner = Parse.User.current().get('urlId') === window.location.hash.split('/')[2],
+        templateData = {
+          user: this.toJSON(),
+          owner: owner};
     return templateData;
   }
 });

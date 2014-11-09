@@ -1,15 +1,11 @@
   <h5><a href="#/orgs/{{event.orgUrlId}}/{{event.objectId}}">{{event.name}}</a></h5>
-  {{#if dancer}}
+  {{#if owner}}
+    <a href="#" class="delete-event">cancel this event</a>
+  {{else}}
     {{#if attending}}
       <a href="#" class="unrsvp">cancel your RSVP</a>
     {{else}}
       <a href="#" class="rsvp">RSVP</a>
     {{/if}}
   {{/if}}
-  {{#if owner}}
-    <a href="#" class="delete-event">cancel this event</a>
-  {{/if}}
-  {{#unless loggedIn}}
-    <a href="#" class="rsvp">RSVP</a>
-  {{/unless}}
   {{#dateDisplay}}{{event.startDate.iso}}{{/dateDisplay}} {{#time}}{{event.startTime}}{{/time}}

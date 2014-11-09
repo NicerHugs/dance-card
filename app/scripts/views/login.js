@@ -64,15 +64,10 @@
             $('.logout-msg').remove();
           }
           DanceCard.session.set('user', Parse.User.current().toJSON());
-          DanceCard.session.set('dancer', !DanceCard.session.get('user').organizer);
-          if (Parse.User.current().get('organizer')) {
-            DanceCard.router.navigate('#/orgs/'+ Parse.User.current().get('urlId'), {trigger: true});
+          if (DanceCard.router.routesHit > 1) {
+            window.history.back();
           } else {
-            if (DanceCard.router.routesHit <= 1) {
-              DanceCard.router.navigate('#', {trigger: true});
-            } else {
-              window.history.back();
-            }
+            DanceCard.router.navigate('#', {trigger: true});
           }
         }, error: function() {
           self.$el.append('<div class="invalid-form-warning invalid"></div>');

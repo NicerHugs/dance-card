@@ -7,10 +7,9 @@ DanceCard.Models.Event = Parse.Object.extend({
     view.templateData = {
       loggedIn: !!DanceCard.session.get('user'),
       event: this.toJSON(),
-      dancer: DanceCard.session.get('dancer'),
       edit: {}
     };
-    if (view.templateData.loggedIn && !view.templateData.dancer) {
+    if (view.templateData.loggedIn) {
       if (this.get('orgUrlId') === Parse.User.current().get('urlId')) {
         view.templateData.owner = true;
         view.templateData.eventOrg = Parse.User.current();
@@ -22,20 +21,16 @@ DanceCard.Models.Event = Parse.Object.extend({
     new Parse.Query('User').get(this.get('org').id, {
       success: function(org) {
         view.templateData.eventOrg = org.toJSON();
-        if (view.templateData.dancer) {
-          var relation = Parse.User.current().relation('attending'),
-              query = new Parse.Query('Event');
-          relation.query().find()
-          .then(function(events){
-            events = _.map(events, function(event) {
-              return event.id;
-            });
-            view.templateData.attending = _.contains(events, self.id);
-            def.resolve();
+        var relation = Parse.User.current().relation('attending'),
+            query = new Parse.Query('Event');
+        relation.query().find()
+        .then(function(events){
+          events = _.map(events, function(event) {
+            return event.id;
           });
-        } else {
+          view.templateData.attending = _.contains(events, self.id);
           def.resolve();
-        }
+        });
       }, fail: function() {
         console.log('didnot get the org');
       }

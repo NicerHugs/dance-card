@@ -3,16 +3,11 @@
 
 {{else}}
 <div class="event-header-viewing">
-  {{#if dancer}}
-    {{#if attending}}
-      You are attending this event <a href="#" class="unrsvp">cancel your RSVP</a>
-    {{else}}
-      <a href="#" class="rsvp">RSVP</a>
-    {{/if}}
-  {{/if}}
-  {{#unless loggedIn}}
+  {{#if attending}}
+    You are attending this event <a href="#" class="unrsvp">cancel your RSVP</a>
+  {{else}}
     <a href="#" class="rsvp">RSVP</a>
-  {{/unless}}
+  {{/if}}
   <h2>{{event.name}}</h2>
   <p>
     {{#if event.multiDay}}From {{/if}}

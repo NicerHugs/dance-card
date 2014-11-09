@@ -26,13 +26,13 @@
             name: name,
             cancelNotify: true,
             changeNotify: true,
+            customNotify: true,
             urlId: urlId
           };
       if ($('.organizer-input:checked').val() === "true") {
         attrs.organizer = true;
       } else {
         attrs.organizer = false;
-        attrs.customNotify = true;
       }
       if (this.validateUser(attrs, password)) {
         //check to see if the name already exists as a user
@@ -44,16 +44,11 @@
               Parse.User.signUp(email, password, attrs, {
                 success: function() {
                   DanceCard.session.set('user', Parse.User.current().toJSON());
-                  DanceCard.session.set('dancer', !DanceCard.session.get('user').organizer);
-                  if (DanceCard.session.get('dancer')) {
-                    if (DanceCard.router.routesHit <= 1) {
+                    if (DanceCard.router.routesHit < 1) {
                       DanceCard.router.navigate('#', {trigger: true});
                     } else {
                       window.history.back();
                     }
-                  } else {
-                    DanceCard.router.navigate('#/orgs/'+ Parse.User.current().get('urlId'), {trigger: true});
-                  }
                   self.remove();
                 },
                 error: function() {
@@ -93,7 +88,7 @@
         return false;
       } else if (attrs.organizer === undefined) {
         $('label[name="organzier"]').append('<div class="invalid-form-warning"></div>');
-        $('.invalid-form-warning').html('you must choose dancer or organizer');
+        $('.invalid-form-warning').html('you must indicate if you are a dance organizer');
         $('.organizer-label').addClass('invalid').focus();
         return false;
       } else if (!password) {

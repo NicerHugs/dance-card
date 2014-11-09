@@ -40,7 +40,6 @@
     logout: function() {
       Parse.User.logOut();
       DanceCard.session.set('user', Parse.User.current());
-      DanceCard.session.set('dancer', false);
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren.push(new DanceCard.Views.Logout({
         $container: $('main'),
@@ -131,7 +130,7 @@
           query = new Parse.Query('Event');
       query.get(evnt)
       .then(function(evt) {
-        if (DanceCard.session.get('user') && !DanceCard.session.get('dancer')) {
+        if (DanceCard.session.get('user')) {
           if (evt.get('orgUrlId') === Parse.User.current().get('urlId')) {
             self.mainChildren.push(new DanceCard.Views.EventManage({
               $container: $('main'),
@@ -143,11 +142,6 @@
               model: evt
             }));
           }
-        } else {
-          self.mainChildren.push(new DanceCard.Views.Event({
-            $container: $('main'),
-            model: evt
-          }));
         }
       });
     },
@@ -175,7 +169,7 @@
         .find({
           success: function(dancer) {
             // dancer exists
-            if (dancer.length > 0 && !dancer[0].get('organizer')) {
+            if (dancer.length > 0) {
               _.invoke(self.mainChildren, 'remove');
               self.mainChildren.push(new DanceCard.Views.Dancer({
                 $container: $('main'),
