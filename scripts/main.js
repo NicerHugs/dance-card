@@ -2,10 +2,14 @@
   'use strict';
 
   Handlebars.registerHelper('select', function(value, options) {
-    var val = '"' + value.split(' ').join('-') + '"',
-        re = new RegExp(val, 'g'),
-       newStr = options.fn(this).replace(re, val + ' selected');
-    return newStr;
+    if (value) {
+      var val = '"' + value.split(' ').join('-') + '"',
+          re = new RegExp(val, 'g'),
+         newStr = options.fn(this).replace(re, val + ' selected');
+      return newStr;
+    } else {
+      return options.fn(this);
+    }
   });
 
   Handlebars.registerHelper('dateForm', function(options) {
@@ -225,6 +229,8 @@
     },
     routes: {
       ''                       : 'index',
+      'search'                 : 'search',
+      'search?:searchTerms'    : 'searchResults',
       'login'                  : 'login',
       'logout'                 : 'logout',
       'register'               : 'register',
@@ -242,6 +248,19 @@
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren.push(new DanceCard.Views.Index({
         $container: $('main')
+      }));
+    },
+    search: function() {
+      _.invoke(this.mainChildren, 'remove');
+      this.mainChildren.push(new DanceCard.Views.Search({
+        $container: $('main')
+      }));
+    },
+    searchResults: function(searchTerms) {
+      _.invoke(this.mainChildren, 'remove');
+      this.mainChildren.push(new DanceCard.Views.Search({
+        $container: $('main'),
+        searchTerms: searchTerms
       }));
     },
     login: function() {
@@ -546,11 +565,11 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"left-nav\">\n";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.organizer : stack1), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "        <a href=\"#\" class=\"home-link\">search for dances</a>\n        <a href=\"#/dancers/"
+  return buffer + "        <a href=\"#/search\" class=\"search-link\">search for dances</a>\n        <a href=\"#/dancers/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
     + "\">view your dance card</a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    You are logged in as "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
-    + ". If that's not you, <a href=\"#/logout\">logout</a>\n    <a href=\"#/settings\">settings</a>\n  </div>\n";
+    + ". If that's not you, <a href=\"#/logout\">logout</a>\n    <a href=\"#/settings\"><i class=\"fa fa-cog\"></i>settings</a>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "        <a href=\"#/orgs/"
@@ -575,6 +594,32 @@ this["DanceCard"]["templates"]["orgs"] = Handlebars.template({"compiler":[6,">= 
 this["DanceCard"]["templates"]["register"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<h2>Register</h2>\n<label name=\"name\">Username:</label>\n  <input name=\"name\" type=\"text\" class=\"name-input\" placeholder=\"Username\">\n<label name=\"email\">Contact Email:</label>\n  <input name=\"email\" type=\"email\" class=\"email-input\" placeholder=\"email\">\n<label class=\"organizer-label\" name=\"organizer\">Are you a dance organizer?\n  <label>yes</label>\n    <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"true\">\n  <label >no</label>\n    <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"false\">\n</label>\n<label name=\"password\">Password:</label>\n  <input type=\"password\" class=\"password-input\" placeholder=\"password\">\n  <input type=\"password\" class=\"verify-password\" placeholder=\"verify password\">\n<input class=\"submit-register\" type=\"submit\" value=\"create account\" disabled>\n";
   },"useData":true});
+this["DanceCard"]["templates"]["search"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return escapeExpression(((helper = (helper = helpers.startDate || (depth0 != null ? depth0.startDate : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"startDate","hash":{},"data":data}) : helper)));
+  },"3":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return escapeExpression(((helper = (helper = helpers.endDate || (depth0 != null ? depth0.endDate : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"endDate","hash":{},"data":data}) : helper)));
+  },"5":function(depth0,helpers,partials,data) {
+  return "        <option value=\"all\">all</option>\n        <option value=\"contra-dance\">Contra Dance</option>\n        <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n        <option value=\"contra-workshop\">Contra Workshop</option>\n        <option value=\"waltz\">Waltz Dance</option>\n        <option value=\"waltz-workshop\">Waltz Workshop</option>\n        <option value=\"square-dance\">Square Dance</option>\n        <option value=\"dance-weekend\">Dance Weekend</option>\n        <option value=\"caller-workshop\">Caller Workshop</option>\n";
+  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing, buffer = "<div class=\"searchBox\">\n  <form>\n    <input class=\"search-location\" type=\"text\" placeholder=\"location\" value ="
+    + escapeExpression(((helper = (helper = helpers.location || (depth0 != null ? depth0.location : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"location","hash":{},"data":data}) : helper)))
+    + ">\n    <input class=\"search-distance\" type=\"text\" placeholder=\"within miles\" value="
+    + escapeExpression(((helper = (helper = helpers.distance || (depth0 != null ? depth0.distance : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"distance","hash":{},"data":data}) : helper)))
+    + ">\n    <input class=\"search-start-date\" type=\"date\" value=";
+  stack1 = ((helper = (helper = helpers.dateForm || (depth0 != null ? depth0.dateForm : depth0)) != null ? helper : helperMissing),(options={"name":"dateForm","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.dateForm) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">\n    <input class=\"search-end-date\"type=\"date\" value=";
+  stack1 = ((helper = (helper = helpers.dateForm || (depth0 != null ? depth0.dateForm : depth0)) != null ? helper : helperMissing),(options={"name":"dateForm","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.dateForm) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">\n    <select class=\"search-type\">\n";
+  stack1 = ((helpers.select || (depth0 && depth0.select) || helperMissing).call(depth0, (depth0 != null ? depth0.type : depth0), {"name":"select","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "    </select>\n    <input class=\"search-submit\" type=\"submit\">\n</form>\n</div>\n";
+},"useData":true});
 this["DanceCard"]["templates"]["settings"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return escapeExpression(((helper = (helper = helpers.createdAt || (depth0 != null ? depth0.createdAt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"createdAt","hash":{},"data":data}) : helper)));
@@ -1263,7 +1308,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
           if (DanceCard.router.routesHit > 1) {
             window.history.back();
           } else {
-            DanceCard.router.navigate('#', {trigger: true});
+            DanceCard.router.navigate('search', {trigger: true});
           }
         }, error: function() {
           self.$el.append('<div class="invalid-form-warning invalid"></div>');
@@ -1304,6 +1349,61 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     template: DanceCard.templates.index,
     render: function() {
       this.$el.html(this.template());
+    },
+    events: {
+      'click .search-submit' : 'searchResults',
+    },
+
+    searchResults: function(e) {
+      e.preventDefault();
+      var startDate,
+          endDate;
+      if ($('.search-start-date').val()) {
+        startDate = moment($('.search-start-date').val()).format();
+      } else {
+        startDate = new Date();
+      } if ($('.search-end-date').val()) {
+        endDate = moment($('.search-end-date').val()).format();
+      } else {
+        endDate = DanceCard.Utility.addDays(new Date(), 7);
+      }
+      var self = this,
+          startDateS = startDate.toString().split(' ').join('-'),
+          endDateS = endDate.toString().split(' ').join('-'),
+          location = $('.search-location').val() || undefined,
+          distance = $('.search-distance').val() || 50,
+          type = $('.search-type :selected').val().split('-').join(' '),
+          searchTerms = [location, distance, startDateS, endDateS, type].join('+'),
+          collection;
+      this.attrs = {
+            startDate: new Date(startDate),
+            endDate: DanceCard.Utility.addDays(new Date(endDate), 1),
+            distance: distance,
+            type: type};
+      DanceCard.router.navigate('search?' + searchTerms, {trigger: true});
+    }
+
+  });
+
+})();
+
+(function() {
+  'use strict';
+
+  DanceCard.Views.Search = DanceCard.Views.Base.extend({
+    className: 'search',
+    template: DanceCard.templates.search,
+    render: function() {
+      if (this.options.searchTerms) {
+        var searchTerms = this.options.searchTerms.split('+');
+        this.attrs = {
+          startDate: new Date(searchTerms[2]),
+          endDate: new Date(searchTerms[3]),
+          location: searchTerms[0],
+          distance: +searchTerms[1],
+          type: searchTerms[4]};
+      }
+      this.$el.html(this.template(this.attrs));
       this.searchResults();
     },
     events: {
@@ -1319,19 +1419,33 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 
     searchResults: function(e) {
       if (e) e.preventDefault();
+      var startDate,
+          endDate;
+      if ($('.search-start-date').val()) {
+        startDate = moment($('.search-start-date').val()).format();
+      } else {
+        startDate = new Date();
+      } if ($('.search-end-date').val()) {
+        endDate = moment($('.search-end-date').val()).format();
+      } else {
+        endDate = DanceCard.Utility.addDays(new Date(), 7);
+      }
       var self = this,
-          startDate = $('.search-start-date').val() || new Date(),
-          endDate = $('.search-end-date').val() || DanceCard.Utility.addDays(new Date(), 6),
+          startDateS = startDate.toString().split(' ').join('-'),
+          endDateS = endDate.toString().split(' ').join('-'),
           location = $('.search-location').val() || undefined,
           distance = $('.search-distance').val() || 50,
           type = $('.search-type :selected').val().split('-').join(' '),
-          collection;
+          collection,
+          searchTerms;
       this.attrs = {
             startDate: new Date(startDate),
             endDate: DanceCard.Utility.addDays(new Date(endDate), 1),
             distance: distance,
             type: type
           };
+      searchTerms = [location, distance, startDateS, endDateS, $('.search-type :selected').val()].join('+');
+      DanceCard.router.navigate('#search?' + searchTerms);
       if (location) {
         DanceCard.Utility.findLocation(location)
         .done(function(location) {
@@ -1344,10 +1458,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
         });
       } else {
         this.$el.append('<div class="map-loading"><i class="fa fa-spinner fa-spin"></i></div>');
-        // if (localStorage.getItem('danceCardLoc')) {
-        //   var position = JSON.parse(localStorage.getItem('danceCardLoc'));
-        //   this.userLocSearchResults(position);
-        // }
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
     },
@@ -1357,7 +1467,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       var lat = position.coords.latitude,
           lng = position.coords.longitude,
           point = new Parse.GeoPoint(lat, lng),
-          collection;
+          collection,
+          searchTerms;
       localStorage.setItem('danceCardLoc', JSON.stringify(position));
       this.attrs.location = point;
       collection = new DanceCard.Collections.SearchEventList(this.attrs);
@@ -1454,7 +1565,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
                 success: function() {
                   DanceCard.session.set('user', Parse.User.current().toJSON());
                     if (DanceCard.router.routesHit < 1) {
-                      DanceCard.router.navigate('#', {trigger: true});
+                      DanceCard.router.navigate('search', {trigger: true});
                     } else {
                       window.history.back();
                     }
