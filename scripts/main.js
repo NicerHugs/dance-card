@@ -2948,16 +2948,20 @@ DanceCard.Models.Event = Parse.Object.extend({
     new Parse.Query('User').get(this.get('org').id, {
       success: function(org) {
         view.templateData.eventOrg = org.toJSON();
-        var relation = Parse.User.current().relation('attending'),
-            query = new Parse.Query('Event');
-        relation.query().find()
-        .then(function(events){
-          events = _.map(events, function(event) {
-            return event.id;
-          });
-          view.templateData.attending = _.contains(events, self.id);
-          def.resolve();
-        });
+        if (Parse.User.current()) {
+          var relation = Parse.User.current().relation('attending'),
+             query = new Parse.Query('Event');
+         relation.query().find()
+         .then(function(events){
+           events = _.map(events, function(event) {
+             return event.id;
+           });
+           view.templateData.attending = _.contains(events, self.id);
+           def.resolve();
+         });
+        } else {
+         def.resolve();
+        }
       }, fail: function() {
         console.log('didnot get the org');
       }
