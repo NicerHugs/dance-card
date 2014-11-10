@@ -168,26 +168,15 @@ this["DanceCard"]["templates"]["settings"] = Handlebars.template({"1":function(d
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return escapeExpression(((helper = (helper = helpers.createdAt || (depth0 != null ? depth0.createdAt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"createdAt","hash":{},"data":data}) : helper)));
   },"3":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "    <h4>Cancel Notifications</h4>\n      <input type=\"checkbox\" class=\"delete-msg\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.cancelNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += ">\n      <p>Send email notification to event attendees if I cancel the event</p>\n    <h4>Change Notifications</h4>\n      <input type=\"checkbox\" class=\"change-msg\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.changeNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + ">\n      <p>Send email notification to event attendees if I make changes to the event</p>\n\n";
-},"4":function(depth0,helpers,partials,data) {
   return "checked";
-  },"6":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "    <h4>Cancel Notifications</h4>\n      <input type=\"checkbox\" class=\"delete-msg\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.cancelNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
+  },"5":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "  <h4>Emails you send</h4>\n    <h5>Cancel Notifications</h5>\n      <input type=\"checkbox\" class=\"org-delete-msg\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.orgCancelNotify : depth0), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  buffer += ">\n      <p>Receive email notification when an event I plan to attend is cancelled</p>\n    <h4>Change Notifications</h4>\n      <input type=\"checkbox\" class=\"change-msg\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.changeNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
+  buffer += ">\n      <p>Send email notification to event attendees if I cancel the event</p>\n    <h5>Change Notifications</h5>\n      <input type=\"checkbox\" class=\"org-change-msg\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.orgChangeNotify : depth0), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  buffer += ">\n      <p>Allow email notification when an event I plan to attend is changed by the event organizer</p>\n    <h4>Special Notifications</h4>\n      <input type=\"checkbox\" class=\"custom-msg\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.customNotify : depth0), {"name":"if","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + ">\n      <p>Allow other emails from the event organzier for events I plan to attend</p>\n";
+  return buffer + ">\n      <p>Send email notification to event attendees if I make changes to the event</p>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing, buffer = "<h2>"
     + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
@@ -197,8 +186,17 @@ this["DanceCard"]["templates"]["settings"] = Handlebars.template({"1":function(d
   if (stack1 != null) { buffer += stack1; }
   buffer += "</p>\n\n<form class=\"password-change\">\n  <h3>Update Password</h3>\n  <label name=\"new-password\">New password</label>\n    <input class=\"new-password\" type=\"password\" placeholder=\"new password\">\n  <label name=\"ver-password\">Verify new password</label>\n    <input class=\"verify-password\" type=\"password\" placeholder=\"verify new password\">\n  <label name=\"old-password\">Old password</label>\n    <input class=\"old-password\" type=\"password\" placeholder=\"old password\">\n  <input type=\"submit\" name=\"change-password\" value=\"update\" class=\"change-password\">\n</form>\n\n<form class=\"email-settings\">\n  <h3>Email settings</h3>\n  <label>Current email:</label>\n  "
     + escapeExpression(((helper = (helper = helpers.email || (depth0 != null ? depth0.email : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"email","hash":{},"data":data}) : helper)))
-    + "\n  <label name=\"email\">Update your email address:</label>\n    <input type=\"email\" class=\"new-email\" placeholder=\"new email\"></a>\n    <input type=\"submit\" value=\"update\" class=\"change-email\">\n\n";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.organizer : depth0), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.program(6, data),"data":data});
+    + "\n  <label name=\"email\">Update your email address:</label>\n    <input type=\"email\" class=\"new-email\" placeholder=\"new email\"></a>\n    <input type=\"submit\" value=\"update\" class=\"change-email\">\n\n  <h4>Emails you receive</h4>\n  <h5>Cancel Notifications</h5>\n    <input type=\"checkbox\" class=\"delete-msg\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.cancelNotify : depth0), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">\n    <p>Receive email notification when an event I plan to attend is cancelled</p>\n  <h5>Change Notifications</h5>\n    <input type=\"checkbox\" class=\"change-msg\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.changeNotify : depth0), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">\n    <p>Allow email notification when an event I plan to attend is changed by the event organizer</p>\n  <h5>Special Notifications</h5>\n    <input type=\"checkbox\" class=\"custom-msg\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.customNotify : depth0), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">\n    <p>Allow other emails from the event organzier for events I plan to attend</p>\n\n";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.organizer : depth0), {"name":"if","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   return buffer + "</form>\n";
 },"useData":true});
@@ -458,7 +456,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_recurList"] = Handlebars.templat
     + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
     + "/"
     + escapeExpression(((helper = (helper = helpers.objectId || (depth0 != null ? depth0.objectId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"objectId","hash":{},"data":data}) : helper)))
-    + "\">manage this event</a>\n    <a href=\"#\" class=\"delete-recur\">delete this event</a>\n  </h4>\n";
+    + "\">manage</a>\n    <a href=\"#\" class=\"delete-recur\">cancel all events</a>\n  </h4>\n";
 },"3":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "  You have no recurring events. <a href=\"#/orgs/"

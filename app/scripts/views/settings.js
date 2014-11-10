@@ -14,7 +14,9 @@
       'click .change-email'    : 'changeEmail',
       'click .delete-msg'      : 'deleteMsgSettings',
       'click .change-msg'      : 'changeMsgSettings',
-      'click .custom-msg'      : 'customMsgSettings'
+      'click .custom-msg'      : 'customMsgSettings',
+      'click .org-delete-msg'  : 'orgDeleteMsgSettings',
+      'click .org-change-msg'  : 'orgChangeMsgSettings'
     },
 
     validatePassword: function(attrs) {
@@ -151,7 +153,27 @@
       }
       this.model.save()
       .then(_.bind(this.render, this));
-    }
+    },
+
+    orgDeleteMsgSettings: function() {
+      if (this.model.get('orgCancelNotify')) {
+        this.model.set('orgCancelNotify', false);
+      } else {
+        this.model.set('orgCancelNotify', true);
+      }
+      this.model.save()
+      .then(_.bind(this.render, this));
+    },
+
+    orgChangeMsgSettings: function() {
+      if (this.model.get('orgChangeNotify')) {
+        this.model.set('orgChangeNotify', false);
+      } else {
+        this.model.set('orgChangeNotify', true);
+      }
+      this.model.save()
+      .then(_.bind(this.render, this));
+    },
 
   });
 
