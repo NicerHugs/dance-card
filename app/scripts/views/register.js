@@ -45,7 +45,7 @@
                 success: function() {
                   DanceCard.session.set('user', Parse.User.current().toJSON());
                     if (DanceCard.router.routesHit < 1) {
-                      DanceCard.router.navigate('#', {trigger: true});
+                      DanceCard.router.navigate('search', {trigger: true});
                     } else {
                       window.history.back();
                     }

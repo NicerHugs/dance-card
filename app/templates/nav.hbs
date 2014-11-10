@@ -4,13 +4,13 @@
         <a href="#/orgs/{{user.urlId}}" class="manage">manage your events</a>
         <a href="#/orgs/{{user.urlId}}/create-event" class="create">add an event</a>
     {{/if}}
-        <a href="#" class="home-link">search for dances</a>
+        <a href="#/search" class="search-link">search for dances</a>
         <a href="#/dancers/{{user.urlId}}">view your dance card</a>
       </div>
   </div>
   <div class="right-nav">
     You are logged in as {{user.name}}. If that's not you, <a href="#/logout">logout</a>
-    <a href="#/settings">settings</a>
+    <a href="#/settings"><i class="fa fa-cog"></i>settings</a>
   </div>
 {{else}}
   <div class="left-nav">

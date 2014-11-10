@@ -135,11 +135,11 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"left-nav\">\n";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.organizer : stack1), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "        <a href=\"#\" class=\"home-link\">search for dances</a>\n        <a href=\"#/dancers/"
+  return buffer + "        <a href=\"#/search\" class=\"search-link\">search for dances</a>\n        <a href=\"#/dancers/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
     + "\">view your dance card</a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    You are logged in as "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
-    + ". If that's not you, <a href=\"#/logout\">logout</a>\n    <a href=\"#/settings\">settings</a>\n  </div>\n";
+    + ". If that's not you, <a href=\"#/logout\">logout</a>\n    <a href=\"#/settings\"><i class=\"fa fa-cog\"></i>settings</a>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "        <a href=\"#/orgs/"
@@ -164,6 +164,32 @@ this["DanceCard"]["templates"]["orgs"] = Handlebars.template({"compiler":[6,">= 
 this["DanceCard"]["templates"]["register"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<h2>Register</h2>\n<label name=\"name\">Username:</label>\n  <input name=\"name\" type=\"text\" class=\"name-input\" placeholder=\"Username\">\n<label name=\"email\">Contact Email:</label>\n  <input name=\"email\" type=\"email\" class=\"email-input\" placeholder=\"email\">\n<label class=\"organizer-label\" name=\"organizer\">Are you a dance organizer?\n  <label>yes</label>\n    <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"true\">\n  <label >no</label>\n    <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"false\">\n</label>\n<label name=\"password\">Password:</label>\n  <input type=\"password\" class=\"password-input\" placeholder=\"password\">\n  <input type=\"password\" class=\"verify-password\" placeholder=\"verify password\">\n<input class=\"submit-register\" type=\"submit\" value=\"create account\" disabled>\n";
   },"useData":true});
+this["DanceCard"]["templates"]["search"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return escapeExpression(((helper = (helper = helpers.startDate || (depth0 != null ? depth0.startDate : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"startDate","hash":{},"data":data}) : helper)));
+  },"3":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return escapeExpression(((helper = (helper = helpers.endDate || (depth0 != null ? depth0.endDate : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"endDate","hash":{},"data":data}) : helper)));
+  },"5":function(depth0,helpers,partials,data) {
+  return "        <option value=\"all\">all</option>\n        <option value=\"contra-dance\">Contra Dance</option>\n        <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n        <option value=\"contra-workshop\">Contra Workshop</option>\n        <option value=\"waltz\">Waltz Dance</option>\n        <option value=\"waltz-workshop\">Waltz Workshop</option>\n        <option value=\"square-dance\">Square Dance</option>\n        <option value=\"dance-weekend\">Dance Weekend</option>\n        <option value=\"caller-workshop\">Caller Workshop</option>\n";
+  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing, buffer = "<div class=\"searchBox\">\n  <form>\n    <input class=\"search-location\" type=\"text\" placeholder=\"location\" value ="
+    + escapeExpression(((helper = (helper = helpers.location || (depth0 != null ? depth0.location : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"location","hash":{},"data":data}) : helper)))
+    + ">\n    <input class=\"search-distance\" type=\"text\" placeholder=\"within miles\" value="
+    + escapeExpression(((helper = (helper = helpers.distance || (depth0 != null ? depth0.distance : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"distance","hash":{},"data":data}) : helper)))
+    + ">\n    <input class=\"search-start-date\" type=\"date\" value=";
+  stack1 = ((helper = (helper = helpers.dateForm || (depth0 != null ? depth0.dateForm : depth0)) != null ? helper : helperMissing),(options={"name":"dateForm","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.dateForm) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">\n    <input class=\"search-end-date\"type=\"date\" value=";
+  stack1 = ((helper = (helper = helpers.dateForm || (depth0 != null ? depth0.dateForm : depth0)) != null ? helper : helperMissing),(options={"name":"dateForm","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
+  if (!helpers.dateForm) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">\n    <select class=\"search-type\">\n";
+  stack1 = ((helpers.select || (depth0 && depth0.select) || helperMissing).call(depth0, (depth0 != null ? depth0.type : depth0), {"name":"select","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "    </select>\n    <input class=\"search-submit\" type=\"submit\">\n</form>\n</div>\n";
+},"useData":true});
 this["DanceCard"]["templates"]["settings"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return escapeExpression(((helper = (helper = helpers.createdAt || (depth0 != null ? depth0.createdAt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"createdAt","hash":{},"data":data}) : helper)));

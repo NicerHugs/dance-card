@@ -1,0 +1,22 @@
+<div class="searchBox">
+  <form>
+    <input class="search-location" type="text" placeholder="location" value ={{location}}>
+    <input class="search-distance" type="text" placeholder="within miles" value={{distance}}>
+    <input class="search-start-date" type="date" value={{#dateForm}}{{startDate}}{{/dateForm}}>
+    <input class="search-end-date"type="date" value={{#dateForm}}{{endDate}}{{/dateForm}}>
+    <select class="search-type">
+      {{#select type}}
+        <option value="all">all</option>
+        <option value="contra-dance">Contra Dance</option>
+        <option value="advanced-contra-dance">Advanced Contra Dance</option>
+        <option value="contra-workshop">Contra Workshop</option>
+        <option value="waltz">Waltz Dance</option>
+        <option value="waltz-workshop">Waltz Workshop</option>
+        <option value="square-dance">Square Dance</option>
+        <option value="dance-weekend">Dance Weekend</option>
+        <option value="caller-workshop">Caller Workshop</option>
+      {{/select}}
+    </select>
+    <input class="search-submit" type="submit">
+</form>
+</div>

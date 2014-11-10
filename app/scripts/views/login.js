@@ -67,7 +67,7 @@
           if (DanceCard.router.routesHit > 1) {
             window.history.back();
           } else {
-            DanceCard.router.navigate('#', {trigger: true});
+            DanceCard.router.navigate('search', {trigger: true});
           }
         }, error: function() {
           self.$el.append('<div class="invalid-form-warning invalid"></div>');

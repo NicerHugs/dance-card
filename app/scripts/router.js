@@ -12,6 +12,8 @@
     },
     routes: {
       ''                       : 'index',
+      'search'                 : 'search',
+      'search?:searchTerms'    : 'searchResults',
       'login'                  : 'login',
       'logout'                 : 'logout',
       'register'               : 'register',
@@ -29,6 +31,19 @@
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren.push(new DanceCard.Views.Index({
         $container: $('main')
+      }));
+    },
+    search: function() {
+      _.invoke(this.mainChildren, 'remove');
+      this.mainChildren.push(new DanceCard.Views.Search({
+        $container: $('main')
+      }));
+    },
+    searchResults: function(searchTerms) {
+      _.invoke(this.mainChildren, 'remove');
+      this.mainChildren.push(new DanceCard.Views.Search({
+        $container: $('main'),
+        searchTerms: searchTerms
       }));
     },
     login: function() {
