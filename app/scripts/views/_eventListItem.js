@@ -49,8 +49,6 @@
         if (arguments[0] === "user not loggedIn") {
           self.$el.append(DanceCard.templates._loginRequired());
           console.log('something went wrong', arguments);
-          // here i should prompt the user to log in or create an account
-          // change login to redirect 'back' when dancer unless first hit
         }
       });
     },

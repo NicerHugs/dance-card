@@ -1,8 +1,5 @@
 {{#if edit.eventRecur}}
   <div class="event-recur-editing">
-    <span><a href="#" class="save-event-recur">save changes</a></span>
-    <span><a href="#" class="edit-event-recur">cancel</a></span>
-
     <h3>Event Schedule</h3>
     <p>
       This event occurs once a
@@ -26,12 +23,14 @@
     </p>
     <p><label name="end-date">End Date</label>
       <input name="end-date" class="event-end-date-input" type="date" value={{#dateForm}}{{event.endDate.iso}}{{/dateForm}}></p>
+    <span><a href="#" class="save-event-recur">save changes</a></span>
+    <span><a href="#" class="edit-event-recur">cancel</a></span>
   </div>
 
 {{else}}
   <div class="event-recur-viewing">
-    <span><a href="#" class="edit-event-recur">edit</a></span>
     <h3>Event Schedule</h3>
+    <span><a href="#" class="edit-event-recur">edit</a></span>
     </p>This event repeats every {{event.monthlyRpt}} {{event.weeklyRptName}}</p>
     <p>End Date: {{#dateShort}}{{event.endDate.iso}}{{/dateShort}}</p>
   </div>

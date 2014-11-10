@@ -1,7 +1,5 @@
 {{#if edit.eventInfo}}
   <div class="event-info-editing">
-    <span><a href="#" class="save-event-info">save changes</a></span>
-    <span><a href="#" class="edit-event-info">cancel</a></span>
     <h3>Event Info</h3>
     <label name="event-price">Price</label>
       <input type="text" class="price-input" name="event-price" placeholder="price" value={{event.price}}>
@@ -29,11 +27,13 @@
       {{/if}}
     <label name="notes">Notes</label>
       <textarea name="notes" class="notes-input">{{event.notes}}</textarea>
+    <span><a href="#" class="save-event-info">save changes</a></span>
+    <span><a href="#" class="edit-event-info">cancel</a></span>
   </div>
 {{else}}
   <div class="event-info-viewing">
-    <span><a href="#" class="edit-event-info">edit</a></span>
     <h3>Event Info</h3>
+    <span><a href="#" class="edit-event-info">edit</a></span>
     <p>Cost: ${{event.price}}</p>
     {{#unless event.recurring}}
       <p>
