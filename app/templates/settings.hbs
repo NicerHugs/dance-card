@@ -20,23 +20,24 @@
     <input type="email" class="new-email" placeholder="new email"></a>
     <input type="submit" value="update" class="change-email">
 
-  {{#if organizer}}
-    <h4>Cancel Notifications</h4>
-      <input type="checkbox" class="delete-msg" {{#if cancelNotify}}checked{{/if}}>
-      <p>Send email notification to event attendees if I cancel the event</p>
-    <h4>Change Notifications</h4>
-      <input type="checkbox" class="change-msg" {{#if changeNotify}}checked{{/if}}>
-      <p>Send email notification to event attendees if I make changes to the event</p>
+  <h4>Emails you receive</h4>
+  <h5>Cancel Notifications</h5>
+    <input type="checkbox" class="delete-msg" {{#if cancelNotify}}checked{{/if}}>
+    <p>Receive email notification when an event I plan to attend is cancelled</p>
+  <h5>Change Notifications</h5>
+    <input type="checkbox" class="change-msg" {{#if changeNotify}}checked{{/if}}>
+    <p>Allow email notification when an event I plan to attend is changed by the event organizer</p>
+  <h5>Special Notifications</h5>
+    <input type="checkbox" class="custom-msg" {{#if customNotify}}checked{{/if}}>
+    <p>Allow other emails from the event organzier for events I plan to attend</p>
 
-  {{else}}
-    <h4>Cancel Notifications</h4>
-      <input type="checkbox" class="delete-msg" {{#if cancelNotify}}checked{{/if}}>
-      <p>Receive email notification when an event I plan to attend is cancelled</p>
-    <h4>Change Notifications</h4>
-      <input type="checkbox" class="change-msg" {{#if changeNotify}}checked{{/if}}>
-      <p>Allow email notification when an event I plan to attend is changed by the event organizer</p>
-    <h4>Special Notifications</h4>
-      <input type="checkbox" class="custom-msg" {{#if customNotify}}checked{{/if}}>
-      <p>Allow other emails from the event organzier for events I plan to attend</p>
+  {{#if organizer}}
+  <h4>Emails you send</h4>
+    <h5>Cancel Notifications</h5>
+      <input type="checkbox" class="org-delete-msg" {{#if orgCancelNotify}}checked{{/if}}>
+      <p>Send email notification to event attendees if I cancel the event</p>
+    <h5>Change Notifications</h5>
+      <input type="checkbox" class="org-change-msg" {{#if orgChangeNotify}}checked{{/if}}>
+      <p>Send email notification to event attendees if I make changes to the event</p>
   {{/if}}
 </form>
