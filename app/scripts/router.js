@@ -52,17 +52,6 @@
         $container: $('main')
       }));
     },
-    logout: function() {
-      Parse.User.logOut();
-      DanceCard.session.set('user', Parse.User.current());
-      _.invoke(this.mainChildren, 'remove');
-      this.mainChildren.push(new DanceCard.Views.Logout({
-        $container: $('main'),
-      }));
-      this.mainChildren.push(new DanceCard.Views.Login({
-        $container: $('main')
-      }));
-    },
     register: function() {
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren.push(new DanceCard.Views.Register({

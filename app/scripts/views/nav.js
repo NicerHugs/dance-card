@@ -12,6 +12,20 @@
     template: DanceCard.templates.nav,
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
+    },
+
+    events: {
+      'click .logout' : 'logout'
+    },
+
+    logout: function(e) {
+      e.preventDefault();
+      Parse.User.logOut();
+      DanceCard.router.navigate('login', {trigger: true});
+      $('main').prepend('<div class="logout-msg">You have successfully logged out</div>');
+      window.setTimeout(function() {
+        $('.logout-msg').remove();
+      }, 5000);
     }
   });
 
