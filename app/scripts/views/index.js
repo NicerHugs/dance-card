@@ -45,15 +45,17 @@
           self.makeMap(collection, location.point);
         });
       } else {
-        if (localStorage.getItem('danceCardLoc')) {
-          var position = JSON.parse(localStorage.getItem('danceCardLoc'));
-          this.userLocSearchResults(position);
-        }
+        this.$el.append('<div class="map-loading"><i class="fa fa-spinner fa-spin"></i></div>');
+        // if (localStorage.getItem('danceCardLoc')) {
+        //   var position = JSON.parse(localStorage.getItem('danceCardLoc'));
+        //   this.userLocSearchResults(position);
+        // }
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
     },
 
     userLocSearchResults: function(position) {
+      $('.map-loading').remove();
       var lat = position.coords.latitude,
           lng = position.coords.longitude,
           point = new Parse.GeoPoint(lat, lng),
