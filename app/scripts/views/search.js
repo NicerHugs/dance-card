@@ -68,7 +68,7 @@
           self.makeMap(collection, location.point);
         });
       } else {
-        this.$el.append('<div class="map-loading"><img class="spinner" src="../images/spinner.gif"/></div>');
+        this.$el.prepend('<div class="map-loading"><img class="spinner" src="../images/spinner.gif"/></div>');
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
     },
@@ -100,7 +100,7 @@
     makeList: function(collection, loc) {
       loc = loc || undefined;
       this.children.push(new DanceCard.Views.EventListPartial({
-        $container: this.$el,
+        $container: $('.search-right'),
         collection: collection,
         searchResults: this.attrs,
         location: loc
