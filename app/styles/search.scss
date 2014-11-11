@@ -65,19 +65,23 @@
     padding: 0;
 
     h5 {
-      font-family: $serif;
-      font-size: rem(30);
+      font-family: $body-font;
+      font-size: rem(25);
       font-weight: 600;
       margin: 0;
+
+      a {
+        color: $dark;
+
+        &:hover {
+          color: $orange;
+        }
+      }
     }
 
     a {
-      color: $dark;
+      color: $white;
       text-decoration: none;
-
-      &:hover {
-        color: $orange;
-      }
     }
 
     li {
@@ -85,12 +89,25 @@
       border: solid 1px $light-blue;
       border-radius: rem(3);
       display: block;
+      font-family: $serif;
+      font-size: rem(20);
       margin: rem(40);
       margin-right: rem(100);
       padding: rem(20);
       position: relative;
     }
 
-    
+    .rsvp {
+      background: rgba($orange, .7);
+      border-radius: rem(3);
+      display: inline-block;
+      font-family: $body-font;
+      font-size: rem(16);
+      padding: rem(5);
+      //
+      // &:hover {
+      //   background: $orange;
+      // }
+    }
   }
 }

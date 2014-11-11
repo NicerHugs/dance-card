@@ -33,6 +33,7 @@
 
     index: function() {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').addClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Index({
         $container: $('main')
@@ -40,6 +41,7 @@
     },
     search: function() {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Search({
         $container: $('main')
@@ -47,6 +49,7 @@
     },
     searchResults: function(searchTerms) {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Search({
         $container: $('main'),
@@ -77,6 +80,7 @@
 
     settings: function() {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       if (Parse.User.current()) {
         this.mainChildren.push(new DanceCard.Views.Settings({
@@ -92,6 +96,7 @@
 
     orgs: function() {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.NotFound({
         $container: $('main')
@@ -100,6 +105,7 @@
     org: function(org) {
       var self = this;
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       new Parse.Query('User')
         .equalTo('urlId', org)
@@ -135,6 +141,7 @@
     },
     createEvent: function(org) {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.CreateEvent({
         $container: $('main'),
@@ -146,6 +153,7 @@
     },
     evnt: function(org, evnt) {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       var self = this,
           query = new Parse.Query('Event');
@@ -187,6 +195,7 @@
     dancer: function(dancer) {
       var self = this;
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       new Parse.Query('User')
         .equalTo('urlId', dancer)
@@ -215,6 +224,7 @@
 
     notFound: function() {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.NotFound({
         $container: $('main'),

@@ -56,7 +56,7 @@
             type: type
           };
       searchTerms = [location, distance, startDateS, endDateS, $('.search-type :selected').val()].join('+');
-      DanceCard.router.navigate('#/search?' + searchTerms);
+      DanceCard.router.navigate('#/search?' + searchTerms, {trigger: true});
       if (location) {
         DanceCard.Utility.findLocation(location)
         .done(function(location) {
