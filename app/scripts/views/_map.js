@@ -2,6 +2,13 @@
   'use strict';
 
   DanceCard.Views.MapPartial = DanceCard.Views.Base.extend({
+    initialize: function(options) {
+      this.options = options;
+      this.$container = options.$container;
+      this.$container.prepend(this.el);
+      this.children = [];
+      this.render();
+    },
     id: 'map-canvas',
     render: function() {
       this.$el.html('<img class="spinner" src="../images/spinner.gif"/>');

@@ -1,5 +1,8 @@
 .search {
-  margin-top: rem(55);
+  bottom: 0;
+  position: fixed;
+  top: 55px;
+  width: 100%;
 
   .search-box {
     float: left;
