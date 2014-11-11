@@ -300,7 +300,8 @@
         self.constructDayArea(false);
       });
 
-      $('#' + id).focus(function(){
+      $('#' + id).focus(function(e){
+        if(e) e.stopPropagation();
         self.show(300);
         $(this).blur();
       });
@@ -442,13 +443,13 @@
   };
 
   DanceCard.Forms.Cal.prototype.hide = function(duration) {
-    $('.'+this.elementTag+' .view').hide(duration);
+    $('.'+this.elementTag+' .view').parent().hide(duration);
   };
 
   DanceCard.Forms.Cal.prototype.show = function(duration) {
     var t = this;
     t.init = true;
-    $('.'+this.elementTag+' .view').show(duration,function(){
+    $('.'+this.elementTag+' .view').parent().show(duration,function(){
       t.init = false;
     });
   };
@@ -485,8 +486,12 @@
     },
     mainChildren: [],
 
+    loginV: {},
+    registerV: {},
+
     index: function() {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').addClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Index({
         $container: $('main')
@@ -494,6 +499,7 @@
     },
     search: function() {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Search({
         $container: $('main')
@@ -501,6 +507,7 @@
     },
     searchResults: function(searchTerms) {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Search({
         $container: $('main'),
@@ -508,23 +515,30 @@
       }));
     },
     login: function() {
-      _.invoke(this.mainChildren, 'remove');
-      $('.container').removeClass('index-view');
-      this.mainChildren.push(new DanceCard.Views.Login({
+      if (_.contains(this.mainChildren, this.registerV)) {
+        this.registerV.remove();
+        this.mainChildren = _.without(this.mainChildren, this.registerV);
+      }
+      this.loginV = new DanceCard.Views.Login({
         $container: $('main')
-      }));
+      });
+      this.mainChildren.push(this.loginV);
     },
     register: function() {
-      _.invoke(this.mainChildren, 'remove');
-      $('.container').removeClass('index-view');
-      this.mainChildren.push(new DanceCard.Views.Register({
+      if (_.contains(this.mainChildren, this.loginV)) {
+        this.loginV.remove();
+        this.mainChildren = _.without(this.mainChildren, this.loginV);
+      }
+      this.registerV = new DanceCard.Views.Register({
         $container: $('main'),
         model: new DanceCard.Models.User()
-      }));
+      });
+      this.mainChildren.push(this.registerV);
     },
 
     settings: function() {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       if (Parse.User.current()) {
         this.mainChildren.push(new DanceCard.Views.Settings({
@@ -540,6 +554,7 @@
 
     orgs: function() {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.NotFound({
         $container: $('main')
@@ -548,6 +563,7 @@
     org: function(org) {
       var self = this;
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       new Parse.Query('User')
         .equalTo('urlId', org)
@@ -583,6 +599,7 @@
     },
     createEvent: function(org) {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.CreateEvent({
         $container: $('main'),
@@ -594,6 +611,7 @@
     },
     evnt: function(org, evnt) {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       var self = this,
           query = new Parse.Query('Event');
@@ -635,6 +653,7 @@
     dancer: function(dancer) {
       var self = this;
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       new Parse.Query('User')
         .equalTo('urlId', dancer)
@@ -663,6 +682,7 @@
 
     notFound: function() {
       _.invoke(this.mainChildren, 'remove');
+      this.mainChildren = [];
       $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.NotFound({
         $container: $('main'),
@@ -676,35 +696,21 @@
 this["DanceCard"] = this["DanceCard"] || {};
 this["DanceCard"]["templates"] = this["DanceCard"]["templates"] || {};
 this["DanceCard"]["templates"]["_eventList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
+  return "    1 event found.\n";
+  },"3":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "    "
-    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.location : depth0)) != null ? stack1.location : stack1)) != null ? stack1.fullAddress : stack1), depth0))
-    + "\n";
-},"3":function(depth0,helpers,partials,data) {
-  return "    you\n";
-  },"5":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.searchResults : depth0)) != null ? stack1.startDate : stack1), depth0));
-  },"7":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
-  return escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.searchResults : depth0)) != null ? stack1.endDate : stack1), depth0));
+    + escapeExpression(((helper = (helper = helpers.count || (depth0 != null ? depth0.count : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"count","hash":{},"data":data}) : helper)))
+    + " events found.\n";
+},"5":function(depth0,helpers,partials,data) {
+  return "    Please try again.\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, helper, options, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, blockHelperMissing=helpers.blockHelperMissing, buffer = "<h3>\n  Events within "
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.searchResults : depth0)) != null ? stack1.distance : stack1), depth0))
-    + " miles of\n";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.location : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
+  var stack1, buffer = "<h3>\n";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.one : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
-  buffer += "</h3>\n\n<h4>Date Range:</h4>\n";
-  stack1 = ((helper = (helper = helpers.dateShort || (depth0 != null ? depth0.dateShort : depth0)) != null ? helper : helperMissing),(options={"name":"dateShort","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
-  if (!helpers.dateShort) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
+  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.results : depth0), {"name":"unless","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  buffer += "\n-\n";
-  stack1 = ((helper = (helper = helpers.dateShort || (depth0 != null ? depth0.dateShort : depth0)) != null ? helper : helperMissing),(options={"name":"dateShort","hash":{},"fn":this.program(7, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
-  if (!helpers.dateShort) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n\n<h4>Event Type:</h4>\n"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.searchResults : depth0)) != null ? stack1.type : stack1), depth0))
-    + "\n";
+  return buffer + "</h3>\n";
 },"useData":true});
 this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   return "    <a href=\"#\" class=\"delete-event\">cancel this event</a>\n";
@@ -741,7 +747,9 @@ this["DanceCard"]["templates"]["_eventListItem"] = Handlebars.template({"1":func
   stack1 = ((helper = (helper = helpers.time || (depth0 != null ? depth0.time : depth0)) != null ? helper : helperMissing),(options={"name":"time","hash":{},"fn":this.program(10, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
   if (!helpers.time) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n";
+  return buffer + "\n  <div class=\"type\">"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.event : depth0)) != null ? stack1.type : stack1), depth0))
+    + "</div>\n";
 },"useData":true});
 this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
@@ -801,23 +809,23 @@ this["DanceCard"]["templates"]["dancer"] = Handlebars.template({"1":function(dep
   return buffer + " attending: </h3>\n<ul class='dancer-attending'>\n</ul>\n";
 },"useData":true});
 this["DanceCard"]["templates"]["forgotPassword"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"reset-password\">\n  <form>\n    <a href=\"#\" class=\"close-modal\">x</a>\n    <h3>Reset your password</h3>\n    <label name=\"email\">Email</label>\n      <input type=\"email\" name=\"email\" class=\"email-reset-password\">\n    <input type=\"submit\" class=\"send-reset-request\">\n  </form>\n</div>\n";
+  return "<form class=\"reset-password\">\n  <a href=\"#\" class=\"close-modal\">\n    <span class=\"fa-stack\">\n      <i class=\"fa fa-times fa-stack-1x\" ></i>\n      <i class=\"fa fa-circle-o fa-stack-2x\"></i>\n    </span>\n  </a>\n  <h3>Reset your password</h3>\n  <label name=\"email\">Email</label>\n    <input type=\"email\" name=\"email\" class=\"email-reset-password\">\n  <input type=\"submit\" class=\"send-reset-request\">\n</form>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["index"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"search-box\">\n  <form>\n    <input class=\"search-location\" type=\"text\" placeholder=\"pick a location\">\n    <div class='form-input date-selector'>\n      <i class='fa fa-calendar-o'></i>\n      <input type='text' id='index-start' class=\"start-date-input\" value='Start date' />\n    </div>\n    <div class='form-input date-selector'>\n      <i class='fa fa-calendar-o'></i>\n      <input type='text' id='index-end' class=\"end-date-input\" value='End date' />\n    </div>\n    <select class=\"search-type\">\n      <option value=\"all\">all</option>\n      <option value=\"contra-dance\">Contra Dance</option>\n      <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n      <option value=\"contra-workshop\">Contra Workshop</option>\n      <option value=\"waltz\">Waltz Dance</option>\n      <option value=\"waltz-workshop\">Waltz Workshop</option>\n      <option value=\"square-dance\">Square Dance</option>\n      <option value=\"dance-weekend\">Dance Weekend</option>\n      <option value=\"caller-workshop\">Caller Workshop</option>\n    </select>\n    <input class=\"search-submit\" type=\"submit\" value=\"find dances\">\n</form>\n</div>\n";
+  return "<div class=\"search-box\">\n  <form class=\"index-search\">\n    <input class=\"search-location\" type=\"text\" placeholder=\"pick a location\">\n    <div class='form-input date-selector'>\n      <i class='fa fa-calendar-o'></i>\n      <input type='text' id='index-start' class=\"start-date-input\" value='Start date' />\n    </div>\n    <div class='form-input date-selector'>\n      <i class='fa fa-calendar-o'></i>\n      <input type='text' id='index-end' class=\"end-date-input\" value='End date' />\n    </div>\n    <select class=\"search-type\">\n      <option value=\"all\">all</option>\n      <option value=\"contra-dance\">Contra Dance</option>\n      <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n      <option value=\"contra-workshop\">Contra Workshop</option>\n      <option value=\"waltz\">Waltz Dance</option>\n      <option value=\"waltz-workshop\">Waltz Workshop</option>\n      <option value=\"square-dance\">Square Dance</option>\n      <option value=\"dance-weekend\">Dance Weekend</option>\n      <option value=\"caller-workshop\">Caller Workshop</option>\n    </select>\n    <input class=\"search-submit\" type=\"submit\" value=\"find dances\">\n</form>\n</div>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["login"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<h2>Log In</h2>\n<label name=\"email\">Email:</label>\n  <input name=\"email\" type=\"text\" class=\"email-input\" placeholder=\"email\">\n<label name=\"password\">Password:</label>\n  <input name=\"password\" type=\"password\" class=\"password-input\" placeholder=\"password\">\n<input class=\"login\" type=\"submit\" value=\"login\">\n<a href=\"#\" class=\"forgot-password\">forgot password?</a>\n";
+  return "<form class=\"login-form\">\n  <a href=\"#\" class=\"close-modal\">\n    <span class=\"fa-stack\">\n      <i class=\"fa fa-times fa-stack-1x\" ></i>\n      <i class=\"fa fa-circle-o fa-stack-2x\"></i>\n    </span>\n  </a>\n  <h2>Log In</h2>\n  <label name=\"email\">Email:</label>\n    <input name=\"email\" type=\"text\" class=\"email-input\" placeholder=\"email\">\n  <label name=\"password\">Password:</label>\n    <input name=\"password\" type=\"password\" class=\"password-input\" placeholder=\"password\">\n  <input class=\"login\" type=\"submit\" value=\"login\">\n  <a href=\"#\" class=\"forgot-password\">forgot password?</a>\n</form>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"right-nav\">\n";
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"left-nav\">\n";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.organizer : stack1), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   return buffer + "        <a href=\"#/search\" class=\"search-link\"><i class=\"fa fa-search\"></i>search for dances</a>\n        <a href=\"#/dancers/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
-    + "\">view your dance card</a>\n      </div>\n  </div>\n  <div class=\"left-nav\">\n    You are logged in as "
+    + "\">view your dance card</a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    You are logged in as "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
-    + ". If that's not you, <a href=\"#\" class=\"logout\">logout</a>\n    <a href=\"#/settings\"><i class=\"fa fa-cog\"></i>settings</a>\n  </div>\n";
+    + ". If that's not you, <a href=\"#\" class=\"logout\">logout</a>\n    <a href=\"#/settings\"><i class=\"fa fa-cog\"></i></a>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "        <a href=\"#/orgs/"
@@ -826,7 +834,7 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
     + "/create-event\" class=\"create\">add an event</a>\n";
 },"4":function(depth0,helpers,partials,data) {
-  return "  <div class=\"right-nav\">\n    <a href=\"#/search\" class=\"home-link\"><i class=\"fa fa-search\"></i>search for dances</a>\n  </div>\n  <div class=\"left-nav\">\n    <a href=\"#/login\" class=\"login\">login</a>\n    <a href=\"#/register\" class=\"signup\">sign up</a>\n  </div>\n";
+  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\"><i class=\"fa fa-search\"></i>search for dances</a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\">login</a>\n    <a href=\"#/register\" class=\"signup\">sign up</a>\n  </div>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(4, data),"data":data});
@@ -840,7 +848,7 @@ this["DanceCard"]["templates"]["orgs"] = Handlebars.template({"compiler":[6,">= 
   return "orgs template\n";
   },"useData":true});
 this["DanceCard"]["templates"]["register"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<h2>Register</h2>\n<label name=\"name\">Username:</label>\n  <input name=\"name\" type=\"text\" class=\"name-input\" placeholder=\"Username\">\n<label name=\"email\">Contact Email:</label>\n  <input name=\"email\" type=\"email\" class=\"email-input\" placeholder=\"email\">\n<label class=\"organizer-label\" name=\"organizer\">Are you a dance organizer?\n  <label>yes</label>\n    <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"true\">\n  <label >no</label>\n    <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"false\">\n</label>\n<label name=\"password\">Password:</label>\n  <input type=\"password\" class=\"password-input\" placeholder=\"password\">\n  <input type=\"password\" class=\"verify-password\" placeholder=\"verify password\">\n<input class=\"submit-register\" type=\"submit\" value=\"create account\" disabled>\n";
+  return "<form class=\"register-form\">\n  <a href=\"#\" class=\"close-modal\">\n    <span class=\"fa-stack\">\n      <i class=\"fa fa-times fa-stack-1x\" ></i>\n      <i class=\"fa fa-circle-o fa-stack-2x\"></i>\n    </span>\n  </a>\n  <h2>Register</h2>\n\n  <label name=\"name\">Name:</label>\n    <input name=\"name\" type=\"text\" class=\"name-input\" placeholder=\"Username\">\n  <label name=\"email\">Email:</label>\n    <input name=\"email\" type=\"email\" class=\"email-input\" placeholder=\"email\">\n  <label class=\"organizer-label\" name=\"organizer\"><span>Are you a dance organizer?</span>\n    <label>yes</label>\n      <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"true\">\n    <label >no</label>\n      <input name=\"organizer\" class=\"organizer-input\" type=\"radio\" value=\"false\">\n  </label>\n  <label name=\"password\">Password:</label>\n    <input type=\"password\" class=\"password-input\" placeholder=\"password\">\n    <input type=\"password\" class=\"verify-password\" placeholder=\"verify password\">\n  <input class=\"submit-register\" type=\"submit\" value=\"create account\" disabled>\n</form>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["search"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
@@ -851,22 +859,22 @@ this["DanceCard"]["templates"]["search"] = Handlebars.template({"1":function(dep
   },"5":function(depth0,helpers,partials,data) {
   return "        <option value=\"all\">all</option>\n        <option value=\"contra-dance\">Contra Dance</option>\n        <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n        <option value=\"contra-workshop\">Contra Workshop</option>\n        <option value=\"waltz\">Waltz Dance</option>\n        <option value=\"waltz-workshop\">Waltz Workshop</option>\n        <option value=\"square-dance\">Square Dance</option>\n        <option value=\"dance-weekend\">Dance Weekend</option>\n        <option value=\"caller-workshop\">Caller Workshop</option>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing, buffer = "<div class=\"search-box\">\n  <form>\n    <input class=\"search-location\" type=\"text\" placeholder=\"location\" value ="
+  var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing, buffer = "<div class=\"search-right\">\n  <form class=\"search-box\">\n    <section class=\"pri-label\"><span>Location</span>\n      <label class=\"sec-label\">City</label>\n        <input class=\"search-location\" type=\"text\" placeholder=\"location\" value ="
     + escapeExpression(((helper = (helper = helpers.location || (depth0 != null ? depth0.location : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"location","hash":{},"data":data}) : helper)))
-    + ">\n    <input class=\"search-distance\" type=\"text\" placeholder=\"within miles\" value="
+    + ">\n      <label class=\"sec-label\">Distance</label>\n        <input class=\"search-distance\" type=\"text\" placeholder=\"within miles\" value="
     + escapeExpression(((helper = (helper = helpers.distance || (depth0 != null ? depth0.distance : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"distance","hash":{},"data":data}) : helper)))
-    + ">\n    <input class=\"search-start-date\" type=\"date\" value=";
+    + ">\n    </section>\n    <section class=\"pri-label\"><span>Dates</span>\n      <label class=\"sec-label\">Start</label>\n        <input class=\"search-start-date\" type=\"date\" value=";
   stack1 = ((helper = (helper = helpers.dateForm || (depth0 != null ? depth0.dateForm : depth0)) != null ? helper : helperMissing),(options={"name":"dateForm","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
   if (!helpers.dateForm) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if (stack1 != null) { buffer += stack1; }
-  buffer += ">\n    <input class=\"search-end-date\"type=\"date\" value=";
+  buffer += ">\n      <label class=\"sec-label\">End</label>\n        <input class=\"search-end-date\"type=\"date\" value=";
   stack1 = ((helper = (helper = helpers.dateForm || (depth0 != null ? depth0.dateForm : depth0)) != null ? helper : helperMissing),(options={"name":"dateForm","hash":{},"fn":this.program(3, data),"inverse":this.noop,"data":data}),(typeof helper === functionType ? helper.call(depth0, options) : helper));
   if (!helpers.dateForm) { stack1 = blockHelperMissing.call(depth0, stack1, options); }
   if (stack1 != null) { buffer += stack1; }
-  buffer += ">\n    <select class=\"search-type\">\n";
+  buffer += ">\n    </section>\n    <section class=\"pri-label\"><span>Dance type</span>\n      <select class=\"search-type\">\n";
   stack1 = ((helpers.select || (depth0 && depth0.select) || helperMissing).call(depth0, (depth0 != null ? depth0.type : depth0), {"name":"select","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data}));
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "    </select>\n    <input class=\"search-submit\" type=\"submit\">\n</form>\n</div>\n";
+  return buffer + "    </section>\n    <input class=\"search-submit\" type=\"submit\" value=\"Search\">\n</form>\n</div>\n";
 },"useData":true});
 this["DanceCard"]["templates"]["settings"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
@@ -1491,22 +1499,34 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
   'use strict';
 
   DanceCard.Views.Login = DanceCard.Views.Base.extend({
-    tagName: 'form',
-    className: 'login-form',
+    className: 'modal-view',
     template: DanceCard.templates.login,
     render: function() {
       this.$el.html(this.template());
     },
     events: {
+      'click'                     : 'closeLogin',
       'click .login'              : 'login',
       'click .forgot-password'    : 'forgotPassword',
       'click .send-reset-request' : 'resetPassword',
       'click .close-modal'        : 'closeModal'
     },
 
+    closeLogin: function(e) {
+      if ($(e.target)[0] === this.$el[0]) {
+        this.remove();
+        DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, this);
+        window.history.back();
+      }
+    },
+
     closeModal: function(e) {
       e.preventDefault();
       $('.reset-password').remove();
+      this.remove();
+      this.remove();
+      DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, this);
+      window.history.back();
     },
 
     resetPassword: function(e) {
@@ -1549,6 +1569,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       Parse.User.logIn(email, password, {
         success: function() {
           self.remove();
+          DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, self);
           if ($('.logout-msg')) {
             $('.logout-msg').remove();
           }
@@ -1696,7 +1717,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
             type: type
           };
       searchTerms = [location, distance, startDateS, endDateS, $('.search-type :selected').val()].join('+');
-      DanceCard.router.navigate('#/search?' + searchTerms);
+      DanceCard.router.navigate('#/search?' + searchTerms, {trigger: true});
       if (location) {
         DanceCard.Utility.findLocation(location)
         .done(function(location) {
@@ -1708,7 +1729,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
           self.makeMap(collection, location.point);
         });
       } else {
-        this.$el.append('<div class="map-loading"><img class="spinner" src="../images/spinner.gif"/></div>');
+        this.$el.prepend('<div class="map-loading"><img class="spinner" src="../images/spinner.gif"/></div>');
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
     },
@@ -1740,7 +1761,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     makeList: function(collection, loc) {
       loc = loc || undefined;
       this.children.push(new DanceCard.Views.EventListPartial({
-        $container: this.$el,
+        $container: $('.search-right'),
         collection: collection,
         searchResults: this.attrs,
         location: loc
@@ -1774,7 +1795,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       e.preventDefault();
       Parse.User.logOut();
       DanceCard.session.set('user', Parse.User.current());
-      DanceCard.router.navigate('login', {trigger: true});
+      console.log(DanceCard.router.mainChildren);
       $('main').prepend('<div class="logout-msg">You have successfully logged out</div>');
       window.setTimeout(function() {
         $('.logout-msg').remove();
@@ -1788,15 +1809,31 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
   'use strict';
 
   DanceCard.Views.Register = DanceCard.Views.Base.extend({
-    tagName: 'form',
-    className: 'register-form',
+    className: 'modal-view',
     template: DanceCard.templates.register,
     render: function() {
       this.$el.html(this.template());
     },
     events: {
       'submit'                 : 'register',
-      'keyup .verify-password' : 'verifyPassword'
+      'keyup .verify-password' : 'verifyPassword',
+      'click'                  : 'closeRegister',
+      'click .close-modal'     : 'closeModal'
+    },
+
+    closeModal: function(e) {
+      e.preventDefault();
+      this.remove();
+      DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, this);
+      window.history.back();
+    },
+
+    closeRegister: function(e) {
+      if ($(e.target)[0] === this.$el[0]) {
+        this.remove();
+        DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, this);
+        window.history.back();
+      }
     },
 
     register: function(e) {
@@ -1830,11 +1867,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
               Parse.User.signUp(email, password, attrs, {
                 success: function() {
                   DanceCard.session.set('user', Parse.User.current().toJSON());
-                    if (DanceCard.router.routesHit < 1) {
-                      DanceCard.router.navigate('search', {trigger: true});
-                    } else {
-                      window.history.back();
-                    }
+                    window.history.back();
                   self.remove();
                 },
                 error: function() {
@@ -3025,6 +3058,13 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
   'use strict';
 
   DanceCard.Views.MapPartial = DanceCard.Views.Base.extend({
+    initialize: function(options) {
+      this.options = options;
+      this.$container = options.$container;
+      this.$container.prepend(this.el);
+      this.children = [];
+      this.render();
+    },
     id: 'map-canvas',
     render: function() {
       this.$el.html('<img class="spinner" src="../images/spinner.gif"/>');
@@ -3178,21 +3218,17 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     className: 'search-results-list',
     template: DanceCard.templates._eventList,
     render: function() {
-      this.$el.html(this.template({
-        location: this.options.location,
-        searchResults: this.options.searchResults
-      }));
       this.collection.fetch()
       .then(_.bind(this.renderChildren, this));
     },
     renderChildren: function(collection) {
       var self = this;
+      this.$el.html(this.template({
+        results: collection.models,
+        one: collection.models.length === 1,
+        count: collection.models.length,
+      }));
       if (collection.models.length > 0) {
-        if (collection.models.length === 1) {
-          self.$el.append('<h4>1 result matches your search</h4>');
-        } else {
-          self.$el.append('<h4>' + self.collection.models.length + ' results match your search</h4>');
-        }
         _.each(collection.models, function(model){
           self.children.push(new DanceCard.Views.EventListItemPartial({
             $container: self.$el,
@@ -3200,8 +3236,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
             parent: self
           }));
         });
-      } else {
-        self.$el.append('<h4>sorry, there are no results that match your search</h4>');
       }
     }
   });
