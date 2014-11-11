@@ -218,6 +218,246 @@
 (function() {
   'use strict';
 
+  //thanks to Sasha (http://codepen.io/Boshnik/) for this lovely calendar date picker
+
+  DanceCard.Forms = {};
+
+  DanceCard.Forms.monthNames = {
+    0: "January",
+    1: "February",
+    2: "March",
+    3: "April",
+    4: "May",
+    5: "June",
+    6: "July",
+    7: "August",
+    8: "September",
+    9: "October",
+    10: "November",
+    11: "December"
+  };
+
+  DanceCard.Forms.monthNums = _.invert(DanceCard.Forms.MonthNames);
+
+  DanceCard.Forms.Cal = function(id, label) {
+    var self = this;
+
+    this.date = {};
+    this.markup = {};
+    this.date.today = new Date();
+    this.date.today = new Date(this.date.today.getUTCFullYear(),this.date.today.getUTCMonth(),this.date.today.getUTCDate());
+    this.date.browse = new Date();
+    this.markup.row = "row";
+    this.markup.cell = "cell";
+    this.markup.inactive = "g";
+    this.markup.currentMonth = "mn";
+    this.markup.slctd = "slctd";
+    this.markup.today = "today";
+    this.markup.dayArea = "dayArea";
+    this.elementTag = id + '-calendar';
+    this.targetInput = '#' + id;
+    this.init = false;
+    this.buildDOM();
+    this.selectDate(this.date.today.getFullYear(),this.date.today.getMonth(),this.date.today.getDate());
+    this.constructDayArea(null, id);
+    this.updateInput(label,'','');
+
+    $(document).ready(function(){
+      $(document).click(function(event){
+        var el = $('.' + self.elementTag + ' .view'),
+            eco = el.offset();
+        if(event.pageX<eco.left || event.pageX>eco.left+el.width() || event.pageY<eco.top || event.pageY>eco.top+el.height()) {
+          if(!self.init) self.hide(300);
+        }
+      });
+      $('.'+self.elementTag).on('click','.next-month',function(){
+        self.setMonthNext();
+      });
+      $('.'+self.elementTag).on('click','.prev-month',function(){
+        self.setMonthPrev();
+      });
+      $('.'+self.elementTag).on('click','.next-year',function(){
+        self.setYearNext();
+      });
+      $('.'+self.elementTag).on('click','.prev-year',function(){
+        self.setYearPrev();
+      });
+
+      $('.'+self.elementTag).on('click','.jump-to-next-month',function(){
+        self.setMonthNext();
+      });
+      $('.'+self.elementTag).on('click','.jump-to-previous-month',function(){
+        self.setMonthPrev();
+      });
+
+      $('.'+self.elementTag).on('click','.'+self.markup.currentMonth,function(){
+        var d = self.selectDate(self.date.browse.getUTCFullYear(),self.date.browse.getUTCMonth(),$(this).html());
+        self.hide(300);
+      });
+
+      $('.'+self.elementTag).on('click','.title',function(){
+        self.date.browse = new Date(self.date.today.getTime());
+        self.constructDayArea(false);
+      });
+
+      $('#' + id).focus(function(){
+        self.show(100);
+        $(this).blur();
+      });
+
+    });
+
+  };
+
+  DanceCard.Forms.Cal.prototype.wd = function(wd) {
+    if(wd===0) return 7;
+    return wd;
+  };
+
+  DanceCard.Forms.Cal.prototype.buildDOM = function() {
+    var html = DanceCard.templates.calendar({id: this.targetInput.slice(1)});
+    $(html).insertBefore(this.targetInput);
+    $(this.targetInput).css('cursor','pointer');
+    this.hide(300);
+  };
+
+  DanceCard.Forms.Cal.prototype.constructDayArea = function(flipDirection, id) {
+    var newViewContent = "",
+        wd = this.wd(this.date.browse.getUTCDay()),
+        d = this.date.browse.getUTCDate(),
+        m = this.date.browse.getUTCMonth(),
+        y = this.date.browse.getUTCFullYear(),
+        monthBgnDate = new Date(y,m,1),
+        monthBgn = monthBgnDate.getTime(),
+        monthEndDate = new Date(this.getMonthNext().getTime()-1000*60*60*24),
+        monthEnd = monthEndDate.getTime(),
+        monthBgnWd = this.wd(monthBgnDate.getUTCDay()),
+        itrBgn = monthBgnDate.getTime()-(monthBgnWd-1)*1000*60*60*24,
+        i = 1,
+        n = 0,
+        dayItr = itrBgn;
+    newViewContent += "<div class='"+this.markup.row+"'>\n";
+    while(n<42) {
+      var cls = new Array("C",this.markup.cell);
+      if(dayItr<=monthBgn) cls.push(this.markup.inactive,"jump-to-previous-month");
+      else if(dayItr>=monthEnd+1000*60*60*36) cls.push(this.markup.inactive,"jump-to-next-month");
+      else cls.push(this.markup.currentMonth);
+      if(dayItr==this.date.slctd.getTime()+1000*60*60*24) cls.push(this.markup.slctd);
+      if(dayItr==this.date.today.getTime()+1000*60*60*24) cls.push(this.markup.today);
+
+      var date = new Date(dayItr);
+      newViewContent += "<div class='"+cls.join(" ")+"'>"+date.getUTCDate()+"</div>\n";
+      i += 1;
+      if(i>7) {
+        i = 1;
+        newViewContent += "</div>\n<div class='"+this.markup.row+"'>\n";
+      }
+      n += 1;
+      dayItr = dayItr+1000*60*60*24;
+    }
+    newViewContent += "</div>\n";
+
+
+    this.changePage(newViewContent,flipDirection);
+    $('.'+this.elementTag+' .title .m').html(DanceCard.Forms.monthNames[m]);
+    $('.'+this.elementTag+' .title .y').html(y);
+    return newViewContent;
+  };
+
+  DanceCard.Forms.Cal.prototype.changePage = function(newPageContent,flipDirection) {
+    var multiplier = -1,
+        mark = "-";
+    if(flipDirection) {
+      multiplier = 1;
+      mark = "+";
+    }
+
+    var oldPage = $('.'+this.elementTag+' .'+this.markup.dayArea+' .mArea'),
+        newPage = $("<div class='mArea'></div>").html(newPageContent);
+    $('.'+this.elementTag+' .'+this.markup.dayArea).append(newPage);
+    oldPage.remove();
+  };
+
+  DanceCard.Forms.Cal.prototype.selectDate = function(y,m,d) {
+    this.date.slctd = new Date(y,m,d);
+    this.updateInput(y,m,d);
+    this.constructDayArea(false);
+    return this.date.slctd;
+  };
+
+  DanceCard.Forms.Cal.prototype.updateInput = function(y,m,d) {
+    if(m==='') m = '';
+    else m = DanceCard.Forms.monthNames[m];
+    $(this.targetInput).val(m+" "+d+" "+y);
+  };
+
+  DanceCard.Forms.Cal.prototype.getMonthNext = function() {
+    var m = this.date.browse.getUTCMonth(),
+        y = this.date.browse.getUTCFullYear();
+    if(m+1>11) return new Date(y+1,0);
+    else return new Date(y,m+1);
+  };
+
+  DanceCard.Forms.Cal.prototype.getMonthPrev = function() {
+    var m = this.date.browse.getUTCMonth(),
+        y = this.date.browse.getUTCFullYear();
+    if(m-1<0) return new Date(y-1,11);
+    else return new Date(y,m-1);
+  };
+
+  DanceCard.Forms.Cal.prototype.setMonthNext = function() {
+    var m = this.date.browse.getUTCMonth(),
+        y = this.date.browse.getUTCFullYear();
+    if(m+1>11) {
+      this.date.browse.setUTCFullYear(y+1);
+      this.date.browse.setUTCMonth(0);
+    } else {
+      this.date.browse.setUTCMonth(m+1);
+    }
+    this.constructDayArea(false);
+  };
+
+  DanceCard.Forms.Cal.prototype.setMonthPrev = function() {
+    var m = this.date.browse.getUTCMonth(),
+        y = this.date.browse.getUTCFullYear();
+    if(m-1<0) {
+      this.date.browse.setUTCFullYear(y-1);
+      this.date.browse.setUTCMonth(11);
+    } else {
+      this.date.browse.setUTCMonth(m-1);
+    }
+    this.constructDayArea(true);
+  };
+
+  DanceCard.Forms.Cal.prototype.setYearNext = function() {
+    var y = this.date.browse.getUTCFullYear();
+    this.date.browse.setUTCFullYear(y+1);
+    this.constructDayArea(false);
+  };
+
+  DanceCard.Forms.Cal.prototype.setYearPrev = function() {
+    var y = this.date.browse.getUTCFullYear();
+    this.date.browse.setUTCFullYear(y-1);
+    this.constructDayArea(true);
+  };
+
+  DanceCard.Forms.Cal.prototype.hide = function(duration) {
+    $('.'+this.elementTag+' .view').slideUp(duration);
+  };
+
+  DanceCard.Forms.Cal.prototype.show = function(duration) {
+    var t = this;
+    t.init = true;
+    $('.'+this.elementTag+' .view').slideDown(duration,function(){
+      t.init = false;
+    });
+  };
+
+})();
+
+(function() {
+  'use strict';
+
   DanceCard.Router = Parse.Router.extend({
     initialize: function() {
       var self=this;
@@ -240,24 +480,28 @@
       'orgs/:org/create-event' : 'createEvent', //dynamic
       'orgs/:org/:event'       : 'evnt', //dynamic, for validated user will be manage event page, otherwise will show the event info
       'orgs/:org/:event/email' : 'emailAttendees',
-      'dancers/:dancer'        : 'dancer'
+      'dancers/:dancer'        : 'dancer',
+      '*404'                   : 'notFound'
     },
     mainChildren: [],
 
     index: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').addClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Index({
         $container: $('main')
       }));
     },
     search: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Search({
         $container: $('main')
       }));
     },
     searchResults: function(searchTerms) {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Search({
         $container: $('main'),
         searchTerms: searchTerms
@@ -265,12 +509,14 @@
     },
     login: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Login({
         $container: $('main')
       }));
     },
     register: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Register({
         $container: $('main'),
         model: new DanceCard.Models.User()
@@ -279,6 +525,7 @@
 
     settings: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       if (Parse.User.current()) {
         this.mainChildren.push(new DanceCard.Views.Settings({
           $container: $('main'),
@@ -293,12 +540,15 @@
 
     orgs: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.NotFound({
         $container: $('main')
       }));
     },
     org: function(org) {
       var self = this;
+      _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       new Parse.Query('User')
         .equalTo('urlId', org)
         .find({
@@ -307,13 +557,11 @@
             if (org.length > 0 && org[0].get('organizer')) {
               if (org[0].authenticated()) {
                 // current user is the org being viewed
-                _.invoke(self.mainChildren, 'remove');
                 self.mainChildren.push(new DanceCard.Views.OrgManage({
                   $container: $('main'),
                   model: org[0]
                 }));
               } else {
-                _.invoke(self.mainChildren, 'remove');
                 self.mainChildren.push(new DanceCard.Views.Org({
                   $container: $('main'),
                   model: org[0]
@@ -321,14 +569,12 @@
               }
             } else {
               console.log('user not found');
-              _.invoke(self.mainChildren, 'remove');
               self.mainChildren.push(new DanceCard.Views.NotFound({
                 $container: $('main')
               }));
             }
           }, error: function() {
             console.log('error retrieving user');
-            _.invoke(self.mainChildren, 'remove');
             self.mainChildren.push(new DanceCard.Views.NotFound({
               $container: $('main')
             }));
@@ -337,6 +583,7 @@
     },
     createEvent: function(org) {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.CreateEvent({
         $container: $('main'),
         model: new DanceCard.Models.Event({
@@ -347,6 +594,7 @@
     },
     evnt: function(org, evnt) {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       var self = this,
           query = new Parse.Query('Event');
       query.get(evnt)
@@ -370,6 +618,7 @@
     emailAttendees: function(org, evnt) {
       var self = this,
           query = new Parse.Query('Event');
+      $('.container').removeClass('index-view');
       if ( DanceCard.session.get('user') && Parse.User.current().get('urlId') === org) {
         query.get(evnt)
         .then(function(evt) {
@@ -385,19 +634,19 @@
 
     dancer: function(dancer) {
       var self = this;
+      _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       new Parse.Query('User')
         .equalTo('urlId', dancer)
         .find({
           success: function(dancer) {
             // dancer exists
             if (dancer.length > 0) {
-              _.invoke(self.mainChildren, 'remove');
               self.mainChildren.push(new DanceCard.Views.Dancer({
                 $container: $('main'),
                 model: dancer[0]
               }));
             } else {
-              _.invoke(self.mainChildren, 'remove');
               self.mainChildren.push(new DanceCard.Views.NotFound({
                 $container: $('main'),
                 model: dancer[0]
@@ -405,13 +654,20 @@
             }
           }, error: function() {
             console.log('error retrieving user');
-            _.invoke(self.mainChildren, 'remove');
             self.mainChildren.push(new DanceCard.Views.NotFound({
               $container: $('main'),
             }));
           }
         });
     },
+
+    notFound: function() {
+      _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
+      this.mainChildren.push(new DanceCard.Views.NotFound({
+        $container: $('main'),
+      }));
+    }
 
   });
 
@@ -517,6 +773,12 @@ this["DanceCard"]["templates"]["_infoWindow"] = Handlebars.template({"1":functio
 this["DanceCard"]["templates"]["_loginRequired"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<div class=\"login-req-notif\">\n  <p>You must be logged in to use this feature</p>\n  <a href=\"#/login\" class=\"visit-login\">log in</a>\n  <a href=\"#/register\" class=\"visit-register\">register</a>\n  <a href=\"#\" class=\"cancel\">cancel</a>\n</div>\n";
   },"useData":true});
+this["DanceCard"]["templates"]["calendar"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "<div class='clear "
+    + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
+    + "-calendar'>\n  <div class='view'>\n    <div class='head'>\n      <div class='title'>\n        <span class='m'></span>\n        <span class='y'></span>\n      </div>\n    </div>\n    <div class='row th'>\n      <div class='C'>M</div>\n      <div class='C'>T</div>\n      <div class='C'>W</div>\n      <div class='C'>T</div>\n      <div class='C'>F</div>\n      <div class='C'>S</div>\n      <div class='C'>S</div>\n    </div>\n    <div class='dayArea'>\n    </div>\n    <div class='row nav'>\n      <i class='btn prev prev-year fa fa-fast-backward'></i>\n      <i class='btn prev prev-month fa fa-play fa-flip-horizontal'></i>\n      <i class='btn next next-month fa fa-play'></i>\n      <i class='btn next next-year fa fa-fast-forward'></i>\n    </div>\n  </div>\n</div>\n";
+},"useData":true});
 this["DanceCard"]["templates"]["dancer"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   return "Your";
   },"3":function(depth0,helpers,partials,data) {
@@ -542,18 +804,18 @@ this["DanceCard"]["templates"]["forgotPassword"] = Handlebars.template({"compile
   return "<div class=\"reset-password\">\n  <form>\n    <a href=\"#\" class=\"close-modal\">x</a>\n    <h3>Reset your password</h3>\n    <label name=\"email\">Email</label>\n      <input type=\"email\" name=\"email\" class=\"email-reset-password\">\n    <input type=\"submit\" class=\"send-reset-request\">\n  </form>\n</div>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["index"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"searchBox\">\n  <form>\n    <input class=\"search-location\" type=\"text\" placeholder=\"location\">\n    <input class=\"search-distance\" type=\"text\" placeholder=\"within miles\">\n    <input class=\"search-start-date\" type=\"date\">\n    <input class=\"search-end-date\"type=\"date\">\n    <select class=\"search-type\">\n      <option value=\"all\">all</option>\n      <option value=\"contra-dance\">Contra Dance</option>\n      <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n      <option value=\"contra-workshop\">Contra Workshop</option>\n      <option value=\"waltz\">Waltz Dance</option>\n      <option value=\"waltz-workshop\">Waltz Workshop</option>\n      <option value=\"square-dance\">Square Dance</option>\n      <option value=\"dance-weekend\">Dance Weekend</option>\n      <option value=\"caller-workshop\">Caller Workshop</option>\n    </select>\n    <input class=\"search-submit\" type=\"submit\">\n</form>\n</div>\n";
+  return "<div class=\"search-box\">\n  <form>\n    <input class=\"search-location\" type=\"text\" placeholder=\"pick a location\">\n    <div class='form-input date-selector'>\n      <i class='fa fa-calendar-o'></i>\n      <input type='text' id='index-start' class=\"start-date-input\" value='Start date' />\n    </div>\n    <div class='form-input date-selector'>\n      <i class='fa fa-calendar-o'></i>\n      <input type='text' id='index-end' class=\"end-date-input\" value='End date' />\n    </div>\n    <select class=\"search-type\">\n      <option value=\"all\">all</option>\n      <option value=\"contra-dance\">Contra Dance</option>\n      <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n      <option value=\"contra-workshop\">Contra Workshop</option>\n      <option value=\"waltz\">Waltz Dance</option>\n      <option value=\"waltz-workshop\">Waltz Workshop</option>\n      <option value=\"square-dance\">Square Dance</option>\n      <option value=\"dance-weekend\">Dance Weekend</option>\n      <option value=\"caller-workshop\">Caller Workshop</option>\n    </select>\n    <input class=\"search-submit\" type=\"submit\" value=\"find dances\">\n</form>\n</div>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["login"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<h2>Log In</h2>\n<label name=\"email\">Email:</label>\n  <input name=\"email\" type=\"text\" class=\"email-input\" placeholder=\"email\">\n<label name=\"password\">Password:</label>\n  <input name=\"password\" type=\"password\" class=\"password-input\" placeholder=\"password\">\n<input class=\"login\" type=\"submit\" value=\"login\">\n<a href=\"#\" class=\"forgot-password\">forgot password?</a>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
-  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"left-nav\">\n";
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"right-nav\">\n";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.organizer : stack1), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "        <a href=\"#/search\" class=\"search-link\">search for dances</a>\n        <a href=\"#/dancers/"
+  return buffer + "        <a href=\"#/search\" class=\"search-link\"><i class=\"fa fa-search\"></i>search for dances</a>\n        <a href=\"#/dancers/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
-    + "\">view your dance card</a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    You are logged in as "
+    + "\">view your dance card</a>\n      </div>\n  </div>\n  <div class=\"left-nav\">\n    You are logged in as "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
     + ". If that's not you, <a href=\"#\" class=\"logout\">logout</a>\n    <a href=\"#/settings\"><i class=\"fa fa-cog\"></i>settings</a>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
@@ -564,7 +826,7 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
     + "/create-event\" class=\"create\">add an event</a>\n";
 },"4":function(depth0,helpers,partials,data) {
-  return "  <div class=\"left-nav\">\n    <a href=\"#\" class=\"home-link\">search for dances</a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\">login</a>\n    <a href=\"#/register\" class=\"signup\">register</a>\n  </div>\n";
+  return "  <div class=\"right-nav\">\n    <a href=\"#/search\" class=\"home-link\"><i class=\"fa fa-search\"></i>search for dances</a>\n  </div>\n  <div class=\"left-nav\">\n    <a href=\"#/login\" class=\"login\">login</a>\n    <a href=\"#/register\" class=\"signup\">sign up</a>\n  </div>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(4, data),"data":data});
@@ -589,7 +851,7 @@ this["DanceCard"]["templates"]["search"] = Handlebars.template({"1":function(dep
   },"5":function(depth0,helpers,partials,data) {
   return "        <option value=\"all\">all</option>\n        <option value=\"contra-dance\">Contra Dance</option>\n        <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n        <option value=\"contra-workshop\">Contra Workshop</option>\n        <option value=\"waltz\">Waltz Dance</option>\n        <option value=\"waltz-workshop\">Waltz Workshop</option>\n        <option value=\"square-dance\">Square Dance</option>\n        <option value=\"dance-weekend\">Dance Weekend</option>\n        <option value=\"caller-workshop\">Caller Workshop</option>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing, buffer = "<div class=\"searchBox\">\n  <form>\n    <input class=\"search-location\" type=\"text\" placeholder=\"location\" value ="
+  var stack1, helper, options, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, blockHelperMissing=helpers.blockHelperMissing, buffer = "<div class=\"search-box\">\n  <form>\n    <input class=\"search-location\" type=\"text\" placeholder=\"location\" value ="
     + escapeExpression(((helper = (helper = helpers.location || (depth0 != null ? depth0.location : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"location","hash":{},"data":data}) : helper)))
     + ">\n    <input class=\"search-distance\" type=\"text\" placeholder=\"within miles\" value="
     + escapeExpression(((helper = (helper = helpers.distance || (depth0 != null ? depth0.distance : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"distance","hash":{},"data":data}) : helper)))
@@ -1205,7 +1467,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     tagName: 'header',
     render: function() {
       this.$el.append('<h1><a href="#">Dance Card</a></h1>');
-      this.$el.append('<span>Do you want to dance?</span>');
+      this.$el.append('<span class="tag-line">Do you want to dance?</span>');
       this.navView = new DanceCard.Views.Nav({
         $container: this.$el,
         model: DanceCard.session
@@ -1335,6 +1597,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     template: DanceCard.templates.index,
     render: function() {
       this.$el.html(this.template());
+      new DanceCard.Forms.Cal('index-start', 'Start date');
+      new DanceCard.Forms.Cal('index-end', 'End date');
     },
     events: {
       'click .search-submit' : 'searchResults',
@@ -1344,12 +1608,13 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       e.preventDefault();
       var startDate,
           endDate;
-      if ($('.search-start-date').val()) {
-        startDate = moment($('.search-start-date').val()).format();
+      if ($('.start-date-input').val() !== '  Start date') {
+        startDate = moment($('.start-date-input').val()).format();
       } else {
         startDate = new Date();
-      } if ($('.search-end-date').val()) {
-        endDate = moment($('.search-end-date').val()).format();
+      }
+       if ($('.end-date-input').val() !== '  End date') {
+        endDate = moment($('.end-date-input').val()).format();
       } else {
         endDate = DanceCard.Utility.addDays(new Date(), 7);
       }
@@ -1366,7 +1631,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
             endDate: DanceCard.Utility.addDays(new Date(endDate), 1),
             distance: distance,
             type: type};
-      DanceCard.router.navigate('search?' + searchTerms, {trigger: true});
+      DanceCard.router.navigate('#/search?' + searchTerms, {trigger: true});
     }
 
   });
@@ -1431,7 +1696,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
             type: type
           };
       searchTerms = [location, distance, startDateS, endDateS, $('.search-type :selected').val()].join('+');
-      DanceCard.router.navigate('#search?' + searchTerms);
+      DanceCard.router.navigate('#/search?' + searchTerms);
       if (location) {
         DanceCard.Utility.findLocation(location)
         .done(function(location) {
