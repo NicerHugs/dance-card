@@ -5,7 +5,7 @@
   border-radius: rem(5);
   margin-left: 50%;
   max-width: rem(400);
-  min-height: rem(300);
+  min-height: rem(367);
   padding: rem(50);
   position: absolute;
   top: 50%;
@@ -34,6 +34,10 @@
   }
 
   .organizer-label {
+    span {
+      display: block;
+    }
+
     label {
       clear: none;
       float: left;

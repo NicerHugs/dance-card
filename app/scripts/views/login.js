@@ -26,6 +26,10 @@
     closeModal: function(e) {
       e.preventDefault();
       $('.reset-password').remove();
+      this.remove();
+      this.remove();
+      DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, this);
+      window.history.back();
     },
 
     resetPassword: function(e) {

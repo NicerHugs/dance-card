@@ -4,3 +4,21 @@
   position: fixed;
   width: 100%;
 }
+
+.close-modal {
+  // background: $white;
+  border-radius: 50%;
+  position: absolute;
+  top: rem(-6);
+  right: rem(-6);
+
+  &:hover * {
+    color: $medium;
+  }
+
+  i {
+    color: $light-blue;
+
+
+  }
+}
