@@ -301,7 +301,7 @@
       });
 
       $('#' + id).focus(function(){
-        self.show(100);
+        self.show(300);
         $(this).blur();
       });
 
@@ -318,10 +318,10 @@
     var html = DanceCard.templates.calendar({id: this.targetInput.slice(1)});
     $(html).insertBefore(this.targetInput);
     $(this.targetInput).css('cursor','pointer');
-    this.hide(300);
+    this.hide(100);
   };
 
-  DanceCard.Forms.Cal.prototype.constructDayArea = function(flipDirection, id) {
+  DanceCard.Forms.Cal.prototype.constructDayArea = function(flipDirection) {
     var newViewContent = "",
         wd = this.wd(this.date.browse.getUTCDay()),
         d = this.date.browse.getUTCDate(),
@@ -442,13 +442,13 @@
   };
 
   DanceCard.Forms.Cal.prototype.hide = function(duration) {
-    $('.'+this.elementTag+' .view').slideUp(duration);
+    $('.'+this.elementTag+' .view').hide(duration);
   };
 
   DanceCard.Forms.Cal.prototype.show = function(duration) {
     var t = this;
     t.init = true;
-    $('.'+this.elementTag+' .view').slideDown(duration,function(){
+    $('.'+this.elementTag+' .view').show(duration,function(){
       t.init = false;
     });
   };
@@ -1708,7 +1708,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
           self.makeMap(collection, location.point);
         });
       } else {
-        this.$el.append('<div class="map-loading"><i class="fa fa-spinner fa-spin"></i></div>');
+        this.$el.append('<div class="map-loading"><img class="spinner" src="../images/spinner.gif"/></div>');
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
     },
@@ -3027,7 +3027,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
   DanceCard.Views.MapPartial = DanceCard.Views.Base.extend({
     id: 'map-canvas',
     render: function() {
-      this.$el.html('<i class="fa fa-spinner fa-spin"></i>');
+      this.$el.html('<img class="spinner" src="../images/spinner.gif"/>');
       var self = this;
       this.zoomArray = [];
       this.map = new google.maps.Map(document.getElementById("map-canvas"), {
