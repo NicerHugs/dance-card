@@ -21,8 +21,9 @@
     color: $white;
     display: block;
     font-family: $tagline-font;
-    font-size: 3rem;
-    left: rem(45);
+    font-size: 2rem;
+    font-weight: 500;
+    left: rem(105);
     letter-spacing: rem(3);
     margin: 0;
     padding: 0;
@@ -32,7 +33,7 @@
   }
 
   header {
-    background: none;
+    background: rgba($orange, .15);
     height: 100%;
     text-shadow: 0 0 6px $dark;
 
@@ -42,8 +43,11 @@
   }
 
   nav {
-    background: rgba($light-blue, .25);
-    height: rem(50);
+    background: transparent;
+    font-family: 'Lato', serif;
+    font-size: rem(18);
+    font-weight: 300;
+    height: rem(55);
     margin: 0;
     position: fixed;
     top: 0;
@@ -52,7 +56,11 @@
     * {
       height: rem(50);
       line-height: rem(50);
+      padding: 0 rem(10);
+    }
 
+    a {
+      color: $white;
     }
   }
 
