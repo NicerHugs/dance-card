@@ -1,16 +1,10 @@
 <h3>
-  Events within {{searchResults.distance}} miles of
-  {{#if location}}
-    {{location.location.fullAddress}}
+  {{#if one}}
+    1 event found.
   {{else}}
-    you
+    {{count}} events found.
   {{/if}}
+  {{#unless results}}
+    Please try again.
+  {{/unless}}
 </h3>
-
-<h4>Date Range:</h4>
-{{#dateShort}}{{searchResults.startDate}}{{/dateShort}}
--
-{{#dateShort}}{{searchResults.endDate}}{{/dateShort}}
-
-<h4>Event Type:</h4>
-{{searchResults.type}}

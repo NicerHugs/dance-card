@@ -1,18 +1,18 @@
 <div class="search-right">
   <form class="search-box">
-    <label class="pri-label">Location
+    <section class="pri-label"><span>Location</span>
       <label class="sec-label">City</label>
         <input class="search-location" type="text" placeholder="location" value ={{location}}>
       <label class="sec-label">Distance</label>
         <input class="search-distance" type="text" placeholder="within miles" value={{distance}}>
-    </label>
-    <label class="pri-label">Dates
+    </section>
+    <section class="pri-label"><span>Dates</span>
       <label class="sec-label">Start</label>
         <input class="search-start-date" type="date" value={{#dateForm}}{{startDate}}{{/dateForm}}>
       <label class="sec-label">End</label>
         <input class="search-end-date"type="date" value={{#dateForm}}{{endDate}}{{/dateForm}}>
-    </label>
-    <label class="pri-label">Dance type
+    </section>
+    <section class="pri-label"><span>Dance type</span>
       <select class="search-type">
       {{#select type}}
         <option value="all">all</option>
@@ -25,8 +25,7 @@
         <option value="dance-weekend">Dance Weekend</option>
         <option value="caller-workshop">Caller Workshop</option>
       {{/select}}
-      </select>
-    </label>
-    <input class="search-submit" type="submit">
+    </section>
+    <input class="search-submit" type="submit" value="Search">
 </form>
 </div>

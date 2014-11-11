@@ -83,7 +83,8 @@
         self.constructDayArea(false);
       });
 
-      $('#' + id).focus(function(){
+      $('#' + id).focus(function(e){
+        if(e) e.stopPropagation();
         self.show(300);
         $(this).blur();
       });
@@ -225,13 +226,13 @@
   };
 
   DanceCard.Forms.Cal.prototype.hide = function(duration) {
-    $('.'+this.elementTag+' .view').hide(duration);
+    $('.'+this.elementTag+' .view').parent().hide(duration);
   };
 
   DanceCard.Forms.Cal.prototype.show = function(duration) {
     var t = this;
     t.init = true;
-    $('.'+this.elementTag+' .view').show(duration,function(){
+    $('.'+this.elementTag+' .view').parent().show(duration,function(){
       t.init = false;
     });
   };
