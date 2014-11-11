@@ -4,7 +4,7 @@
   DanceCard.Views.MapPartial = DanceCard.Views.Base.extend({
     id: 'map-canvas',
     render: function() {
-      this.$el.html('<i class="fa fa-spinner fa-spin"></i>');
+      this.$el.html('<img class="spinner" src="../images/spinner.gif"/>');
       var self = this;
       this.zoomArray = [];
       this.map = new google.maps.Map(document.getElementById("map-canvas"), {

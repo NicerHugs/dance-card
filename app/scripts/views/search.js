@@ -68,7 +68,7 @@
           self.makeMap(collection, location.point);
         });
       } else {
-        this.$el.append('<div class="map-loading"><i class="fa fa-spinner fa-spin"></i></div>');
+        this.$el.append('<div class="map-loading"><img class="spinner" src="../images/spinner.gif"/></div>');
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
     },

@@ -84,7 +84,7 @@
       });
 
       $('#' + id).focus(function(){
-        self.show(100);
+        self.show(300);
         $(this).blur();
       });
 
@@ -101,10 +101,10 @@
     var html = DanceCard.templates.calendar({id: this.targetInput.slice(1)});
     $(html).insertBefore(this.targetInput);
     $(this.targetInput).css('cursor','pointer');
-    this.hide(300);
+    this.hide(100);
   };
 
-  DanceCard.Forms.Cal.prototype.constructDayArea = function(flipDirection, id) {
+  DanceCard.Forms.Cal.prototype.constructDayArea = function(flipDirection) {
     var newViewContent = "",
         wd = this.wd(this.date.browse.getUTCDay()),
         d = this.date.browse.getUTCDate(),
@@ -225,13 +225,13 @@
   };
 
   DanceCard.Forms.Cal.prototype.hide = function(duration) {
-    $('.'+this.elementTag+' .view').slideUp(duration);
+    $('.'+this.elementTag+' .view').hide(duration);
   };
 
   DanceCard.Forms.Cal.prototype.show = function(duration) {
     var t = this;
     t.init = true;
-    $('.'+this.elementTag+' .view').slideDown(duration,function(){
+    $('.'+this.elementTag+' .view').show(duration,function(){
       t.init = false;
     });
   };
