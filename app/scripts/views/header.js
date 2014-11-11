@@ -5,7 +5,7 @@
     tagName: 'header',
     render: function() {
       this.$el.append('<h1><a href="#">Dance Card</a></h1>');
-      this.$el.append('<span>Do you want to dance?</span>');
+      this.$el.append('<span class="tag-line">Do you want to dance?</span>');
       this.navView = new DanceCard.Views.Nav({
         $container: this.$el,
         model: DanceCard.session

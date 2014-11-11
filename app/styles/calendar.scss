@@ -1,0 +1,235 @@
+@import url('http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900');
+@import url('http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800');
+@import url('http://fonts.googleapis.com/css?family=Montserrat:400,700');
+@import url('http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css');
+
+.form-input {
+  background: $white;
+  border: solid 1px $light;
+  border-right: 0;
+  color: $medium;
+  float: left;
+  font: 300 1rem 'Open Sans';
+  margin: 0 0 8px;
+  // overflow: hidden;
+  padding: 0;
+  position: relative;
+  width: rem(230);
+
+  &:hover {
+    color: $dark;
+  }
+
+  i {
+    color: $medium;
+    display: block;
+    font-size: 1rem;
+    height: 47px;
+    left: 0;
+    line-height: 47px;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    transition: box-shadow .2s, color .3s, background-color .4s;
+    width: 47px;
+    z-index: 9999;
+  }
+
+  input {
+    background: transparent;
+    border: 0;
+    box-sizing: border-box;
+    color: inherit;
+    display: block;
+    float: left;
+    font: inherit;
+    font-size: 1em;
+    height: 43px;
+    left: 0;
+    margin: 0;
+    padding: 0 4px 0 56px;
+    position: relative;
+    top: 0;
+    transition: border-color .2s, color .2s, background-color .4s;
+    z-index: 1;
+  }
+}
+
+.clear {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  cursor: default;
+  display: block;
+  font: 500 .8em/30px "Open Sans";
+  height: 315px;
+  padding: 0 0 0 rem(20);
+  position: absolute;
+  user-select: none;
+  top: -315px;
+  width: 302px;
+
+  .view {
+    background: $white;
+    border: solid 1px $light;
+    border-radius: rem(3);
+    bottom: 77px;
+    color: $dark;
+    height: 315px;
+    position: fixed;
+  }
+
+  .nav {
+    height: rem(32);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    .btn {
+      color: $medium;
+      position: absolute;
+      display: block;
+      z-index: 1;
+      cursor: pointer;
+      cursor: hand;
+      width: 32px;
+      height: 32px;
+      line-height: 31px;
+      top: 0;
+      left: auto;
+      transition: opacity .5s;
+      border-radius: 4px;
+
+      &:hover {
+        color: $dark;
+        opacity: 1;
+      }
+
+      &.prev {
+        left: 0;
+      }
+
+      &.prev-year {
+        opacity: .5;
+        left: 32px;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      &.next-year {
+        opacity: .5;
+        right: 32px !important;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      &.next {
+        right: 0;
+      }
+    }
+  }
+
+  .head {
+    .title {
+      font: 300 1.2em/32px "Open Sans";
+      position: relative;
+      float: left;
+      width: 100%;
+      text-align: center;
+    }
+
+    span {
+      cursor: pointer;
+    }
+  }
+
+  .row {
+    clear: both;
+
+    &.th {
+      font-weight: 700;
+      text-transform: uppercase;
+      height: 40px;
+
+      .C {
+        border-bottom: 1px solid #c0c0c0;
+        border-radius: 0;
+      }
+    }
+  }
+
+  .C {
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+    transition: background-color .05s, color .05s;
+    border-radius: 50%;
+
+    &.mn {
+      cursor: pointer;
+      cursor: hand;
+
+      &:hover {
+        background: $light-blue;
+        color: $dark;
+      }
+    }
+
+    &.g {
+      color: #a0a0a0;
+      font-weight: 300;
+    }
+
+    &.slctd {
+      background: $light;
+      color: $dark;
+      font-size: 1.15em;
+      font-weight: 300;
+    }
+
+    &.today {
+      font-weight: 900;
+      font-size: 1.3em;
+    }
+  }
+
+  .selected {
+    margin: 0 0 0 64px;
+    float: right;
+    text-align: center;
+    width: 280px;
+
+    .desc {
+      border-bottom: 1px solid #c0c0c0;
+    }
+
+    .val {
+      padding: 0 8px;
+      background: #f0f0f0;
+      color: #808080;
+    }
+  }
+
+  .dayArea {
+    position: relative;
+    width: 280px;
+    height: 240px;
+    overflow: hidden;
+
+    .mArea {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}

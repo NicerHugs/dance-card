@@ -1,0 +1,99 @@
+.index-view {
+  background: $white url('../images/dance1.jpg');
+  background-position: 0% 10%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+
+  h1 {
+    font-size: 5rem;
+    letter-spacing: rem(6);
+    margin: 0;
+    padding: 0;
+    position: relative;
+    text-align: center;
+    top: 27%;
+  }
+
+  span.tag-line {
+    color: $white;
+    display: block;
+    font-family: $tagline-font;
+    font-size: 3rem;
+    left: rem(45);
+    letter-spacing: rem(3);
+    margin: 0;
+    padding: 0;
+    position: relative;
+    text-align: center;
+    top: 26%;
+  }
+
+  header {
+    background: none;
+    height: 100%;
+    text-shadow: 0 0 6px $dark;
+
+    a {
+      color: $light-blue;
+    }
+  }
+
+  nav {
+    background: rgba($light-blue, .25);
+    height: rem(50);
+    margin: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+
+    * {
+      height: rem(50);
+      line-height: rem(50);
+
+    }
+  }
+
+  .search-box {
+    background: rgba($dark, .7);
+    bottom: 0;
+    height: rem(100);
+    position: fixed;
+    width: 100%;
+  }
+
+  form {
+    border-radius: rem(3);
+    margin: rem(28) auto;
+    width: 975px;
+  }
+
+  input {
+    border: solid 1px $light;
+    border-right: 0;
+    display: block;
+    float: left;
+
+    &.search-location {
+      border-radius: rem(3) 0 0 rem(3);
+    }
+
+    &[type=submit] {
+      border: solid 1px darken($orange, 15%);
+      border-radius: 0 rem(3) rem(3) 0;
+      font-weight: 400;
+      letter-spacing: rem(1);
+      line-height: 14px;
+    }
+  }
+
+  select {
+    border: solid 1px $light;
+    border-radius: 0;
+    border-right: 0;
+    display: block;
+    float: left;
+  }
+}

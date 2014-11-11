@@ -6,6 +6,8 @@
     template: DanceCard.templates.index,
     render: function() {
       this.$el.html(this.template());
+      new DanceCard.Forms.Cal('index-start', 'Start date');
+      new DanceCard.Forms.Cal('index-end', 'End date');
     },
     events: {
       'click .search-submit' : 'searchResults',
@@ -15,12 +17,13 @@
       e.preventDefault();
       var startDate,
           endDate;
-      if ($('.search-start-date').val()) {
-        startDate = moment($('.search-start-date').val()).format();
+      if ($('.start-date-input').val() !== '  Start date') {
+        startDate = moment($('.start-date-input').val()).format();
       } else {
         startDate = new Date();
-      } if ($('.search-end-date').val()) {
-        endDate = moment($('.search-end-date').val()).format();
+      }
+       if ($('.end-date-input').val() !== '  End date') {
+        endDate = moment($('.end-date-input').val()).format();
       } else {
         endDate = DanceCard.Utility.addDays(new Date(), 7);
       }
@@ -37,7 +40,7 @@
             endDate: DanceCard.Utility.addDays(new Date(endDate), 1),
             distance: distance,
             type: type};
-      DanceCard.router.navigate('search?' + searchTerms, {trigger: true});
+      DanceCard.router.navigate('#/search?' + searchTerms, {trigger: true});
     }
 
   });

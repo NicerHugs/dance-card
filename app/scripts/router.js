@@ -23,24 +23,28 @@
       'orgs/:org/create-event' : 'createEvent', //dynamic
       'orgs/:org/:event'       : 'evnt', //dynamic, for validated user will be manage event page, otherwise will show the event info
       'orgs/:org/:event/email' : 'emailAttendees',
-      'dancers/:dancer'        : 'dancer'
+      'dancers/:dancer'        : 'dancer',
+      '*404'                   : 'notFound'
     },
     mainChildren: [],
 
     index: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').addClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Index({
         $container: $('main')
       }));
     },
     search: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Search({
         $container: $('main')
       }));
     },
     searchResults: function(searchTerms) {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Search({
         $container: $('main'),
         searchTerms: searchTerms
@@ -48,12 +52,14 @@
     },
     login: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Login({
         $container: $('main')
       }));
     },
     register: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.Register({
         $container: $('main'),
         model: new DanceCard.Models.User()
@@ -62,6 +68,7 @@
 
     settings: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       if (Parse.User.current()) {
         this.mainChildren.push(new DanceCard.Views.Settings({
           $container: $('main'),
@@ -76,12 +83,15 @@
 
     orgs: function() {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.NotFound({
         $container: $('main')
       }));
     },
     org: function(org) {
       var self = this;
+      _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       new Parse.Query('User')
         .equalTo('urlId', org)
         .find({
@@ -90,13 +100,11 @@
             if (org.length > 0 && org[0].get('organizer')) {
               if (org[0].authenticated()) {
                 // current user is the org being viewed
-                _.invoke(self.mainChildren, 'remove');
                 self.mainChildren.push(new DanceCard.Views.OrgManage({
                   $container: $('main'),
                   model: org[0]
                 }));
               } else {
-                _.invoke(self.mainChildren, 'remove');
                 self.mainChildren.push(new DanceCard.Views.Org({
                   $container: $('main'),
                   model: org[0]
@@ -104,14 +112,12 @@
               }
             } else {
               console.log('user not found');
-              _.invoke(self.mainChildren, 'remove');
               self.mainChildren.push(new DanceCard.Views.NotFound({
                 $container: $('main')
               }));
             }
           }, error: function() {
             console.log('error retrieving user');
-            _.invoke(self.mainChildren, 'remove');
             self.mainChildren.push(new DanceCard.Views.NotFound({
               $container: $('main')
             }));
@@ -120,6 +126,7 @@
     },
     createEvent: function(org) {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       this.mainChildren.push(new DanceCard.Views.CreateEvent({
         $container: $('main'),
         model: new DanceCard.Models.Event({
@@ -130,6 +137,7 @@
     },
     evnt: function(org, evnt) {
       _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       var self = this,
           query = new Parse.Query('Event');
       query.get(evnt)
@@ -153,6 +161,7 @@
     emailAttendees: function(org, evnt) {
       var self = this,
           query = new Parse.Query('Event');
+      $('.container').removeClass('index-view');
       if ( DanceCard.session.get('user') && Parse.User.current().get('urlId') === org) {
         query.get(evnt)
         .then(function(evt) {
@@ -168,19 +177,19 @@
 
     dancer: function(dancer) {
       var self = this;
+      _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
       new Parse.Query('User')
         .equalTo('urlId', dancer)
         .find({
           success: function(dancer) {
             // dancer exists
             if (dancer.length > 0) {
-              _.invoke(self.mainChildren, 'remove');
               self.mainChildren.push(new DanceCard.Views.Dancer({
                 $container: $('main'),
                 model: dancer[0]
               }));
             } else {
-              _.invoke(self.mainChildren, 'remove');
               self.mainChildren.push(new DanceCard.Views.NotFound({
                 $container: $('main'),
                 model: dancer[0]
@@ -188,13 +197,20 @@
             }
           }, error: function() {
             console.log('error retrieving user');
-            _.invoke(self.mainChildren, 'remove');
             self.mainChildren.push(new DanceCard.Views.NotFound({
               $container: $('main'),
             }));
           }
         });
     },
+
+    notFound: function() {
+      _.invoke(this.mainChildren, 'remove');
+      $('.container').removeClass('index-view');
+      this.mainChildren.push(new DanceCard.Views.NotFound({
+        $container: $('main'),
+      }));
+    }
 
   });
 

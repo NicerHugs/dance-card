@@ -2,3 +2,14 @@ nav {
   background: rgba($orange, .7);
   margin-top: rem(50);
 }
+
+
+.left-nav {
+  display: inline-block;
+  float: right;
+}
+
+.right-nav {
+  display: inline-block;
+  float: left;
+}

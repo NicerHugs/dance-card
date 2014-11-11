@@ -1,9 +1,14 @@
-<div class="searchBox">
+<div class="search-box">
   <form>
-    <input class="search-location" type="text" placeholder="location">
-    <input class="search-distance" type="text" placeholder="within miles">
-    <input class="search-start-date" type="date">
-    <input class="search-end-date"type="date">
+    <input class="search-location" type="text" placeholder="pick a location">
+    <div class='form-input date-selector'>
+      <i class='fa fa-calendar-o'></i>
+      <input type='text' id='index-start' class="start-date-input" value='Start date' />
+    </div>
+    <div class='form-input date-selector'>
+      <i class='fa fa-calendar-o'></i>
+      <input type='text' id='index-end' class="end-date-input" value='End date' />
+    </div>
     <select class="search-type">
       <option value="all">all</option>
       <option value="contra-dance">Contra Dance</option>
@@ -15,6 +20,6 @@
       <option value="dance-weekend">Dance Weekend</option>
       <option value="caller-workshop">Caller Workshop</option>
     </select>
-    <input class="search-submit" type="submit">
+    <input class="search-submit" type="submit" value="find dances">
 </form>
 </div>

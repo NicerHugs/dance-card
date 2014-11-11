@@ -1,0 +1,38 @@
+html,
+body,
+.container {
+  color: $dark;
+  font-family: $body-font;
+  height: 100%;
+}
+
+form,
+input,
+select {
+  @include form-font;
+}
+
+input {
+  -webkit-appearance: none;
+  height: rem(45);
+  margin: 0;
+  padding: rem(15);
+
+  &[type=submit] {
+    background: $orange;
+    border: 0;
+    color: $white;
+  }
+}
+
+select {
+  -webkit-appearance: none;
+  border-radius: 0;
+  height: rem(45);
+  margin: 0;
+  padding-left: rem(15);
+}
+
+*:focus {
+  outline: none;
+}
