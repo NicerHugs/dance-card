@@ -1,5 +1,5 @@
 {{#if user}}
-  <div class="right-nav">
+  <div class="left-nav">
     {{#if user.organizer}}
         <a href="#/orgs/{{user.urlId}}" class="manage">manage your events</a>
         <a href="#/orgs/{{user.urlId}}/create-event" class="create">add an event</a>
@@ -8,15 +8,15 @@
         <a href="#/dancers/{{user.urlId}}">view your dance card</a>
       </div>
   </div>
-  <div class="left-nav">
+  <div class="right-nav">
     You are logged in as {{user.name}}. If that's not you, <a href="#" class="logout">logout</a>
-    <a href="#/settings"><i class="fa fa-cog"></i>settings</a>
+    <a href="#/settings"><i class="fa fa-cog"></i></a>
   </div>
 {{else}}
-  <div class="right-nav">
+  <div class="left-nav">
     <a href="#/search" class="home-link"><i class="fa fa-search"></i>search for dances</a>
   </div>
-  <div class="left-nav">
+  <div class="right-nav">
     <a href="#/login" class="login">login</a>
     <a href="#/register" class="signup">sign up</a>
   </div>

@@ -1,17 +1,28 @@
 nav {
   color: $white;
+  display: inline-block;
   height: rem(55);
-  position: absolute;
+  padding-right: rem(20);
   top: 0;
-  width: 100%;
+  width: 85%;
+}
+
+.left-nav,
+.right-nav {
+  display: inline-block;
+  height: rem(55);
+
+  * {
+    line-height: rem(55);
+    margin: 0 rem(5);
+  }
 }
 
 .left-nav {
-  display: inline-block;
-  float: right;
+  float: left;
 }
 
 .right-nav {
-  display: inline-block;
-  float: left;
+  color: $dark;
+  float: right;
 }

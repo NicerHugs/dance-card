@@ -22,7 +22,7 @@
       e.preventDefault();
       Parse.User.logOut();
       DanceCard.session.set('user', Parse.User.current());
-      DanceCard.router.navigate('login', {trigger: true});
+      window.history.back();
       $('main').prepend('<div class="logout-msg">You have successfully logged out</div>');
       window.setTimeout(function() {
         $('.logout-msg').remove();

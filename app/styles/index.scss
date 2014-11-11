@@ -25,17 +25,27 @@
     font-weight: 500;
     left: rem(105);
     letter-spacing: rem(3);
-    margin: 0;
-    padding: 0;
-    position: relative;
+    margin-top: rem(20);
+    padding-left: rem(250);
     text-align: center;
-    top: 26%;
   }
 
   header {
     background: rgba($orange, .15);
     height: 100%;
+    position: absolute;
     text-shadow: 0 0 6px $dark;
+    top: 0;
+    width: 100%;
+
+    h1 {
+      font-size: 5rem;
+      letter-spacing: rem(6);
+      margin-top: 15%;
+      padding: 0;
+      text-align: center;
+      width: 100%;
+    }
 
     a {
       color: $light-blue;
@@ -53,7 +63,12 @@
     top: 0;
     width: 100%;
 
+    .left-nav {
+      margin-left: 0;
+    }
+
     * {
+      color: $white;
       height: rem(50);
       line-height: rem(50);
       padding: 0 rem(10);

@@ -10,7 +10,15 @@
     events: {
       'submit'                 : 'register',
       'keyup .verify-password' : 'verifyPassword',
-      'click'                  : 'closeRegister'
+      'click'                  : 'closeRegister',
+      'click .close-modal'     : 'closeModal'
+    },
+
+    closeModal: function(e) {
+      e.preventDefault();
+      this.remove();
+      DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, this);
+      window.history.back();
     },
 
     closeRegister: function(e) {
@@ -52,11 +60,7 @@
               Parse.User.signUp(email, password, attrs, {
                 success: function() {
                   DanceCard.session.set('user', Parse.User.current().toJSON());
-                    if (DanceCard.router.routesHit < 1) {
-                      DanceCard.router.navigate('search', {trigger: true});
-                    } else {
-                      window.history.back();
-                    }
+                    window.history.back();
                   self.remove();
                 },
                 error: function() {
