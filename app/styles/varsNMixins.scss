@@ -20,3 +20,13 @@ $form-font: 'Lato', sans-serif;
   font-family: $form-font;
   font-weight: 300;
 }
+
+@mixin background-img {
+  background: $white url('../images/dance1.jpg');
+  background-position: 0% 10%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+}

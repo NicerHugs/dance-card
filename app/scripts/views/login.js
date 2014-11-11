@@ -2,17 +2,25 @@
   'use strict';
 
   DanceCard.Views.Login = DanceCard.Views.Base.extend({
-    tagName: 'form',
-    className: 'login-form',
+    className: 'modal-view',
     template: DanceCard.templates.login,
     render: function() {
       this.$el.html(this.template());
     },
     events: {
+      'click'                     : 'closeLogin',
       'click .login'              : 'login',
       'click .forgot-password'    : 'forgotPassword',
       'click .send-reset-request' : 'resetPassword',
       'click .close-modal'        : 'closeModal'
+    },
+
+    closeLogin: function(e) {
+      if ($(e.target)[0] === this.$el[0]) {
+        this.remove();
+        DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, this);
+        window.history.back();
+      }
     },
 
     closeModal: function(e) {
@@ -60,6 +68,7 @@
       Parse.User.logIn(email, password, {
         success: function() {
           self.remove();
+          DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, self);
           if ($('.logout-msg')) {
             $('.logout-msg').remove();
           }

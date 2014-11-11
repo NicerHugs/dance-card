@@ -12,7 +12,11 @@ select {
   @include form-font;
 }
 
-input {
+input[type=text],
+input[type=date],
+input[type=password],
+input[type=email],
+input[type=submit] {
   -webkit-appearance: none;
   height: rem(45);
   margin: 0;

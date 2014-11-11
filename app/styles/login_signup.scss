@@ -1,0 +1,49 @@
+.login-form,
+.register-form,
+.reset-password {
+  background: $white;
+  border-radius: rem(5);
+  margin-left: 50%;
+  max-width: rem(400);
+  min-height: rem(300);
+  padding: rem(50);
+  position: absolute;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 50%;
+
+  h2 {
+    display: none;
+  }
+
+  input {
+    border: solid 1px $light;
+    border-radius: rem(3);
+    margin: rem(5) 0 rem(20);
+    width: 100%;
+  }
+
+  label {
+    clear: both;
+    display: block;
+    width: 100%;
+  }
+
+  .forgot-password {
+    float: right;
+  }
+
+  .organizer-label {
+    label {
+      clear: none;
+      float: left;
+      width: 30px;
+    }
+
+    input[type=radio] {
+      float: left;
+      margin-right: 15%;
+      width: 20px;
+    }
+  }
+}

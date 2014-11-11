@@ -28,6 +28,9 @@
     },
     mainChildren: [],
 
+    loginV: {},
+    registerV: {},
+
     index: function() {
       _.invoke(this.mainChildren, 'remove');
       $('.container').addClass('index-view');
@@ -51,19 +54,25 @@
       }));
     },
     login: function() {
-      _.invoke(this.mainChildren, 'remove');
-      $('.container').removeClass('index-view');
-      this.mainChildren.push(new DanceCard.Views.Login({
+      if (_.contains(this.mainChildren, this.registerV)) {
+        this.registerV.remove();
+        this.mainChildren = _.without(this.mainChildren, this.registerV);
+      }
+      this.loginV = new DanceCard.Views.Login({
         $container: $('main')
-      }));
+      });
+      this.mainChildren.push(this.loginV);
     },
     register: function() {
-      _.invoke(this.mainChildren, 'remove');
-      $('.container').removeClass('index-view');
-      this.mainChildren.push(new DanceCard.Views.Register({
+      if (_.contains(this.mainChildren, this.loginV)) {
+        this.loginV.remove();
+        this.mainChildren = _.without(this.mainChildren, this.loginV);
+      }
+      this.registerV = new DanceCard.Views.Register({
         $container: $('main'),
         model: new DanceCard.Models.User()
-      }));
+      });
+      this.mainChildren.push(this.registerV);
     },
 
     settings: function() {

@@ -2,15 +2,23 @@
   'use strict';
 
   DanceCard.Views.Register = DanceCard.Views.Base.extend({
-    tagName: 'form',
-    className: 'register-form',
+    className: 'modal-view',
     template: DanceCard.templates.register,
     render: function() {
       this.$el.html(this.template());
     },
     events: {
       'submit'                 : 'register',
-      'keyup .verify-password' : 'verifyPassword'
+      'keyup .verify-password' : 'verifyPassword',
+      'click'                  : 'closeRegister'
+    },
+
+    closeRegister: function(e) {
+      if ($(e.target)[0] === this.$el[0]) {
+        this.remove();
+        DanceCard.router.mainChildren = _.without(DanceCard.router.mainChildren, this);
+        window.history.back();
+      }
     },
 
     register: function(e) {

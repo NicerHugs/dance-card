@@ -1,12 +1,15 @@
 header {
-  background: $light;
+  background: $white;
+  border-bottom: 1px solid $light;
   color: $dark;
   font-family: $header-font;
+  height: rem(55);
+  position: absolute;
+  top: 0;
+  width: 100%;
 
   h1 {
-    font-size: 4rem;
-    margin: 0 0 0 7.6%;
-    padding-top: rem(50);
+    font-size: 2rem;
   }
 
   span {
