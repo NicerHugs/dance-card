@@ -39,6 +39,7 @@
         $container: $('main')
       }));
     },
+
     search: function() {
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren = [];
@@ -47,6 +48,7 @@
         $container: $('main')
       }));
     },
+
     searchResults: function(searchTerms) {
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren = [];
@@ -56,6 +58,7 @@
         searchTerms: searchTerms
       }));
     },
+
     login: function() {
       if (_.contains(this.mainChildren, this.registerV)) {
         this.registerV.remove();
@@ -66,6 +69,7 @@
       });
       this.mainChildren.push(this.loginV);
     },
+
     register: function() {
       if (_.contains(this.mainChildren, this.loginV)) {
         this.loginV.remove();
@@ -102,6 +106,7 @@
         $container: $('main')
       }));
     },
+
     org: function(org) {
       var self = this;
       _.invoke(this.mainChildren, 'remove');
@@ -139,6 +144,7 @@
           }
         });
     },
+
     createEvent: function(org) {
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren = [];
@@ -151,6 +157,7 @@
         })
       }));
     },
+
     evnt: function(org, evnt) {
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren = [];

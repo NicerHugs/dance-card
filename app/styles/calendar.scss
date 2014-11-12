@@ -10,10 +10,9 @@
   color: $medium;
   float: left;
   font: 300 1rem 'Open Sans';
-  margin: 0 0 8px;
   padding: 0;
   position: relative;
-  width: rem(230);
+  width: rem(210);
 
   &:hover {
     color: $dark;
@@ -23,7 +22,7 @@
     color: $medium;
     display: block;
     font-size: 1rem;
-    height: 47px;
+    height: 44px;
     left: 0;
     line-height: 47px;
     position: absolute;
@@ -59,15 +58,14 @@
   -ms-user-select: none;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  bottom: -30px;
+  bottom: 45px;
   cursor: default;
   display: block;
   font: 500 .8em/30px "Open Sans";
-  height: 315px;
+  height: rem(237);
   padding: 0 0 0 rem(20);
   position: absolute;
   user-select: none;
-  // top: -315px;
   width: 305px;
 
   .view {

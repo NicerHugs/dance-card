@@ -17,6 +17,14 @@ body,
   width: 40%;
 }
 
+.map-loading {
+  padding-top: 10%;
+
+  img {
+    max-width: 25%;
+  }
+}
+
 .venue-info-viewing {
   #map-canvas {
     height: 300px;
