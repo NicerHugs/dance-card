@@ -21,23 +21,25 @@
     },
 
     events: {
-      'click .recur-event-name' : 'toggleChildren',
+      'click .toggle-sub-events' : 'toggleChildren',
       'click .delete-recur'     : 'deleteEvent'
     },
 
     renderChildren: function(collection) {
       this.children.push(new DanceCard.Views.OnetimeEventList({
-        $container: this.$el,
+        $container: this.$el.children('div'),
         collection: collection
       }));
     },
 
     toggleChildren: function(e) {
       e.preventDefault();
-      if (this.$el.children('ul').css('height') === '0px') {
-        this.$el.children('ul').css('height', 'auto');
+      if (this.$el.children('.sub-events').children('.onetime-event').css('height') === '1px') {
+        this.$el.children('div').children('ul').css('height', 'auto');
+        $(e.target).addClass('hide').siblings('.toggle-sub-events').removeClass('hide');
       } else {
-        this.$el.children('ul').css('height', 0);
+        this.$el.children('div').children('ul').css('height', 1);
+        $(e.target).addClass('hide').siblings('.toggle-sub-events').removeClass('hide');
       }
     },
     deleteEvent: function(e) {
