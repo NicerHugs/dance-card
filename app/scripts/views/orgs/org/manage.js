@@ -28,7 +28,7 @@
 
     renderOnetime: function(collection) {
       new DanceCard.Views.OnetimeEventList({
-        $container: this.$el,
+        $container: $('.content'),
         collection: collection,
         owner: true,
         urlId: this.model.get('urlId')
