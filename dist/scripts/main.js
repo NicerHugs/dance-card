@@ -828,20 +828,20 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"left-nav\">\n";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.organizer : stack1), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "        <a href=\"#/search\" class=\"search-link\"><i class=\"fa fa-search\"></i>search for dances</a>\n        <a href=\"#/dancers/"
+  return buffer + "        <a href=\"#/search\" class=\"search-link\"><i class=\"fa fa-search\">search events</i></a>\n        <a href=\"#/dancers/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
-    + "\">view your dance card</a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    You are logged in as "
+    + "\"><i class=\"fa\">my dance card</i></a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/settings\"><i class=\"fa fa-cog\">"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
-    + ". If that's not you, <a href=\"#\" class=\"logout\">logout</a>\n    <a href=\"#/settings\"><i class=\"fa fa-cog\"></i></a>\n  </div>\n";
+    + "</i></a>\n    <a href=\"#\" class=\"logout\"><i class=\"fa\">logout</i></a>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "        <a href=\"#/orgs/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
-    + "\" class=\"manage\">manage your events</a>\n        <a href=\"#/orgs/"
+    + "\" class=\"manage\"><i class=\"fa\">manage events</i></a>\n        <a href=\"#/orgs/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
-    + "/create-event\" class=\"create\">add an event</a>\n";
+    + "/create-event\" class=\"create\"><i class=\"fa fa-plus\">add event</i></a>\n";
 },"4":function(depth0,helpers,partials,data) {
-  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\"><i class=\"fa fa-search\"></i>search for dances</a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\">login</a>\n    <a href=\"#/register\" class=\"signup\">sign up</a>\n  </div>\n";
+  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\"><i class=\"fa fa-search\">search events</i></a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\"><i class=\"fa\">login</i></a>\n    <a href=\"#/register\" class=\"signup\"><i class=\"fa\">sign up</i></a>\n  </div>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(4, data),"data":data});
@@ -1147,6 +1147,9 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_multiDay"] = Handlebars.template
   if (stack1 != null) { buffer += stack1; }
   return buffer + ">\n";
 },"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeForm"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<section class=\"basic-info\">\n  <h3>Basic Info</h3>\n  <section class=\"basic\">\n    <label name=\"name\">Event Name</label>\n      <input name=\"name\" class=\"event-name-input\" type=\"text\" placeholder=\"Event Name\">\n\n    <label name=\"event-type\">Event Type</label>\n      <select class=\"event-type-input\" name=\"event-type\">\n        <option value=\"contra-dance\" selected>Contra Dance</option>\n        <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n        <option value=\"contra-workshop\">Contra Workshop</option>\n        <option value=\"waltz\">Waltz Dance</option>\n        <option value=\"waltz-workshop\">Waltz Workshop</option>\n        <option value=\"square-dance\">Square Dance</option>\n        <option value=\"dance-weekend\">Dance Weekend</option>\n        <option value=\"caller-workshop\">Caller Workshop</option>\n      </select>\n\n    <label name=\"event-price\">Price</label>\n      <input type=\"text\" class=\"price-input\" name=\"event-price\" placeholder=\"price\">\n\n    <div class=\"time\">\n      <label name=\"start-time\">Start time</label>\n      <input name=\"start-time\" class=\"event-start-time-input\" type=\"time\">\n    </div>\n\n    <div class=\"time\">\n      <label name=\"end-time\">End time</label>\n        <input name=\"end-time\" class=\"event-end-time-input\" type=\"time\">\n    </div>\n\n  </section>\n\n  <section class=\"extras\">\n    <input type=\"checkbox\" class=\"beginner\" name=\"beginner-friendly\">\n    <label class =\"check\" name=\"beginner-friendly\">Beginner Friendly</label>\n\n    <input type=\"checkbox\" class=\"workshop-incl\" name=\"workshop-included\">\n    <label class=\"check\" name=\"workshop-included\">Workshop Included</label>\n\n    <input type=\"checkbox\" name=\"pre-reg-req\" class=\"pre-reg-req-input\">\n    <label class=\"check\" name=\"pre-reg-req\">Pre-registration required</label>\n      <div class=\"reg-req\">\n      </div>\n\n    <input name=\"multi-day\"class=\"multi-day-input\" type=\"checkbox\">\n    <label class=\"check\" name=\"multi-day\">Multi-day Event</label>\n      <div class=\"multi-day\">\n      </div>\n  </section>\n\n</section>\n\n<h3>Venue Info</h3>\n<section class=\"venue-info\">\n  <label name=\"venue-name\">Venue Name</label>\n    <input name=\"venue-name\" class=\"venue-name-input\" type=\"text\" placeholder=\"venue name\">\n  <label name=\"address\">Venue Address</label>\n    <input name=\"address\" class=\"event-address-input\" type=\"text\" placeholder=\"venue address\">\n</section>\n\n<h3>Performers</h3>\n\n<section class=\"performers\">\n  <label name=\"band-name\">Band Name</label>\n    <input type=\"text\" class=\"band-name-input\" name=\"band-name\" placeholder=\"band name\">\n  <label name=\"musicians\">Musicians</label>\n    <textarea name=\"musicians\" class=\"musicians-input\" rows=\"8\" cols=\"10\" placeholder=\"musicians\"></textarea>\n\n  <label name=\"caller\">Caller</label>\n    <input type=\"text\" class=\"caller-input\" name=\"caller\" placeholder=\"caller\">\n</section>\n\n<section class=\"notes\">\n  <h3>Notes</h3>\n  <textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n</section>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\">\n";
+  },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "    You have no one time events.\n    <a href=\"#/orgs/"
@@ -1187,8 +1190,11 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_recurList"] = Handlebars.templat
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["_recurringForm"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<div class=\"recurInfo\">\n  <p>\n    Your event will run for one year by default.\n  </p>\n  <p>\n    You can set bands, callers, musicians, and other special info for each event in this series after the series is created. Need to cancel an event in this series? You can do that all from the \"manage events\" page.\n  </p>\n</div>\n\n<label name=\"name\">Event Name</label>\n  <input name=\"name\" class=\"event-name-input\" type=\"text\">\n\n<label name=\"event-type\">Event Type</label>\n  <select class=\"event-type-input\" name=\"event-type\">\n    <option value=\"contra-dance\" selected>Contra Dance</option>\n    <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n    <option value=\"contra-workshop\">Contra Workshop</option>\n    <option value=\"waltz\">Waltz Dance</option>\n    <option value=\"waltz-workshop\">Waltz Workshop</option>\n    <option value=\"square-dance\">Square Dance</option>\n    <option value=\"dance-weekend\">Dance Weekend</option>\n    <option value=\"caller-workshop\">Caller Workshop</option>\n  </select>\n\n<label name=\"start-time\">Start time</label>\n  <input name=\"start-time\" class=\"event-start-time-input\" type=\"time\">\n\n<label name=\"end-time\">End time</label>\n  <input name=\"end-time\" class=\"event-end-time-input\" type=\"time\">\n\n<label name=\"venue-name\">Venue Name</label>\n  <input name=\"venue-name\" class=\"venue-name-input\" type=\"text\" placeholder=\"venue name\">\n<label name=\"address\">Venue Address</label>\n  <input name=\"address\" class=\"event-address-input\" type=\"text\" placeholder=\"venue address\">\n\n<label name=\"event-price\">Price</label>\n  <input type=\"text\" class=\"price-input\" name=\"event-price\" placeholder=\"price\">\n\n<label name=\"beginner-friendly\">Beginner Friendly</label>\n  <input type=\"checkbox\" class=\"beginner\" name=\"beginner-friendly\">\n\n<label name=\"workshop-included\">Workshop Included</label>\n  <input type=\"checkbox\" class=\"workshop-incl\" name=\"workshop-included\">\n\n<label name=\"notes\">Notes</label>\n<textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\">\n";
+  },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_regReq"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<label name=\"reg-limit\">Registration Limit</label>\n  <input name=\"reg-limit\" class=\"reg-limit-input\" type=\"number\">\n<label name=\"gender-bal\">Lead/Follow Balanced</label>\n  <input type=\"checkbox\" class=\"gender-bal-input\" name=\"gender-bal\">\n";
+  return "  <input name=\"reg-limit\" class=\"reg-limit-input\" type=\"number\">\n  <label name=\"reg-limit\">Registration Limit</label>\n\n<label class=\"check\" name=\"gender-bal\">Lead/Follow Balanced</label>\n  <input type=\"checkbox\" class=\"gender-bal-input\" name=\"gender-bal\">\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_saveWarning"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<div class=\"save-warning\">\n  These changes will also occur on all instances of this recurring event.\n  Previously made changes to any instance of this event may be overwritten.\n  Are you sure you want to continue?\n  <input type=\"button\" class=\"continue-save\" value=\"continue\">\n  <a href='#' class=\"cancel-save\">cancel</a>\n</div>\n";
@@ -1213,60 +1219,20 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_venueInfo"] = Handlebars.templat
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["chooseDate"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<h3>on:</h3>\n\n<input type=\"date\">\n";
+  },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseMoRpt"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<select name=\"monthlyRpt\" class=\"monthly-option-input\">\n  <option value=\"first\">the first</option>\n  <option value=\"second\">the second</option>\n  <option value=\"third\">the third</option>\n  <option value=\"fourth\">the fourth</option>\n  <option value=\"last\">the last</option>\n</select>\n";
   },"useData":true});
-this["DanceCard"]["templates"]["orgs"]["org"]["chooseRecur"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<p>\n  I want to create a\n</p>\n<button class=\"choose-recur\" value=\"onetime\">stand alone event</button>\n<button class=\"choose-recur\" value=\"recur\">weekly or monthly event</button>\n";
-  },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseWkMo"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<p>\n  This event occurs:\n</p>\n<button class=\"choose-wk-mo\" value=\"weekly\">Weekly</button>\n<button class=\"choose-wk-mo\" value=\"monthly\">Monthly</button>\n";
+  return "<h3>on:</h3>\n<div class=\"choose-monthly-rpt\">\n</div>\n<div class=\"choose-weekly-rpt\">\n  <select class=\"weekly-option-input\">\n    <option value=\"1\">Monday</option>\n    <option value=\"2\">Tuesday</option>\n    <option value=\"3\">Wednesday</option>\n    <option value=\"4\">Thursday</option>\n    <option value=\"5\">Friday</option>\n    <option value=\"6\">Saturday</option>\n    <option value=\"0\">Sunday</option>\n  </select>\n</div>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseWkRpt"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<select class=\"weekly-option-input\">\n  <option value=\"1\">Monday</option>\n  <option value=\"2\">Tuesday</option>\n  <option value=\"3\">Wednesday</option>\n  <option value=\"4\">Thursday</option>\n  <option value=\"5\">Friday</option>\n  <option value=\"6\">Saturday</option>\n  <option value=\"0\">Sunday</option>\n</select>\n\n<button class=\"choose-rpt\">Continue</button>\n";
-  },"useData":true});
-this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "<div class=\"recurInfo\">\n";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.recurMonthly : depth0), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.program(4, data),"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + "  <p>\n    Your event will run for one year by default.\n  </p>\n  <p>\n    You can set bands, callers, musicians, and other special info for each event in this series after the series is created. Need to cancel an event in this series? You can do that all from the \"manage my events\" page.\n  </p>\n</div>\n";
-},"2":function(depth0,helpers,partials,data) {
-  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "    This event occurs on the "
-    + escapeExpression(((helper = (helper = helpers.monthlyRpt || (depth0 != null ? depth0.monthlyRpt : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"monthlyRpt","hash":{},"data":data}) : helper)))
-    + " "
-    + escapeExpression(((helper = (helper = helpers.weeklyRptName || (depth0 != null ? depth0.weeklyRptName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRptName","hash":{},"data":data}) : helper)))
-    + " of each month.\n";
-},"4":function(depth0,helpers,partials,data) {
-  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "    This event occurs every "
-    + escapeExpression(((helper = (helper = helpers.weeklyRptName || (depth0 != null ? depth0.weeklyRptName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"weeklyRptName","hash":{},"data":data}) : helper)))
-    + ".\n";
-},"6":function(depth0,helpers,partials,data) {
-  return "  <label name=\"start-date\">Start date</label>\n    <input name=\"start-date\" class=\"event-start-date-input\" type=\"date\">\n";
-  },"8":function(depth0,helpers,partials,data) {
-  return "  <label name=\"multi-day\">Multi-day Event</label>\n    <input name=\"multi-day\"class=\"multi-day-input\" type=\"checkbox\">\n    <div class=\"multi-day\">\n    </div>\n";
-  },"10":function(depth0,helpers,partials,data) {
-  return "<label name=\"band-name\">Band Name</label>\n  <input type=\"text\" class=\"band-name-input\" name=\"band-name\" placeholder=\"band name\">\n<label name=\"musicians\">Musicians</label>\n  <textarea name=\"musicians\" class=\"musicians-input\" rows=\"8\" cols=\"10\" placeholder=\"musicians\"></textarea>\n\n<label name=\"caller\">Caller</label>\n  <input type=\"text\" class=\"caller-input\" name=\"caller\" placeholder=\"caller\">\n";
-  },"12":function(depth0,helpers,partials,data) {
-  return "  <label name=\"pre-reg-req\">Pre-registration required</label>\n    <input type=\"checkbox\" name=\"pre-reg-req\" class=\"pre-reg-req-input\">\n    <div class=\"reg-req\">\n    </div>\n";
-  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.recurring : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n<label name=\"name\">Event Name</label>\n  <input name=\"name\" class=\"event-name-input\" type=\"text\">\n\n<label name=\"event-type\">Event Type</label>\n  <select class=\"event-type-input\" name=\"event-type\">\n    <option value=\"contra-dance\" selected>Contra Dance</option>\n    <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n    <option value=\"contra-workshop\">Contra Workshop</option>\n    <option value=\"waltz\">Waltz Dance</option>\n    <option value=\"waltz-workshop\">Waltz Workshop</option>\n    <option value=\"square-dance\">Square Dance</option>\n    <option value=\"dance-weekend\">Dance Weekend</option>\n    <option value=\"caller-workshop\">Caller Workshop</option>\n  </select>\n\n";
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.recurring : depth0), {"name":"unless","hash":{},"fn":this.program(6, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n<label name=\"start-time\">Start time</label>\n  <input name=\"start-time\" class=\"event-start-time-input\" type=\"time\">\n\n";
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.recurring : depth0), {"name":"unless","hash":{},"fn":this.program(8, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n<label name=\"end-time\">End time</label>\n  <input name=\"end-time\" class=\"event-end-time-input\" type=\"time\">\n\n<label name=\"venue-name\">Venue Name</label>\n  <input name=\"venue-name\" class=\"venue-name-input\" type=\"text\" placeholder=\"venue name\">\n<label name=\"address\">Venue Address</label>\n  <input name=\"address\" class=\"event-address-input\" type=\"text\" placeholder=\"venue address\">\n\n";
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.recurring : depth0), {"name":"unless","hash":{},"fn":this.program(10, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "\n<label name=\"event-price\">Price</label>\n  <input type=\"text\" class=\"price-input\" name=\"event-price\" placeholder=\"price\">\n\n<label name=\"beginner-friendly\">Beginner Friendly</label>\n  <input type=\"checkbox\" class=\"beginner\" name=\"beginner-friendly\">\n\n<label name=\"workshop-included\">Workshop Included</label>\n  <input type=\"checkbox\" class=\"workshop-incl\" name=\"workshop-included\">\n\n";
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.recurring : depth0), {"name":"unless","hash":{},"fn":this.program(12, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n<label name=\"notes\">Notes</label>\n<textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\">\n";
+  return "";
+},"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["email"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<form>\n  <label name=\"subject\">Subject</label>\n  <input name=\"subject\" class=\"email-subject\" type=\"textbox\" placeholder=\"subject\">\n  <label name=\"body\">Body</label>\n  <textarea name=\"body\" class=\"email-body\" rows=\"8\" cols=\"40\"></textarea>\n  <input class=\"send-email\" type=\"submit\" value=\"Send Email\">\n  <a href=\"#\" class=\"cancel-email\">cancel</a>\n</form>\n";
@@ -1417,6 +1383,9 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
     + "!</h2>\n<p>Below is a list of your events. Click on any event name to view, add or change the event's info</p>\n<h3>Your Recurring Events</h3>\n<ul class=\"recurring-event-list\">\n</ul>\n<h3>Your One Time Events</h3>\n";
 },"useData":true});
+this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<h2>New Event</h2>\n<form>\n  <div class=\"choose-recur\">\n    <h3>This event occurs:</h3>\n    <label name=\"chooseRpt\"><input class=\"chooseNoRpt\" name=\"chooseRpt\" type=\"radio\">once</label>\n    <label name=\"chooseRpt\"><input class=\"chooseRpt\" name=\"chooseRpt\" type=\"radio\" value=\"true\" >once every month</label>\n    <label name=\"chooseRpt\"><input class=\"chooseRpt\" name=\"chooseRpt\" type=\"radio\" value=\"false\" >once every week</label>\n  </div>\n\n  <div class=\"choose-dates\">\n  </div>\n\n  <div class=\"event-form\">\n  </div>\n</form>\n";
+  },"useData":true});
 (function(){
   'use strict';
 
@@ -2361,20 +2330,59 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 (function() {
 
   DanceCard.Views.CreateEvent = DanceCard.Views.Base.extend({
-    tagName: 'form',
-    className: 'new-event-form',
-    template: DanceCard.templates.orgs.org.chooseRecur,
+    tagName: 'div',
+    className: 'new-event',
+    template: DanceCard.templates.orgs.org.newEvent,
     render: function() {
-      this.$el.html(this.template());
+      this.$el.html(this.template(this.model.toJSON()));
     },
     events: {
-      'click .choose-recur'        : 'chooseRecur',
-      'click .choose-wk-mo'        : 'chooseWkMo',
-      'click .choose-rpt'          : 'chooseRpt',
-      'keyup .event-address-input' : 'getLocation',
-      'click .submit-event'        : 'createEvent',
-      'click .pre-reg-req-input'   : 'regReq',
-      'click .multi-day-input'     : 'multiDay'
+      'click .chooseNoRpt'           : 'noRpt',
+      'click .chooseRpt'             : 'rpt',
+      'change .weekly-option-input'  : 'setWk',
+      'change .monthly-option-input' : 'setMo',
+      'keyup .event-address-input'   : 'getLocation',
+      'click .submit-event'          : 'createEvent',
+      'click .pre-reg-req-input'     : 'regReq',
+      'click .multi-day-input'       : 'multiDay'
+    },
+
+    setMo: function() {
+      this.model.set('monthlyRpt', $('.monthly-option-input :selected').val());
+    },
+
+    setWk: function() {
+      this.model.set('weeklyRpt', $('.weekly-option-input :selected').val());
+      this.model.set('weeklyRptName', $('.weekly-option-input :selected').text());
+    },
+
+    rpt: function() {
+      this.model.set('recurring', true);
+      $('.event-form').html(DanceCard.templates.orgs.org._recurringForm(this.model.toJSON()));
+      $('.choose-dates').html(DanceCard.templates.orgs.org.chooseWkMo(this.model.toJSON()));
+      if (this.startCal) {
+        $('.date-selector').remove();
+      }
+      if ($('.chooseRpt:checked').val() === "true") {
+        this.model.set('recurMonthly', true);
+        this.model.set('weeklyRpt', 1);
+        this.model.set('weeklyRptName', "Monday");
+        $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model.toJSON()));
+      } else {
+        this.model.set('recurMonthly', false);
+        this.model.set('monthlyRpt', 'first');
+        $('.choose-monthly-rpt').html('');
+      }
+    },
+
+    noRpt: function(e) {
+      this.model.set('recurring', false);
+      this.model.set('recurMonthly', undefined);
+      this.model.set('weeklyRpt', undefined);
+      this.model.set('monthlyRpt', undefined);
+      this.model.set('weeklyRptName', undefined);
+      $('.choose-dates').html(DanceCard.templates.orgs.org.chooseDate(this.model.toJSON()));
+      $('.event-form').html(DanceCard.templates.orgs.org._onetimeForm(this.model.toJSON()));
     },
 
     multiDay: function() {
@@ -2395,45 +2403,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
         this.model.set('regReq', true);
         $('.reg-req').html(DanceCard.templates.orgs.org._regReq);
       }
-    },
-
-    chooseRecur: function(e) {
-      e.preventDefault();
-      if ($(e.target).val() === 'onetime') {
-        this.model.set('recurring', false);
-        this.model.set('multiDay', false);
-        this.$el.html(DanceCard.templates.orgs.org.createEvent(this.model.toJSON()));
-      } else {
-        this.model.set('recurring', true);
-        this.model.set('multiDay', false);
-        this.$el.html(DanceCard.templates.orgs.org.chooseWkMo);
-      }
-    },
-
-    chooseWkMo: function(e) {
-      e.preventDefault();
-      if ($(e.target).val() === 'weekly') {
-        this.model.set('recurMonthly', false);
-        this.$el.append('On');
-        this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
-      } else {
-        this.model.set('recurMonthly', true);
-        this.$el.append('On');
-        this.$el.append(DanceCard.templates.orgs.org.chooseMoRpt);
-        this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
-      }
-    },
-
-    chooseRpt: function(e) {
-      e.preventDefault();
-      var weeklyRpt = $('.weekly-option-input').val();
-      var weeklyRptName = $('.weekly-option-input option:selected').text();
-      var monthlyRpt = $('.monthly-option-input').val() || null;
-      this.model.set({weeklyRpt: weeklyRpt, weeklyRptName: weeklyRptName});
-      if (monthlyRpt) {
-        this.model.set('monthlyRpt', monthlyRpt);
-      }
-      this.$el.html(DanceCard.templates.orgs.org.createEvent(this.model.toJSON()));
     },
 
     getLocation: function(e) {
