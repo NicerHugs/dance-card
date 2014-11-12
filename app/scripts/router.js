@@ -50,13 +50,18 @@
     },
 
     searchResults: function(searchTerms) {
-      _.invoke(this.mainChildren, 'remove');
-      this.mainChildren = [];
-      $('.container').removeClass('index-view');
-      this.mainChildren.push(new DanceCard.Views.Search({
-        $container: $('main'),
-        searchTerms: searchTerms
-      }));
+      var searchViews = this.mainChildren.filter(function(child) {
+        return child instanceof DanceCard.Views.Search;
+      });
+      if (!searchViews.length) {
+        _.invoke(this.mainChildren, 'remove');
+        this.mainChildren = [];
+        $('.container').removeClass('index-view');
+        this.mainChildren.push(new DanceCard.Views.Search({
+          $container: $('main'),
+          searchTerms: searchTerms
+        }));
+      }
     },
 
     login: function() {

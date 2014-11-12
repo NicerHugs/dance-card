@@ -7,42 +7,66 @@
   </p>
 </div>
 
-<label name="name">Event Name</label>
-  <input name="name" class="event-name-input" type="text">
 
-<label name="event-type">Event Type</label>
-  <select class="event-type-input" name="event-type">
-    <option value="contra-dance" selected>Contra Dance</option>
-    <option value="advanced-contra-dance">Advanced Contra Dance</option>
-    <option value="contra-workshop">Contra Workshop</option>
-    <option value="waltz">Waltz Dance</option>
-    <option value="waltz-workshop">Waltz Workshop</option>
-    <option value="square-dance">Square Dance</option>
-    <option value="dance-weekend">Dance Weekend</option>
-    <option value="caller-workshop">Caller Workshop</option>
-  </select>
+<section class="basic">
+  <h3>Basic Info</h3>
+  <label name="name">Event Name</label>
+    <input name="name" class="event-name-input" type="text">
 
-<label name="start-time">Start time</label>
-  <input name="start-time" class="event-start-time-input" type="time">
+  <label name="event-type">Event Type</label>
+    <select class="event-type-input" name="event-type">
+      <option value="contra-dance" selected>Contra Dance</option>
+      <option value="advanced-contra-dance">Advanced Contra Dance</option>
+      <option value="contra-workshop">Contra Workshop</option>
+      <option value="waltz">Waltz Dance</option>
+      <option value="waltz-workshop">Waltz Workshop</option>
+      <option value="square-dance">Square Dance</option>
+      <option value="dance-weekend">Dance Weekend</option>
+      <option value="caller-workshop">Caller Workshop</option>
+    </select>
 
-<label name="end-time">End time</label>
-  <input name="end-time" class="event-end-time-input" type="time">
+  <label name="start-time">Start time</label>
+    <input name="start-time" class="event-start-time-input" type="time">
+
+  <label name="end-time">End time</label>
+    <input name="end-time" class="event-end-time-input" type="time">
+
+
+  <label name="event-price">Price</label>
+  <input type="text" class="price-input" name="event-price" placeholder="price">
+
+
+  <label class="check"name="beginner-friendly">Beginner Friendly</label>
+    <input type="checkbox" class="beginner" name="beginner-friendly">
+
+  <label class="check" name="workshop-included">Workshop Included</label>
+    <input type="checkbox" class="workshop-incl" name="workshop-included">
+</section>
+
+{{!-- <section class="extras"> --}}
+
+
+
+
+{{!-- </section> --}}
+
+
+<section class="venue-info">
+  <h3>Venue Info</h3>
+
 
 <label name="venue-name">Venue Name</label>
   <input name="venue-name" class="venue-name-input" type="text" placeholder="venue name">
 <label name="address">Venue Address</label>
   <input name="address" class="event-address-input" type="text" placeholder="venue address">
+</section>
 
-<label name="event-price">Price</label>
-  <input type="text" class="price-input" name="event-price" placeholder="price">
-
-<label name="beginner-friendly">Beginner Friendly</label>
-  <input type="checkbox" class="beginner" name="beginner-friendly">
-
-<label name="workshop-included">Workshop Included</label>
-  <input type="checkbox" class="workshop-incl" name="workshop-included">
-
-<label name="notes">Notes</label>
+<section class="extras">
+<h3 name="notes">Notes</h3>
 <textarea name="note" class="notes-input" placeholder="notes"></textarea>
+</section>
+
+
+
 
 <input type="submit" class="submit-event" value="create your event">

@@ -58,6 +58,7 @@
             type: type
           };
       searchTerms = [location, distance, startDateS, endDateS, $('.search-type :selected').val()].join('+');
+      // window.location.hash = '/search?' + searchTerms;
       DanceCard.router.navigate('#/search?' + searchTerms);
       if (location) {
         DanceCard.Utility.findLocation(location)
@@ -65,7 +66,6 @@
           self.attrs.location = location.point;
           collection = new DanceCard.Collections.SearchEventList(self.attrs);
           self.removeChildren();
-          console.log('making stuff with a location');
           self.makeList(collection, location);
           self.makeMap(collection, location.point);
         });
@@ -86,9 +86,7 @@
       localStorage.setItem('danceCardLoc', JSON.stringify(position));
       this.attrs.location = point;
       collection = new DanceCard.Collections.SearchEventList(this.attrs);
-      console.log(this.children);
       this.removeChildren();
-      console.log(this.children);
       this.makeList(collection);
       this.makeMap(collection, point);
     },

@@ -10,9 +10,7 @@
       .then(_.bind(this.renderChildren, this));
     },
     renderChildren: function(collection) {
-      console.log(this.children);
       this.removeChildren();
-      console.log(this.children);
       var self = this;
       this.$el.html(this.template({
         results: collection.models,
@@ -27,7 +25,6 @@
             parent: self
           }));
         });
-        console.log(this.children);
       }
     }
   });
