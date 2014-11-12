@@ -641,6 +641,11 @@
               model: evt
             }));
           }
+        } else {
+          self.mainChildren.push(new DanceCard.Views.Event({
+            $container: $('main'),
+            model: evt
+          }));
         }
       });
     },
@@ -1688,7 +1693,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
             type: type
           };
       searchTerms = [location, distance, startDateS, endDateS, $('.search-type :selected').val()].join('+');
-      // window.location.hash = '/search?' + searchTerms;
       DanceCard.router.navigate('#/search?' + searchTerms);
       if (location) {
         DanceCard.Utility.findLocation(location)
