@@ -1,60 +1,79 @@
-<label name="name">Event Name</label>
-  <input name="name" class="event-name-input" type="text">
+<section class="basic-info">
+  <h3>Basic Info</h3>
+  <section class="basic">
+    <label name="name">Event Name</label>
+      <input name="name" class="event-name-input" type="text" placeholder="Event Name">
 
-<label name="event-type">Event Type</label>
-  <select class="event-type-input" name="event-type">
-    <option value="contra-dance" selected>Contra Dance</option>
-    <option value="advanced-contra-dance">Advanced Contra Dance</option>
-    <option value="contra-workshop">Contra Workshop</option>
-    <option value="waltz">Waltz Dance</option>
-    <option value="waltz-workshop">Waltz Workshop</option>
-    <option value="square-dance">Square Dance</option>
-    <option value="dance-weekend">Dance Weekend</option>
-    <option value="caller-workshop">Caller Workshop</option>
-  </select>
+    <label name="event-type">Event Type</label>
+      <select class="event-type-input" name="event-type">
+        <option value="contra-dance" selected>Contra Dance</option>
+        <option value="advanced-contra-dance">Advanced Contra Dance</option>
+        <option value="contra-workshop">Contra Workshop</option>
+        <option value="waltz">Waltz Dance</option>
+        <option value="waltz-workshop">Waltz Workshop</option>
+        <option value="square-dance">Square Dance</option>
+        <option value="dance-weekend">Dance Weekend</option>
+        <option value="caller-workshop">Caller Workshop</option>
+      </select>
 
-  <label name="start-date">Start date</label>
-    <input name="start-date" class="event-start-date-input" type="date">
+    <label name="event-price">Price</label>
+      <input type="text" class="price-input" name="event-price" placeholder="price">
 
-<label name="start-time">Start time</label>
-  <input name="start-time" class="event-start-time-input" type="time">
-
-  <label name="multi-day">Multi-day Event</label>
-    <input name="multi-day"class="multi-day-input" type="checkbox">
-    <div class="multi-day">
+    <div class="time">
+      <label name="start-time">Start time</label>
+      <input name="start-time" class="event-start-time-input" type="time">
     </div>
 
-<label name="end-time">End time</label>
-  <input name="end-time" class="event-end-time-input" type="time">
+    <div class="time">
+      <label name="end-time">End time</label>
+        <input name="end-time" class="event-end-time-input" type="time">
+    </div>
 
-<label name="venue-name">Venue Name</label>
-  <input name="venue-name" class="venue-name-input" type="text" placeholder="venue name">
-<label name="address">Venue Address</label>
-  <input name="address" class="event-address-input" type="text" placeholder="venue address">
+  </section>
 
-<label name="band-name">Band Name</label>
-  <input type="text" class="band-name-input" name="band-name" placeholder="band name">
-<label name="musicians">Musicians</label>
-  <textarea name="musicians" class="musicians-input" rows="8" cols="10" placeholder="musicians"></textarea>
+  <section class="extras">
+    <input type="checkbox" class="beginner" name="beginner-friendly">
+    <label class ="check" name="beginner-friendly">Beginner Friendly</label>
 
-<label name="caller">Caller</label>
-  <input type="text" class="caller-input" name="caller" placeholder="caller">
+    <input type="checkbox" class="workshop-incl" name="workshop-included">
+    <label class="check" name="workshop-included">Workshop Included</label>
 
-<label name="event-price">Price</label>
-  <input type="text" class="price-input" name="event-price" placeholder="price">
-
-<label name="beginner-friendly">Beginner Friendly</label>
-  <input type="checkbox" class="beginner" name="beginner-friendly">
-
-<label name="workshop-included">Workshop Included</label>
-  <input type="checkbox" class="workshop-incl" name="workshop-included">
-
-  <label name="pre-reg-req">Pre-registration required</label>
     <input type="checkbox" name="pre-reg-req" class="pre-reg-req-input">
-    <div class="reg-req">
-    </div>
+    <label class="check" name="pre-reg-req">Pre-registration required</label>
+      <div class="reg-req">
+      </div>
 
-<label name="notes">Notes</label>
-<textarea name="note" class="notes-input" placeholder="notes"></textarea>
+    <input name="multi-day"class="multi-day-input" type="checkbox">
+    <label class="check" name="multi-day">Multi-day Event</label>
+      <div class="multi-day">
+      </div>
+  </section>
+
+</section>
+
+<h3>Venue Info</h3>
+<section class="venue-info">
+  <label name="venue-name">Venue Name</label>
+    <input name="venue-name" class="venue-name-input" type="text" placeholder="venue name">
+  <label name="address">Venue Address</label>
+    <input name="address" class="event-address-input" type="text" placeholder="venue address">
+</section>
+
+<h3>Performers</h3>
+
+<section class="performers">
+  <label name="band-name">Band Name</label>
+    <input type="text" class="band-name-input" name="band-name" placeholder="band name">
+  <label name="musicians">Musicians</label>
+    <textarea name="musicians" class="musicians-input" rows="8" cols="10" placeholder="musicians"></textarea>
+
+  <label name="caller">Caller</label>
+    <input type="text" class="caller-input" name="caller" placeholder="caller">
+</section>
+
+<section class="notes">
+  <h3>Notes</h3>
+  <textarea name="note" class="notes-input" placeholder="notes"></textarea>
+</section>
 
 <input type="submit" class="submit-event" value="create your event">

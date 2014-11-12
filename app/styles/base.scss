@@ -5,11 +5,34 @@ body,
   font-family: $body-font;
   height: 100%;
 }
+div {
+  overflow: auto;
+}
+
+main {
+  background: rgba($light-blue, .5);
+  min-height: 100%;
+}
 
 form,
 input,
 select {
   @include form-font;
+}
+
+h2 {
+  color: $medium;
+  font-family: $serif;
+  font-size: 2.7rem;
+  margin: 0;
+  padding: rem(30) 0 0 rem(30);
+}
+
+h3 {
+  color: $orange;
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin: 0;
 }
 
 input[type=text],

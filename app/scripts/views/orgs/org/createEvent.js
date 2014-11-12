@@ -1,8 +1,8 @@
 (function() {
 
   DanceCard.Views.CreateEvent = DanceCard.Views.Base.extend({
-    tagName: 'form',
-    className: 'new-event-form',
+    tagName: 'div',
+    className: 'new-event',
     template: DanceCard.templates.orgs.org.newEvent,
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -30,7 +30,10 @@
     rpt: function() {
       this.model.set('recurring', true);
       $('.event-form').html(DanceCard.templates.orgs.org._recurringForm(this.model.toJSON()));
-      $('.chooseWkMoRpt').html(DanceCard.templates.orgs.org.chooseWkMo(this.model.toJSON()));
+      $('.choose-dates').html(DanceCard.templates.orgs.org.chooseWkMo(this.model.toJSON()));
+      if (this.startCal) {
+        $('.date-selector').remove();
+      }
       if ($('.chooseRpt:checked').val() === "true") {
         this.model.set('recurMonthly', true);
         this.model.set('weeklyRpt', 1);
@@ -49,7 +52,7 @@
       this.model.set('weeklyRpt', undefined);
       this.model.set('monthlyRpt', undefined);
       this.model.set('weeklyRptName', undefined);
-      $('.chooseWkMoRpt').html('');
+      $('.choose-dates').html(DanceCard.templates.orgs.org.chooseDate(this.model.toJSON()));
       $('.event-form').html(DanceCard.templates.orgs.org._onetimeForm(this.model.toJSON()));
     },
 
@@ -72,7 +75,7 @@
         $('.reg-req').html(DanceCard.templates.orgs.org._regReq);
       }
     },
-    
+
     getLocation: function(e) {
       var self = this,
           address = $('.event-address-input').val();

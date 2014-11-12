@@ -1,14 +1,15 @@
-<div class="chooseRecur">
-  <span>This event occurs</span>
-  <label>once</label>
-    <input class="chooseNoRpt" name="chooseRpt" type="radio">
-  <label>once a</label>
-    <input class="chooseRpt" name="chooseRpt" type="radio" value="true" {{#if event.recurMonthly}} checked{{/if}}><label name="chooseRpt">month</label>
-    <input class="chooseRpt" name="chooseRpt" type="radio" value="false" {{#unless event.recurMonthly}} checked {{/unless}}><label name="chooseRpt">week</label>
-</div>
+<h2>New Event</h2>
+<form>
+  <div class="choose-recur">
+    <h3>This event occurs:</h3>
+    <label name="chooseRpt"><input class="chooseNoRpt" name="chooseRpt" type="radio">once</label>
+    <label name="chooseRpt"><input class="chooseRpt" name="chooseRpt" type="radio" value="true" >once every month</label>
+    <label name="chooseRpt"><input class="chooseRpt" name="chooseRpt" type="radio" value="false" >once every week</label>
+  </div>
 
-<div class="chooseWkMoRpt">
-</div>
+  <div class="choose-dates">
+  </div>
 
-<div class="event-form">
-</div>
+  <div class="event-form">
+  </div>
+</form>

@@ -1,0 +1,169 @@
+.new-event {
+  margin: 0 auto;
+  max-width: rem(900);
+  width: 85%;
+
+  form {
+    background: $white;
+    border-radius: rem(3);
+    margin-bottom: rem(50);
+    min-height: rem(400);
+    overflow: auto;
+    padding: rem(30);
+  }
+
+  span {
+    font-size: rem(20);
+  }
+
+  .choose-recur,
+  .choose-dates {
+    float: left;
+    padding-bottom: rem(30);
+    width: 50%;
+
+    h3 {
+      float: left;
+    }
+
+    label {
+      display: block;
+      font-size: rem(20);
+      letter-spacing: rem(1);
+      margin: rem(5) rem(20) 0 40%;
+    }
+
+    input,
+    select {
+      margin: rem(5) rem(5) 0;
+    }
+  }
+
+  .choose-recur h3 {
+    width: 40%;
+  }
+
+  .choose-dates {
+    h3 {
+      width: 10%;
+    }
+  }
+
+  .choose-monthly-rpt,
+  .choose-weekly-rpt {
+    float: left;
+    width: 30%;
+
+    select {
+      width: 85%;
+    }
+  }
+
+  .event-form {
+    border-top: solid 1px $light;
+    clear: both;
+    padding-top: rem(30);
+
+    label {
+      display: block;
+      margin: rem(15) 0 rem(5);
+
+      &.check {
+        clear: right;
+        float: right;
+        margin-top: rem(20);
+        margin-bottom: 0;
+        width: 85%;
+      }
+    }
+
+    input,
+    select {
+      height: rem(44);
+      width: 75%;
+    }
+
+    input[type=time] {
+      padding-left: rem(15);
+    }
+
+    input[type=checkbox] {
+      clear: left;
+      float: left;
+      height: rem(20);
+      margin-top: rem(20);
+      width: 15%;
+    }
+  }
+
+  .basic-info {
+    border-bottom: solid 1px $vlight;
+    clear: both;
+    overflow: auto;
+
+    .time {
+      float: left;
+      width: 38%;
+    }
+  }
+
+  .venue-info,
+  .performers,
+  .basic,
+  .extras {
+    float: left;
+    padding: 0 rem(20) rem(20);
+    width: 50%;
+  }
+
+  .venue-info,
+  .performers {
+    padding-top: rem(20);
+  }
+
+  .multi-day,
+  .reg-req {
+    clear: both;
+    margin: rem(15) 0 0 rem(40);
+    overflow: visible;
+    padding-top: rem(10);
+
+    label[name=reg-limit] {
+      float: left;
+      margin: 0 0 0 rem(15);
+      width: rem(100);
+    }
+
+    input[type=number] {
+      float: left;
+      margin-left: rem(15);
+      padding-left: rem(15);
+      width: 25%;
+    }
+
+    label[name="end-date"] {
+      margin: 0 0 0 rem(15);
+      padding-bottom: rem(5);
+    }
+
+    input[name="end-date"] {
+      margin: 0 0 0 rem(15);
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
