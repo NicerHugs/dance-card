@@ -1,0 +1,58 @@
+.settings {
+  margin: 0 auto;
+  max-width: rem(900);
+  padding: 0;
+  width: 85%;
+
+  input[type=password],
+  input[type=email] {
+    display: block;
+    width: 300px;
+  }
+
+  h2 {
+    display: inline-block;
+    width: 49%;
+  }
+
+  h3 {
+    margin-bottom: rem(15);
+  }
+
+  .member-data {
+    display: inline-block;
+    margin-bottom: rem(5);
+    padding-right: rem(10);
+    text-align: right;
+    width: 50%;
+  }
+
+  .change-account {
+    border-bottom: solid 1px $vlight;
+    overflow: auto;
+    padding-bottom: rem(30);
+  }
+
+  input {
+    margin: rem(5) 0 rem(15) rem(30);
+
+    &[type=submit] {
+      border-radius: rem(3);
+      font-weight: 400;
+      letter-spacing: rem(2);
+      line-height: rem(14);
+    }
+  }
+
+  .password-section,
+  .email-section {
+    float: left;
+    width: 50%;
+  }
+
+  .email-settings {
+    clear: both;
+    margin-top: rem(30);
+  }
+
+}

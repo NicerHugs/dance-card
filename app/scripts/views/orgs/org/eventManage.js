@@ -41,7 +41,7 @@
       var lat = this.model.get('point').latitude,
           lng = this.model.get('point').longitude;
       this.children.push(new DanceCard.Views.MapPartial({
-        $container: $('.venue-info-viewing'),
+        $container: $('.map-container'),
         zoom: 13,
         loc: {lat: lat, lng: lng},
         model: this.model
@@ -167,6 +167,7 @@
       this.model = model;
       this.templateData.event = this.model.toJSON();
       this.templateData.edit.eventHeader = false;
+      $('.event-name').html(this.model.get('name'));
       $('.event-header').html(DanceCard.templates.orgs.org._eventHeader(this.templateData));
     },
 

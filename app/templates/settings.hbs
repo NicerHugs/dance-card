@@ -1,25 +1,29 @@
 <h2>{{name}}</h2>
-<p>member since {{#dateDisplay}}{{createdAt}}{{/dateDisplay}}</p>
 
-<form class="password-change">
-  <h3>Update Password</h3>
-  <label name="new-password">New password</label>
-    <input class="new-password" type="password" placeholder="new password">
-  <label name="ver-password">Verify new password</label>
-    <input class="verify-password" type="password" placeholder="verify new password">
-  <label name="old-password">Old password</label>
-    <input class="old-password" type="password" placeholder="old password">
-  <input type="submit" name="change-password" value="update" class="change-password">
+<p class="member-data">member since {{#dateDisplay}}{{createdAt}}{{/dateDisplay}}</p>
+<div class="content">
+<form class="change-account">
+  <h3>Update Account</h3>
+  <section class="password-section">
+    <label name="new-password">New password</label>
+      <input class="new-password" type="password" placeholder="new password">
+    <label name="ver-password">Verify new password</label>
+      <input class="verify-password" type="password" placeholder="verify new password">
+    <label name="old-password">Old password</label>
+      <input class="old-password" type="password" placeholder="old password">
+    <input type="submit" name="change-password" value="update" class="change-password">
+  </section>
+  <section class="email-section">
+    <label>Current email:</label>
+    {{email}}
+    <label name="email">Update your email address:</label>
+      <input type="email" class="new-email" placeholder="new email"></a>
+      <input type="submit" value="update" class="change-email">
+  </section>
 </form>
 
 <form class="email-settings">
   <h3>Email settings</h3>
-  <label>Current email:</label>
-  {{email}}
-  <label name="email">Update your email address:</label>
-    <input type="email" class="new-email" placeholder="new email"></a>
-    <input type="submit" value="update" class="change-email">
-
   <h4>Emails you receive</h4>
   <h5>Cancel Notifications</h5>
     <input type="checkbox" class="delete-msg" {{#if cancelNotify}}checked{{/if}}>
@@ -41,3 +45,4 @@
       <p>Send email notification to event attendees if I make changes to the event</p>
   {{/if}}
 </form>
+</div>

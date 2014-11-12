@@ -7,6 +7,10 @@
   position: fixed;
   width: 100%;
 
+  main {
+    background: none;
+  }
+
   span.tag-line {
     color: $white;
     display: block;
@@ -93,6 +97,11 @@
     border-right: 0;
     display: block;
     float: left;
+
+    &.start-date-input,
+    &.end-date-input {
+      border: 0;
+    }
 
     &.search-location {
       border-radius: rem(3) 0 0 rem(3);

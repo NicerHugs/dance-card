@@ -22,11 +22,7 @@
       e.preventDefault();
       Parse.User.logOut();
       DanceCard.session.set('user', Parse.User.current());
-      console.log(DanceCard.router.mainChildren);
-      $('main').prepend('<div class="logout-msg">You have successfully logged out</div>');
-      window.setTimeout(function() {
-        $('.logout-msg').remove();
-      }, 5000);
+      DanceCard.router.navigate('', {trigger: true});
     }
   });
 
