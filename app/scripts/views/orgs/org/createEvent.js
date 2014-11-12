@@ -3,18 +3,54 @@
   DanceCard.Views.CreateEvent = DanceCard.Views.Base.extend({
     tagName: 'form',
     className: 'new-event-form',
-    template: DanceCard.templates.orgs.org.chooseRecur,
+    template: DanceCard.templates.orgs.org.newEvent,
     render: function() {
-      this.$el.html(this.template());
+      this.$el.html(this.template(this.model.toJSON()));
     },
     events: {
-      'click .choose-recur'        : 'chooseRecur',
-      'click .choose-wk-mo'        : 'chooseWkMo',
-      'click .choose-rpt'          : 'chooseRpt',
-      'keyup .event-address-input' : 'getLocation',
-      'click .submit-event'        : 'createEvent',
-      'click .pre-reg-req-input'   : 'regReq',
-      'click .multi-day-input'     : 'multiDay'
+      'click .chooseNoRpt'           : 'noRpt',
+      'click .chooseRpt'             : 'rpt',
+      'change .weekly-option-input'  : 'setWk',
+      'change .monthly-option-input' : 'setMo',
+      'keyup .event-address-input'   : 'getLocation',
+      'click .submit-event'          : 'createEvent',
+      'click .pre-reg-req-input'     : 'regReq',
+      'click .multi-day-input'       : 'multiDay'
+    },
+
+    setMo: function() {
+      this.model.set('monthlyRpt', $('.monthly-option-input :selected').val());
+    },
+
+    setWk: function() {
+      this.model.set('weeklyRpt', $('.weekly-option-input :selected').val());
+      this.model.set('weeklyRptName', $('.weekly-option-input :selected').text());
+    },
+
+    rpt: function() {
+      this.model.set('recurring', true);
+      $('.event-form').html(DanceCard.templates.orgs.org._recurringForm(this.model.toJSON()));
+      $('.chooseWkMoRpt').html(DanceCard.templates.orgs.org.chooseWkMo(this.model.toJSON()));
+      if ($('.chooseRpt:checked').val() === "true") {
+        this.model.set('recurMonthly', true);
+        this.model.set('weeklyRpt', 1);
+        this.model.set('weeklyRptName', "Monday");
+        $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model.toJSON()));
+      } else {
+        this.model.set('recurMonthly', false);
+        this.model.set('monthlyRpt', 'first');
+        $('.choose-monthly-rpt').html('');
+      }
+    },
+
+    noRpt: function(e) {
+      this.model.set('recurring', false);
+      this.model.set('recurMonthly', undefined);
+      this.model.set('weeklyRpt', undefined);
+      this.model.set('monthlyRpt', undefined);
+      this.model.set('weeklyRptName', undefined);
+      $('.chooseWkMoRpt').html('');
+      $('.event-form').html(DanceCard.templates.orgs.org._onetimeForm(this.model.toJSON()));
     },
 
     multiDay: function() {
@@ -36,46 +72,7 @@
         $('.reg-req').html(DanceCard.templates.orgs.org._regReq);
       }
     },
-
-    chooseRecur: function(e) {
-      e.preventDefault();
-      if ($(e.target).val() === 'onetime') {
-        this.model.set('recurring', false);
-        this.model.set('multiDay', false);
-        this.$el.html(DanceCard.templates.orgs.org.createEvent(this.model.toJSON()));
-      } else {
-        this.model.set('recurring', true);
-        this.model.set('multiDay', false);
-        this.$el.html(DanceCard.templates.orgs.org.chooseWkMo);
-      }
-    },
-
-    chooseWkMo: function(e) {
-      e.preventDefault();
-      if ($(e.target).val() === 'weekly') {
-        this.model.set('recurMonthly', false);
-        this.$el.append('On');
-        this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
-      } else {
-        this.model.set('recurMonthly', true);
-        this.$el.append('On');
-        this.$el.append(DanceCard.templates.orgs.org.chooseMoRpt);
-        this.$el.append(DanceCard.templates.orgs.org.chooseWkRpt);
-      }
-    },
-
-    chooseRpt: function(e) {
-      e.preventDefault();
-      var weeklyRpt = $('.weekly-option-input').val();
-      var weeklyRptName = $('.weekly-option-input option:selected').text();
-      var monthlyRpt = $('.monthly-option-input').val() || null;
-      this.model.set({weeklyRpt: weeklyRpt, weeklyRptName: weeklyRptName});
-      if (monthlyRpt) {
-        this.model.set('monthlyRpt', monthlyRpt);
-      }
-      this.$el.html(DanceCard.templates.orgs.org.createEvent(this.model.toJSON()));
-    },
-
+    
     getLocation: function(e) {
       var self = this,
           address = $('.event-address-input').val();

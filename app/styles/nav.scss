@@ -1,8 +1,9 @@
 nav {
   color: $white;
   display: inline-block;
-  height: rem(55);
+  height: rem(60);
   padding-right: rem(20);
+  text-transform: uppercase;
   top: 0;
   width: 85%;
 }
@@ -10,13 +11,40 @@ nav {
 .left-nav,
 .right-nav {
   display: inline-block;
-  height: rem(55);
+  height: rem(60);
 
   * {
-    line-height: rem(55);
-    margin: 0 rem(5);
+    line-height: rem(30);
+    margin-left: rem(5);
+    margin-top: rem(7);
+  }
+
+  a {
+    border-radius: rem(3);
+    color: $dark;
+    display: inline-block;
+    padding: rem(1) rem(10) rem(5);
+    text-decoration: none;
+
+    &:hover {
+      background: rgba($medium, .7);
+      color: $light-blue;
+    }
+
+    &.active {
+      background: rgba($medium, .3);
+
+      &:hover {
+        background: rgba($medium, .7);
+      }
+    }
+  }
+
+  i:before {
+    margin-right: rem(5);
   }
 }
+
 
 .left-nav {
   float: left;

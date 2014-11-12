@@ -1,23 +1,23 @@
 {{#if user}}
   <div class="left-nav">
     {{#if user.organizer}}
-        <a href="#/orgs/{{user.urlId}}" class="manage">manage your events</a>
-        <a href="#/orgs/{{user.urlId}}/create-event" class="create">add an event</a>
+        <a href="#/orgs/{{user.urlId}}" class="manage"><i class="fa">manage events</i></a>
+        <a href="#/orgs/{{user.urlId}}/create-event" class="create"><i class="fa fa-plus">add event</i></a>
     {{/if}}
-        <a href="#/search" class="search-link"><i class="fa fa-search"></i>search for dances</a>
-        <a href="#/dancers/{{user.urlId}}">view your dance card</a>
+        <a href="#/search" class="search-link"><i class="fa fa-search">search events</i></a>
+        <a href="#/dancers/{{user.urlId}}"><i class="fa">my dance card</i></a>
       </div>
   </div>
   <div class="right-nav">
-    You are logged in as {{user.name}}. If that's not you, <a href="#" class="logout">logout</a>
-    <a href="#/settings"><i class="fa fa-cog"></i></a>
+    <a href="#/settings"><i class="fa fa-cog">{{user.name}}</i></a>
+    <a href="#" class="logout"><i class="fa">logout</i></a>
   </div>
 {{else}}
   <div class="left-nav">
-    <a href="#/search" class="home-link"><i class="fa fa-search"></i>search for dances</a>
+    <a href="#/search" class="home-link"><i class="fa fa-search">search events</i></a>
   </div>
   <div class="right-nav">
-    <a href="#/login" class="login">login</a>
-    <a href="#/register" class="signup">sign up</a>
+    <a href="#/login" class="login"><i class="fa">login</i></a>
+    <a href="#/register" class="signup"><i class="fa">sign up</i></a>
   </div>
 {{/if}}

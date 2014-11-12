@@ -3,24 +3,27 @@ header {
   border-bottom: 1px solid $light;
   color: $dark;
   font-family: $header-font;
-  height: rem(55);
-  padding: 0 rem(10);
+  height: rem(60);
+  padding: 0 rem(10) 0 0;
 
   h1 {
+    background: $medium;
     display: inline-block;
     font-size: 1.7rem;
-    line-height: rem(55);
+    line-height: rem(60);
     margin: 0;
+    padding-left: rem(10);
     vertical-align: top;
     width: 15%;
+
+    a {
+      color: $white;
+      padding: 0;
+      text-decoration: none;
+    }
   }
 
   span {
     display: none;
-  }
-
-  a {
-    color: $dark;
-    text-decoration: none;
   }
 }

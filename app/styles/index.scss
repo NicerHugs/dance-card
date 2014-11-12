@@ -7,16 +7,6 @@
   position: fixed;
   width: 100%;
 
-  h1 {
-    font-size: 5rem;
-    letter-spacing: rem(6);
-    margin: 0;
-    padding: 0;
-    position: relative;
-    text-align: center;
-    top: 27%;
-  }
-
   span.tag-line {
     color: $white;
     display: block;
@@ -39,6 +29,7 @@
     width: 100%;
 
     h1 {
+      background: transparent;
       font-size: 5rem;
       letter-spacing: rem(6);
       margin-top: 15%;
@@ -76,6 +67,10 @@
 
     a {
       color: $white;
+
+      &:hover {
+        background: transparent;
+      }
     }
   }
 
