@@ -60,54 +60,16 @@
     margin-top: rem(30);
   }
 
-  .search-results-list {
-    color: $medium;
-    padding: 0;
+  
 
-    h5 {
-      font-family: $body-font;
-      font-size: rem(25);
-      font-weight: 600;
-      margin: 0;
-
-      a {
-        color: $dark;
-
-        &:hover {
-          color: $orange;
-        }
-      }
-    }
+  .search-result {
+    border: solid 1px $vlight;
+    border-radius: rem(3);
+    margin: rem(20);
+    padding: rem(20);
 
     a {
-      color: $white;
-      text-decoration: none;
-    }
-
-    li {
-      background: rgba($light-blue, .3);
-      border: solid 1px $light-blue;
-      border-radius: rem(3);
-      display: block;
-      font-family: $serif;
-      font-size: rem(20);
-      margin: rem(40);
-      margin-right: rem(100);
-      padding: rem(20);
-      position: relative;
-    }
-
-    .rsvp {
-      background: rgba($orange, .7);
-      border-radius: rem(3);
-      display: inline-block;
-      font-family: $body-font;
-      font-size: rem(16);
-      padding: rem(5);
-      //
-      // &:hover {
-      //   background: $orange;
-      // }
+      color: $medium;
     }
   }
 }

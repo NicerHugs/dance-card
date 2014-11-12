@@ -183,6 +183,11 @@
               model: evt
             }));
           }
+        } else {
+          self.mainChildren.push(new DanceCard.Views.Event({
+            $container: $('main'),
+            model: evt
+          }));
         }
       });
     },
