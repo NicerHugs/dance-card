@@ -508,13 +508,18 @@
     },
 
     searchResults: function(searchTerms) {
-      _.invoke(this.mainChildren, 'remove');
-      this.mainChildren = [];
-      $('.container').removeClass('index-view');
-      this.mainChildren.push(new DanceCard.Views.Search({
-        $container: $('main'),
-        searchTerms: searchTerms
-      }));
+      var searchViews = this.mainChildren.filter(function(child) {
+        return child instanceof DanceCard.Views.Search;
+      });
+      if (!searchViews.length) {
+        _.invoke(this.mainChildren, 'remove');
+        this.mainChildren = [];
+        $('.container').removeClass('index-view');
+        this.mainChildren.push(new DanceCard.Views.Search({
+          $container: $('main'),
+          searchTerms: searchTerms
+        }));
+      }
     },
 
     login: function() {
@@ -1148,7 +1153,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_multiDay"] = Handlebars.template
   return buffer + ">\n";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeForm"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<section class=\"basic-info\">\n  <h3>Basic Info</h3>\n  <section class=\"basic\">\n    <label name=\"name\">Event Name</label>\n      <input name=\"name\" class=\"event-name-input\" type=\"text\" placeholder=\"Event Name\">\n\n    <label name=\"event-type\">Event Type</label>\n      <select class=\"event-type-input\" name=\"event-type\">\n        <option value=\"contra-dance\" selected>Contra Dance</option>\n        <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n        <option value=\"contra-workshop\">Contra Workshop</option>\n        <option value=\"waltz\">Waltz Dance</option>\n        <option value=\"waltz-workshop\">Waltz Workshop</option>\n        <option value=\"square-dance\">Square Dance</option>\n        <option value=\"dance-weekend\">Dance Weekend</option>\n        <option value=\"caller-workshop\">Caller Workshop</option>\n      </select>\n\n    <label name=\"event-price\">Price</label>\n      <input type=\"text\" class=\"price-input\" name=\"event-price\" placeholder=\"price\">\n\n    <div class=\"time\">\n      <label name=\"start-time\">Start time</label>\n      <input name=\"start-time\" class=\"event-start-time-input\" type=\"time\">\n    </div>\n\n    <div class=\"time\">\n      <label name=\"end-time\">End time</label>\n        <input name=\"end-time\" class=\"event-end-time-input\" type=\"time\">\n    </div>\n\n  </section>\n\n  <section class=\"extras\">\n    <input type=\"checkbox\" class=\"beginner\" name=\"beginner-friendly\">\n    <label class =\"check\" name=\"beginner-friendly\">Beginner Friendly</label>\n\n    <input type=\"checkbox\" class=\"workshop-incl\" name=\"workshop-included\">\n    <label class=\"check\" name=\"workshop-included\">Workshop Included</label>\n\n    <input type=\"checkbox\" name=\"pre-reg-req\" class=\"pre-reg-req-input\">\n    <label class=\"check\" name=\"pre-reg-req\">Pre-registration required</label>\n      <div class=\"reg-req\">\n      </div>\n\n    <input name=\"multi-day\"class=\"multi-day-input\" type=\"checkbox\">\n    <label class=\"check\" name=\"multi-day\">Multi-day Event</label>\n      <div class=\"multi-day\">\n      </div>\n  </section>\n\n</section>\n\n<h3>Venue Info</h3>\n<section class=\"venue-info\">\n  <label name=\"venue-name\">Venue Name</label>\n    <input name=\"venue-name\" class=\"venue-name-input\" type=\"text\" placeholder=\"venue name\">\n  <label name=\"address\">Venue Address</label>\n    <input name=\"address\" class=\"event-address-input\" type=\"text\" placeholder=\"venue address\">\n</section>\n\n<h3>Performers</h3>\n\n<section class=\"performers\">\n  <label name=\"band-name\">Band Name</label>\n    <input type=\"text\" class=\"band-name-input\" name=\"band-name\" placeholder=\"band name\">\n  <label name=\"musicians\">Musicians</label>\n    <textarea name=\"musicians\" class=\"musicians-input\" rows=\"8\" cols=\"10\" placeholder=\"musicians\"></textarea>\n\n  <label name=\"caller\">Caller</label>\n    <input type=\"text\" class=\"caller-input\" name=\"caller\" placeholder=\"caller\">\n</section>\n\n<section class=\"notes\">\n  <h3>Notes</h3>\n  <textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n</section>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\">\n";
+  return "<section class=\"basic-info\">\n  <section class=\"basic\">\n    <h3>Basic Info</h3>\n\n    <label name=\"name\">Event Name</label>\n      <input name=\"name\" class=\"event-name-input\" type=\"text\" placeholder=\"Event Name\">\n\n    <label name=\"event-type\">Event Type</label>\n      <select class=\"event-type-input\" name=\"event-type\">\n        <option value=\"contra-dance\" selected>Contra Dance</option>\n        <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n        <option value=\"contra-workshop\">Contra Workshop</option>\n        <option value=\"waltz\">Waltz Dance</option>\n        <option value=\"waltz-workshop\">Waltz Workshop</option>\n        <option value=\"square-dance\">Square Dance</option>\n        <option value=\"dance-weekend\">Dance Weekend</option>\n        <option value=\"caller-workshop\">Caller Workshop</option>\n      </select>\n\n    <label name=\"event-price\">Price</label>\n      <input type=\"text\" class=\"price-input\" name=\"event-price\" placeholder=\"price\">\n\n    <div class=\"time\">\n      <label name=\"start-time\">Start time</label>\n      <input name=\"start-time\" class=\"event-start-time-input\" type=\"time\">\n    </div>\n\n    <div class=\"time\">\n      <label name=\"end-time\">End time</label>\n        <input name=\"end-time\" class=\"event-end-time-input\" type=\"time\">\n    </div>\n\n  </section>\n\n  <section class=\"extras\">\n    <input type=\"checkbox\" class=\"beginner\" name=\"beginner-friendly\">\n    <label class =\"check\" name=\"beginner-friendly\">Beginner Friendly</label>\n\n    <input type=\"checkbox\" class=\"workshop-incl\" name=\"workshop-included\">\n    <label class=\"check\" name=\"workshop-included\">Workshop Included</label>\n\n    <input type=\"checkbox\" name=\"pre-reg-req\" class=\"pre-reg-req-input\">\n    <label class=\"check\" name=\"pre-reg-req\">Pre-registration required</label>\n      <div class=\"reg-req\">\n      </div>\n\n    <input name=\"multi-day\"class=\"multi-day-input\" type=\"checkbox\">\n    <label class=\"check\" name=\"multi-day\">Multi-day Event</label>\n      <div class=\"multi-day\">\n      </div>\n  </section>\n\n</section>\n\n<section class=\"venue-info\">\n  <h3>Venue Info</h3>\n\n  <label name=\"venue-name\">Venue Name</label>\n    <input name=\"venue-name\" class=\"venue-name-input\" type=\"text\" placeholder=\"venue name\">\n  <label name=\"address\">Venue Address</label>\n    <input name=\"address\" class=\"event-address-input\" type=\"text\" placeholder=\"venue address\">\n</section>\n\n\n<section class=\"performers\">\n  <h3>Performers</h3>\n\n  <label name=\"band-name\">Band Name</label>\n    <input type=\"text\" class=\"band-name-input\" name=\"band-name\" placeholder=\"band name\">\n  <label name=\"musicians\">Musicians</label>\n    <textarea name=\"musicians\" class=\"musicians-input\" rows=\"8\" cols=\"10\" placeholder=\"musicians\"></textarea>\n\n  <label name=\"caller\">Caller</label>\n    <input type=\"text\" class=\"caller-input\" name=\"caller\" placeholder=\"caller\">\n</section>\n\n<section class=\"notes\">\n  <h3 class=\"notes-header\">Notes</h3>\n  <textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n</section>\n\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\">\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_onetimeList"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
@@ -1191,8 +1196,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_recurList"] = Handlebars.templat
   return buffer;
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_recurringForm"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"recurInfo\">\n  <p>\n    Your event will run for one year by default.\n  </p>\n  <p>\n    You can set bands, callers, musicians, and other special info for each event in this series after the series is created. Need to cancel an event in this series? You can do that all from the \"manage events\" page.\n  </p>\n</div>\n\n<label name=\"name\">Event Name</label>\n  <input name=\"name\" class=\"event-name-input\" type=\"text\">\n\n<label name=\"event-type\">Event Type</label>\n  <select class=\"event-type-input\" name=\"event-type\">\n    <option value=\"contra-dance\" selected>Contra Dance</option>\n    <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n    <option value=\"contra-workshop\">Contra Workshop</option>\n    <option value=\"waltz\">Waltz Dance</option>\n    <option value=\"waltz-workshop\">Waltz Workshop</option>\n    <option value=\"square-dance\">Square Dance</option>\n    <option value=\"dance-weekend\">Dance Weekend</option>\n    <option value=\"caller-workshop\">Caller Workshop</option>\n  </select>\n\n<label name=\"start-time\">Start time</label>\n  <input name=\"start-time\" class=\"event-start-time-input\" type=\"time\">\n\n<label name=\"end-time\">End time</label>\n  <input name=\"end-time\" class=\"event-end-time-input\" type=\"time\">\n\n<label name=\"venue-name\">Venue Name</label>\n  <input name=\"venue-name\" class=\"venue-name-input\" type=\"text\" placeholder=\"venue name\">\n<label name=\"address\">Venue Address</label>\n  <input name=\"address\" class=\"event-address-input\" type=\"text\" placeholder=\"venue address\">\n\n<label name=\"event-price\">Price</label>\n  <input type=\"text\" class=\"price-input\" name=\"event-price\" placeholder=\"price\">\n\n<label name=\"beginner-friendly\">Beginner Friendly</label>\n  <input type=\"checkbox\" class=\"beginner\" name=\"beginner-friendly\">\n\n<label name=\"workshop-included\">Workshop Included</label>\n  <input type=\"checkbox\" class=\"workshop-incl\" name=\"workshop-included\">\n\n<label name=\"notes\">Notes</label>\n<textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\">\n";
-  },"useData":true});
+  return "<div class=\"recurInfo\">\n  <p>\n    Your event will run for one year by default.\n  </p>\n  <p>\n    You can set bands, callers, musicians, and other special info for each event in this series after the series is created. Need to cancel an event in this series? You can do that all from the \"manage events\" page.\n  </p>\n</div>\n\n\n<section class=\"basic\">\n  <h3>Basic Info</h3>\n  <label name=\"name\">Event Name</label>\n    <input name=\"name\" class=\"event-name-input\" type=\"text\">\n\n  <label name=\"event-type\">Event Type</label>\n    <select class=\"event-type-input\" name=\"event-type\">\n      <option value=\"contra-dance\" selected>Contra Dance</option>\n      <option value=\"advanced-contra-dance\">Advanced Contra Dance</option>\n      <option value=\"contra-workshop\">Contra Workshop</option>\n      <option value=\"waltz\">Waltz Dance</option>\n      <option value=\"waltz-workshop\">Waltz Workshop</option>\n      <option value=\"square-dance\">Square Dance</option>\n      <option value=\"dance-weekend\">Dance Weekend</option>\n      <option value=\"caller-workshop\">Caller Workshop</option>\n    </select>\n\n  <label name=\"start-time\">Start time</label>\n    <input name=\"start-time\" class=\"event-start-time-input\" type=\"time\">\n\n  <label name=\"end-time\">End time</label>\n    <input name=\"end-time\" class=\"event-end-time-input\" type=\"time\">\n\n\n  <label name=\"event-price\">Price</label>\n  <input type=\"text\" class=\"price-input\" name=\"event-price\" placeholder=\"price\">\n\n\n  <label class=\"check\"name=\"beginner-friendly\">Beginner Friendly</label>\n    <input type=\"checkbox\" class=\"beginner\" name=\"beginner-friendly\">\n\n  <label class=\"check\" name=\"workshop-included\">Workshop Included</label>\n    <input type=\"checkbox\" class=\"workshop-incl\" name=\"workshop-included\">\n</section>\n\n\n\n\n\n\n\n<section class=\"venue-info\">\n  <h3>Venue Info</h3>\n\n\n<label name=\"venue-name\">Venue Name</label>\n  <input name=\"venue-name\" class=\"venue-name-input\" type=\"text\" placeholder=\"venue name\">\n<label name=\"address\">Venue Address</label>\n  <input name=\"address\" class=\"event-address-input\" type=\"text\" placeholder=\"venue address\">\n</section>\n\n<section class=\"extras\">\n<h3 name=\"notes\">Notes</h3>\n<textarea name=\"note\" class=\"notes-input\" placeholder=\"notes\"></textarea>\n</section>\n\n\n\n\n<input type=\"submit\" class=\"submit-event\" value=\"create your event\">\n";
+},"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["_regReq"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "  <input name=\"reg-limit\" class=\"reg-limit-input\" type=\"number\">\n  <label name=\"reg-limit\">Registration Limit</label>\n\n<label class=\"check\" name=\"gender-bal\">Lead/Follow Balanced</label>\n  <input type=\"checkbox\" class=\"gender-bal-input\" name=\"gender-bal\">\n";
   },"useData":true});
@@ -1695,6 +1700,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
             type: type
           };
       searchTerms = [location, distance, startDateS, endDateS, $('.search-type :selected').val()].join('+');
+      // window.location.hash = '/search?' + searchTerms;
       DanceCard.router.navigate('#/search?' + searchTerms);
       if (location) {
         DanceCard.Utility.findLocation(location)
@@ -1702,7 +1708,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
           self.attrs.location = location.point;
           collection = new DanceCard.Collections.SearchEventList(self.attrs);
           self.removeChildren();
-          console.log('making stuff with a location');
           self.makeList(collection, location);
           self.makeMap(collection, location.point);
         });
@@ -1723,9 +1728,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
       localStorage.setItem('danceCardLoc', JSON.stringify(position));
       this.attrs.location = point;
       collection = new DanceCard.Collections.SearchEventList(this.attrs);
-      console.log(this.children);
       this.removeChildren();
-      console.log(this.children);
       this.makeList(collection);
       this.makeMap(collection, point);
     },
@@ -3203,9 +3206,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
       .then(_.bind(this.renderChildren, this));
     },
     renderChildren: function(collection) {
-      console.log(this.children);
       this.removeChildren();
-      console.log(this.children);
       var self = this;
       this.$el.html(this.template({
         results: collection.models,
@@ -3220,7 +3221,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
             parent: self
           }));
         });
-        console.log(this.children);
       }
     }
   });
