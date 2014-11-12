@@ -497,6 +497,7 @@
         $container: $('main')
       }));
     },
+
     search: function() {
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren = [];
@@ -505,6 +506,7 @@
         $container: $('main')
       }));
     },
+
     searchResults: function(searchTerms) {
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren = [];
@@ -514,6 +516,7 @@
         searchTerms: searchTerms
       }));
     },
+
     login: function() {
       if (_.contains(this.mainChildren, this.registerV)) {
         this.registerV.remove();
@@ -524,6 +527,7 @@
       });
       this.mainChildren.push(this.loginV);
     },
+
     register: function() {
       if (_.contains(this.mainChildren, this.loginV)) {
         this.loginV.remove();
@@ -560,6 +564,7 @@
         $container: $('main')
       }));
     },
+
     org: function(org) {
       var self = this;
       _.invoke(this.mainChildren, 'remove');
@@ -597,6 +602,7 @@
           }
         });
     },
+
     createEvent: function(org) {
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren = [];
@@ -609,6 +615,7 @@
         })
       }));
     },
+
     evnt: function(org, evnt) {
       _.invoke(this.mainChildren, 'remove');
       this.mainChildren = [];
@@ -1691,8 +1698,16 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
 
     searchResults: function(e) {
       if (e) e.preventDefault();
-      var startDate,
-          endDate;
+      var self = this,
+          location = $('.search-location').val() || undefined,
+          distance = $('.search-distance').val() || 50,
+          type = $('.search-type :selected').val().split('-').join(' '),
+          collection,
+          searchTerms,
+          startDate,
+          endDate,
+          startDateS,
+          endDateS;
       if ($('.search-start-date').val()) {
         startDate = moment($('.search-start-date').val()).format();
       } else {
@@ -1702,33 +1717,28 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       } else {
         endDate = DanceCard.Utility.addDays(new Date(), 7);
       }
-      var self = this,
-          startDateS = startDate.toString().split(' ').join('-'),
-          endDateS = endDate.toString().split(' ').join('-'),
-          location = $('.search-location').val() || undefined,
-          distance = $('.search-distance').val() || 50,
-          type = $('.search-type :selected').val().split('-').join(' '),
-          collection,
-          searchTerms;
+      startDateS = startDate.toString().split(' ').join('-');
+      endDateS = endDate.toString().split(' ').join('-');
       this.attrs = {
             startDate: new Date(startDate),
-            endDate: DanceCard.Utility.addDays(new Date(endDate), 1),
+            endDate: new Date(endDate),
             distance: distance,
             type: type
           };
       searchTerms = [location, distance, startDateS, endDateS, $('.search-type :selected').val()].join('+');
-      DanceCard.router.navigate('#/search?' + searchTerms, {trigger: true});
+      DanceCard.router.navigate('#/search?' + searchTerms);
       if (location) {
         DanceCard.Utility.findLocation(location)
         .done(function(location) {
           self.attrs.location = location.point;
           collection = new DanceCard.Collections.SearchEventList(self.attrs);
-          _.invoke(this.children, 'remove');
           self.removeChildren();
+          console.log('making stuff with a location');
           self.makeList(collection, location);
           self.makeMap(collection, location.point);
         });
       } else {
+        $('#map-canvas').remove();
         this.$el.prepend('<div class="map-loading"><img class="spinner" src="../images/spinner.gif"/></div>');
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
@@ -1744,7 +1754,9 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       localStorage.setItem('danceCardLoc', JSON.stringify(position));
       this.attrs.location = point;
       collection = new DanceCard.Collections.SearchEventList(this.attrs);
+      console.log(this.children);
       this.removeChildren();
+      console.log(this.children);
       this.makeList(collection);
       this.makeMap(collection, point);
     },
@@ -3222,6 +3234,9 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
       .then(_.bind(this.renderChildren, this));
     },
     renderChildren: function(collection) {
+      console.log(this.children);
+      this.removeChildren();
+      console.log(this.children);
       var self = this;
       this.$el.html(this.template({
         results: collection.models,
@@ -3236,6 +3251,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"
             parent: self
           }));
         });
+        console.log(this.children);
       }
     }
   });
