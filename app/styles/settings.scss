@@ -7,7 +7,7 @@
   input[type=password],
   input[type=email] {
     display: block;
-    width: 300px;
+    width: 68%;
   }
 
   h2 {
@@ -48,6 +48,17 @@
   .email-section {
     float: left;
     width: 50%;
+
+    label {
+      display: block;
+    }
+
+    span {
+      display: block;
+      font-size: rem(20);
+      line-height: rem(44);
+      margin: rem(5) 0 rem(15) rem(30);
+    }
   }
 
   .email-settings {
@@ -55,4 +66,32 @@
     margin-top: rem(30);
   }
 
+  input[type=submit] {
+    float: right;
+    margin-right: 25%;
+  }
+
+  .send-not,
+  .receive-not {
+    border-left: solid 1px $vlight;
+    margin: rem(10) rem(15) rem(30);
+    padding: rem(20);
+
+    input[type=checkbox] {
+      float: left;
+      height: rem(20);
+      margin: rem(10) 0;
+      width: 5%;
+    }
+
+    h5 {
+      float: left;
+      margin: rem(10) 0;
+      width: 95%;
+    }
+
+    p {
+      margin-left: 5%;
+    }
+  }
 }
