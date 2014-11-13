@@ -13,8 +13,10 @@ header {
     line-height: rem(60);
     margin: 0;
     padding-left: rem(10);
+    position: relative;
     vertical-align: top;
-    width: 15%;
+    width: rem(190);
+    z-index: 1;
 
     a {
       color: $white;

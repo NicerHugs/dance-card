@@ -4,21 +4,13 @@
   DanceCard.Views.Header = DanceCard.Views.Base.extend({
     tagName: 'header',
     render: function() {
-      this.$el.append('<h1><a href="#">Dance Card</a></h1>');
+      var urlString = '#/dancers/' + Parse.User.current().get('urlId');
+      this.$el.append('<h1><a href="'+urlString+'">Dance Card</a></h1>');
       this.$el.append('<span class="tag-line">Do you want to dance?</span>');
       this.navView = new DanceCard.Views.Nav({
         $container: this.$el,
         model: DanceCard.session
       });
-    },
-
-    events: {
-      'click h1' : 'viewIndex'
-    },
-
-    viewIndex: function(e) {
-      e.preventDefault();
-      DanceCard.router.navigate('/', {trigger: true});
     }
 
   });
