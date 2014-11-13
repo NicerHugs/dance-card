@@ -34,12 +34,14 @@
 
     toggleChildren: function(e) {
       e.preventDefault();
-      if (this.$el.children('.sub-events').children('.onetime-event').css('height') === '1px') {
+      if (this.$el.children('div').children('ul').css('height') === '1px') {
         this.$el.children('div').children('ul').css('height', 'auto');
-        $(e.target).addClass('hide').siblings('.toggle-sub-events').removeClass('hide');
+        this.$el.children('.toggle-sub-events.show').addClass('hidden').siblings('.toggle-sub-events.hide').removeClass('hidden');
       } else {
+        console.log($(e.target))
         this.$el.children('div').children('ul').css('height', 1);
-        $(e.target).addClass('hide').siblings('.toggle-sub-events').removeClass('hide');
+        this.$el.children('.toggle-sub-events.hide').addClass('hidden').siblings('.toggle-sub-events.show').removeClass('hidden');
+        // $(e.target).addClass('hidden').siblings('.toggle-sub-events').removeClass('hidden');
       }
     },
     deleteEvent: function(e) {

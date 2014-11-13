@@ -101,6 +101,7 @@
     },
 
     validateEvent: function() {
+      console.log('validating event');
       $('.invalid-form-warning').remove();
       $('.invalid').removeClass('invalid');
       if (!this.model.get('name')) {
@@ -213,6 +214,7 @@
       } else {
         endDate = new Date(moment(startDate).format());
       }
+      console.log(endDate)
       if (preRegReq) {
         regLimit = $('.reg-limit-input').val();
         genderBal = $('.gender-bal-input').prop('checked');

@@ -130,7 +130,7 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
     + "/create-event\" class=\"create\"><i class=\"fa fa-plus\">add event</i></a>\n";
 },"4":function(depth0,helpers,partials,data) {
-  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\"><i class=\"fa fa-search\">search events</i></a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\"><i class=\"fa\">login</i></a>\n    <a href=\"#/register\" class=\"signup\"><i class=\"fa fa-sign-in \">sign up</i></a>\n  </div>\n";
+  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\"><i class=\"fa fa-search\">search events</i></a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\"><i class=\"fa fa-sign-in\">login</i></a>\n    <a href=\"#/register\" class=\"signup\"><i class=\"fa\">sign up</i></a>\n  </div>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(4, data),"data":data});
@@ -465,7 +465,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_recurList"] = Handlebars.templat
     + escapeExpression(((helper = (helper = helpers.orgUrlId || (depth0 != null ? depth0.orgUrlId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"orgUrlId","hash":{},"data":data}) : helper)))
     + "/"
     + escapeExpression(((helper = (helper = helpers.objectId || (depth0 != null ? depth0.objectId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"objectId","hash":{},"data":data}) : helper)))
-    + "\">manage</a>\n  <a href=\"#\" class=\"delete-recur\">cancel all events</a>\n  <div class=\"sub-events\"></div>\n  <a href=\"#\" class=\"toggle-sub-events\"><i class=\"fa fa-sort-asc\">Show sub-events</i></a>\n  <a href=\"#\" class=\"toggle-sub-events hide\"><i class=\"fa fa-sort-desc\">Hide sub-events</i></a>\n";
+    + "\">manage</a>\n  <a href=\"#\" class=\"delete-recur\">cancel all events</a>\n  <div class=\"sub-events\"></div>\n  <a href=\"#\" class=\"toggle-sub-events show\"><i class=\"fa fa-sort-asc\">Show sub-events</i></a>\n  <a href=\"#\" class=\"toggle-sub-events hide hidden\"><i class=\"fa fa-sort-desc\">Hide sub-events</i></a>\n";
 },"3":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "  You have no recurring events. <a href=\"#/orgs/"
@@ -507,7 +507,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["_venueInfo"] = Handlebars.templat
   return buffer;
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseDate"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<h3>on:</h3>\n\n<input type=\"date\">\n";
+  return "<h3>on:</h3>\n\n<label name='start-date'></label>\n<input class=\"event-start-date-input\" type=\"date\">\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["chooseMoRpt"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<select name=\"monthlyRpt\" class=\"monthly-option-input\">\n  <option value=\"first\">the first</option>\n  <option value=\"second\">the second</option>\n  <option value=\"third\">the third</option>\n  <option value=\"fourth\">the fourth</option>\n  <option value=\"last\">the last</option>\n</select>\n";
