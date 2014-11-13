@@ -829,20 +829,20 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "  <div class=\"left-nav\">\n";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.organizer : stack1), {"name":"if","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "        <a href=\"#/search\" class=\"search-link\"><i class=\"fa fa-search\">search events</i></a>\n        <a href=\"#/dancers/"
+  return buffer + "        <a href=\"#/search\" class=\"search-link\">\n          <i class=\"fa fa-search\">\n            <span>search events</span>\n          </i>\n        </a>\n        <a href=\"#/dancers/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
-    + "\"><i class=\"fa\">my dance card</i></a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/settings\"><i class=\"fa fa-cog\">"
+    + "\"><i class=\"fa\"><span>my dance card</span></i></a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/settings\"><i class=\"fa fa-cog\"><span>"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
-    + "</i></a>\n    <a href=\"#\" class=\"logout\"><i class=\"fa fa-sign-out\">logout</i></a>\n  </div>\n";
+    + "</span></i></a>\n    <a href=\"#\" class=\"logout\"><i class=\"fa fa-sign-out\"></i></a>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "        <a href=\"#/orgs/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
-    + "\" class=\"manage\"><i class=\"fa fa-pencil-square-o\">manage events</i></a>\n        <a href=\"#/orgs/"
+    + "\" class=\"manage\">\n          <i class=\"fa fa-pencil-square-o\">\n            <span>manage events</span>\n          </i>\n        </a>\n        <a href=\"#/orgs/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
-    + "/create-event\" class=\"create\"><i class=\"fa fa-plus\">add event</i></a>\n";
+    + "/create-event\" class=\"create\">\n          <i class=\"fa fa-plus\">\n            <span>add event</span>\n          </i>\n        </a>\n";
 },"4":function(depth0,helpers,partials,data) {
-  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\"><i class=\"fa fa-search\">search events</i></a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\"><i class=\"fa fa-sign-in\">login</i></a>\n    <a href=\"#/register\" class=\"signup\"><i class=\"fa\">sign up</i></a>\n  </div>\n";
+  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\">\n      <i class=\"fa fa-search\">\n        <span>search events</span>\n      </i>\n    </a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\"><i class=\"fa fa-sign-in\"><span>login</span></i></a>\n    <a href=\"#/register\" class=\"signup\"><i class=\"fa\">sign up</i></a>\n  </div>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(4, data),"data":data});
@@ -1448,21 +1448,13 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
   DanceCard.Views.Header = DanceCard.Views.Base.extend({
     tagName: 'header',
     render: function() {
-      this.$el.append('<h1><a href="#">Dance Card</a></h1>');
+      var urlString = '#/dancers/' + Parse.User.current().get('urlId');
+      this.$el.append('<h1><a href="'+urlString+'">Dance Card</a></h1>');
       this.$el.append('<span class="tag-line">Do you want to dance?</span>');
       this.navView = new DanceCard.Views.Nav({
         $container: this.$el,
         model: DanceCard.session
       });
-    },
-
-    events: {
-      'click h1' : 'viewIndex'
-    },
-
-    viewIndex: function(e) {
-      e.preventDefault();
-      DanceCard.router.navigate('/', {trigger: true});
     }
 
   });
