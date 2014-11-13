@@ -67,6 +67,7 @@
   position: absolute;
   user-select: none;
   width: 305px;
+  z-index: 900;
 
   .view {
     background: $white;
@@ -76,6 +77,7 @@
     color: $dark;
     height: 315px;
     position: relative;
+    z-index: 9999;
   }
 
   .nav {

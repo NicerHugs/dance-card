@@ -46,13 +46,14 @@
     this.updateInput(label,'','');
 
     $(document).ready(function(){
-      $(document).click(function(event){
-        var el = $('.' + self.elementTag + ' .view'),
-            eco = el.offset();
-        if(event.pageX<eco.left || event.pageX>eco.left+el.width() || event.pageY<eco.top || event.pageY>eco.top+el.height()) {
-          if(!self.init) self.hide(300);
-        }
-      });
+      // $(document).click(function(event){
+      //   // console.log()
+      //   // var el = $('.' + self.elementTag + ' .view'),
+      //   //     eco = el.offset();
+      //   // if(event.pageX<eco.left || event.pageX>eco.left+el.width() || event.pageY<eco.top || event.pageY>eco.top+el.height()) {
+      //   //   if(!self.init) self.hide(300);
+      //   // }
+      // });
       $('.'+self.elementTag).on('click','.next-month',function(){
         self.setMonthNext();
       });

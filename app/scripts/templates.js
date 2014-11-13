@@ -130,7 +130,7 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
     + "/create-event\" class=\"create\">\n          <i class=\"fa fa-plus\">\n            <span>add event</span>\n          </i>\n        </a>\n";
 },"4":function(depth0,helpers,partials,data) {
-  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\">\n      <i class=\"fa fa-search\">\n        <span>search events</span>\n      </i>\n    </a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\"><i class=\"fa fa-sign-in\"><span>login</span></i></a>\n    <a href=\"#/register\" class=\"signup\"><i class=\"fa\">sign up</i></a>\n  </div>\n";
+  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\">\n      <i class=\"fa fa-search\">\n        <span>search events</span>\n      </i>\n    </a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\"><i class=\"fa fa-sign-in\"><span>login</span></i></a>\n    <a href=\"#/register\" class=\"signup\">\n      <i class=\"fa fa-plus-square-o\">\n      <span>sign up</span>\n    </i></a>\n  </div>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(4, data),"data":data});
