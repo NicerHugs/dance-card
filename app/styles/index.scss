@@ -84,36 +84,36 @@
     height: rem(100);
     position: fixed;
     width: 100%;
+
+    input {
+      border: solid 1px $light;
+      border-right: 0;
+      display: block;
+      float: left;
+
+      &.start-date-input,
+      &.end-date-input {
+        border: 0;
+      }
+
+      &.search-location {
+        border-radius: rem(3) 0 0 rem(3);
+      }
+
+      &[type=submit] {
+        border: solid 1px darken($orange, 15%);
+        border-radius: 0 rem(3) rem(3) 0;
+        font-weight: 400;
+        letter-spacing: rem(1);
+        line-height: 14px;
+      }
+    }
   }
 
   .index-search {
     border-radius: rem(3);
     margin: rem(28) auto;
     width: 975px;
-  }
-
-  input {
-    border: solid 1px $light;
-    border-right: 0;
-    display: block;
-    float: left;
-
-    &.start-date-input,
-    &.end-date-input {
-      border: 0;
-    }
-
-    &.search-location {
-      border-radius: rem(3) 0 0 rem(3);
-    }
-
-    &[type=submit] {
-      border: solid 1px darken($orange, 15%);
-      border-radius: 0 rem(3) rem(3) 0;
-      font-weight: 400;
-      letter-spacing: rem(1);
-      line-height: 14px;
-    }
   }
 
   select {

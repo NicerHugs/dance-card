@@ -1,7 +1,7 @@
 {{#if user}}
   <div class="left-nav">
     {{#if user.organizer}}
-        <a href="#/orgs/{{user.urlId}}" class="manage"><i class="fa">manage events</i></a>
+        <a href="#/orgs/{{user.urlId}}" class="manage"><i class="fa fa-pencil-square-o">manage events</i></a>
         <a href="#/orgs/{{user.urlId}}/create-event" class="create"><i class="fa fa-plus">add event</i></a>
     {{/if}}
         <a href="#/search" class="search-link"><i class="fa fa-search">search events</i></a>
@@ -10,7 +10,7 @@
   </div>
   <div class="right-nav">
     <a href="#/settings"><i class="fa fa-cog">{{user.name}}</i></a>
-    <a href="#" class="logout"><i class="fa">logout</i></a>
+    <a href="#" class="logout"><i class="fa fa-sign-out">logout</i></a>
   </div>
 {{else}}
   <div class="left-nav">
@@ -18,6 +18,6 @@
   </div>
   <div class="right-nav">
     <a href="#/login" class="login"><i class="fa">login</i></a>
-    <a href="#/register" class="signup"><i class="fa">sign up</i></a>
+    <a href="#/register" class="signup"><i class="fa fa-sign-in ">sign up</i></a>
   </div>
 {{/if}}

@@ -121,16 +121,16 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
     + "\"><i class=\"fa\">my dance card</i></a>\n      </div>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/settings\"><i class=\"fa fa-cog\">"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.name : stack1), depth0))
-    + "</i></a>\n    <a href=\"#\" class=\"logout\"><i class=\"fa\">logout</i></a>\n  </div>\n";
+    + "</i></a>\n    <a href=\"#\" class=\"logout\"><i class=\"fa fa-sign-out\">logout</i></a>\n  </div>\n";
 },"2":function(depth0,helpers,partials,data) {
   var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression;
   return "        <a href=\"#/orgs/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
-    + "\" class=\"manage\"><i class=\"fa\">manage events</i></a>\n        <a href=\"#/orgs/"
+    + "\" class=\"manage\"><i class=\"fa fa-pencil-square-o\">manage events</i></a>\n        <a href=\"#/orgs/"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
     + "/create-event\" class=\"create\"><i class=\"fa fa-plus\">add event</i></a>\n";
 },"4":function(depth0,helpers,partials,data) {
-  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\"><i class=\"fa fa-search\">search events</i></a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\"><i class=\"fa\">login</i></a>\n    <a href=\"#/register\" class=\"signup\"><i class=\"fa\">sign up</i></a>\n  </div>\n";
+  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\"><i class=\"fa fa-search\">search events</i></a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\"><i class=\"fa\">login</i></a>\n    <a href=\"#/register\" class=\"signup\"><i class=\"fa fa-sign-in \">sign up</i></a>\n  </div>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(4, data),"data":data});
