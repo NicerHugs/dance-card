@@ -83,8 +83,8 @@
             DanceCard.router.navigate('search', {trigger: true});
           }
         }, error: function() {
-          self.$el.append('<div class="invalid-form-warning invalid"></div>');
-          $('.invalid-form-warning').html('username or password was not found');
+          $('.login-form').append('<div class="invalid-form-warning invalid"></div>');
+          $('.invalid-form-warning').html('<p>username or password was not found</p>');
         }
       });
     }

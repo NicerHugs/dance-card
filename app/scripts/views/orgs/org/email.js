@@ -8,7 +8,8 @@
     },
     events: {
       'click .send-email'   : 'sendEmail',
-      'click .cancel-email' : 'cancelEmail'
+      'click .cancel-email' : 'cancelEmail',
+      'click .close-modal'  : 'cancelEmail'
     },
 
     cancelEmail: function(e) {

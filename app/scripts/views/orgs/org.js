@@ -16,7 +16,7 @@
 
     renderChildren: function(collection) {
       this.children.push(new DanceCard.Views.OnetimeEventList({
-        $container: this.$el,
+        $container: $('.content'),
         collection: collection,
         name: this.model.get('name'),
         owner: this.model.authenticated()

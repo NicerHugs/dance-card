@@ -68,8 +68,8 @@
         self.model.setPassword(attrs.newPassword);
         self.model.save(null, {
           success: function() {
-            $('.password-change')[0].reset();
-            $('.password-change').append('<div class="password-success">Your password was successfully changed</div>');
+            $('.change-account')[0].reset();
+            $('.password-section').append('<div class="password-success">Your password was successfully changed</div>');
             window.setTimeout(function(){
               $('.password-success').remove();
             }, 4000);
@@ -103,19 +103,20 @@
         this.model.save(null, {
           success: function() {
             self.render();
-            $('.email-settings').prepend('<div class="email-success">Your email was successfully changed</div>');
+            $('.email-section').append('<div class="email-success">Your email was successfully changed</div>');
             window.setTimeout(function(){
               $('.email-success').remove();
             }, 4000);
           },
           error: function() {
             if (arguments[1].code === 203) {
-              $('.email-settings').prepend('<div class="email-error">Sorry, that email is already registered with another user</div>');
+              $('label[name=email]').append('<div class="email-error">Sorry, that email is already registered with another user</div>');
+              $('.new-email').focus();
               window.setTimeout(function(){
                 $('.email-error').remove();
               }, 4000);
             } else {
-              $('.email-settings').prepend('<div class="email-error">Something went wrong, please try again</div>');
+              $('label[name=email]').append('<div class="email-error">Something went wrong, please try again</div>');
               window.setTimeout(function(){
                 $('.email-error').remove();
               }, 4000);

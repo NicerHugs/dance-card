@@ -70,7 +70,7 @@
         });
       } else {
         $('#map-canvas').remove();
-        this.$el.prepend('<div class="map-loading"><img class="spinner" src="../images/spinner.gif"/></div>');
+        this.$el.prepend('<div class="map-loading"><img class="spinner" src="images/spinner.gif"/></div>');
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
     },

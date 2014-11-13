@@ -5,14 +5,51 @@
   position: fixed;
   top: 0;
   width: 100%;
+
+  .email {
+    background: $white;
+    border-radius: rem(3);
+    left: 50%;
+    padding: rem(30);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    width: 50%;
+
+    label {
+      display: block;
+    }
+
+    input,
+    textarea {
+      margin: rem(5) 0 rem(15);
+      width: 100%;
+    }
+
+    input {
+      height: rem(44);
+      padding-left: rem(15);
+    }
+
+    a {
+      float: right;
+    }
+
+    input[type=submit] {
+      border-radius: rem(3);
+      line-height: rem(14);
+      letter-spacing: rem(1);
+      font-weight: 400;
+    }
+  }
 }
 
 .close-modal {
   // background: $white;
   border-radius: 50%;
   position: absolute;
-  top: rem(-6);
   right: rem(-6);
+  top: rem(-6);
 
   &:hover * {
     color: $medium;
@@ -20,7 +57,7 @@
 
   i {
     color: $light-blue;
-
-
   }
+
+
 }

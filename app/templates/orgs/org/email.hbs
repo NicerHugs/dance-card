@@ -1,8 +1,16 @@
-<form>
-  <label name="subject">Subject</label>
-  <input name="subject" class="email-subject" type="textbox" placeholder="subject">
-  <label name="body">Body</label>
-  <textarea name="body" class="email-body" rows="8" cols="40"></textarea>
-  <input class="send-email" type="submit" value="Send Email">
-  <a href="#" class="cancel-email">cancel</a>
-</form>
+<div class="modal-view">
+  <form class="email">
+    <a href="#" class="close-modal">
+      <span class="fa-stack">
+        <i class="fa fa-times fa-stack-1x" ></i>
+        <i class="fa fa-circle-o fa-stack-2x"></i>
+      </span>
+    </a>
+    <label name="subject">Subject</label>
+    <input name="subject" class="email-subject" type="textbox" placeholder="subject">
+    <label name="body">Body</label>
+    <textarea name="body" class="email-body" rows="8" cols="40"></textarea>
+    <input class="send-email" type="submit" value="Send Email">
+    <a href="#" class="cancel-email">cancel</a>
+  </form>
+</div>

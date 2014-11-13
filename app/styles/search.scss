@@ -60,7 +60,15 @@
     margin-top: rem(30);
   }
 
-  
+  .search-results-list {
+    margin: 0;
+    padding: 0;
+  }
+
+  .search-result-count {
+    padding: rem(20);
+    padding-bottom: 0;
+  }
 
   .search-result {
     border: solid 1px $vlight;
