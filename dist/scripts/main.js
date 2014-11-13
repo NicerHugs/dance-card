@@ -263,13 +263,14 @@
     this.updateInput(label,'','');
 
     $(document).ready(function(){
-      $(document).click(function(event){
-        var el = $('.' + self.elementTag + ' .view'),
-            eco = el.offset();
-        if(event.pageX<eco.left || event.pageX>eco.left+el.width() || event.pageY<eco.top || event.pageY>eco.top+el.height()) {
-          if(!self.init) self.hide(300);
-        }
-      });
+      // $(document).click(function(event){
+      //   // console.log()
+      //   // var el = $('.' + self.elementTag + ' .view'),
+      //   //     eco = el.offset();
+      //   // if(event.pageX<eco.left || event.pageX>eco.left+el.width() || event.pageY<eco.top || event.pageY>eco.top+el.height()) {
+      //   //   if(!self.init) self.hide(300);
+      //   // }
+      // });
       $('.'+self.elementTag).on('click','.next-month',function(){
         self.setMonthNext();
       });
@@ -842,7 +843,7 @@ this["DanceCard"]["templates"]["nav"] = Handlebars.template({"1":function(depth0
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.user : depth0)) != null ? stack1.urlId : stack1), depth0))
     + "/create-event\" class=\"create\">\n          <i class=\"fa fa-plus\">\n            <span>add event</span>\n          </i>\n        </a>\n";
 },"4":function(depth0,helpers,partials,data) {
-  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\">\n      <i class=\"fa fa-search\">\n        <span>search events</span>\n      </i>\n    </a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\"><i class=\"fa fa-sign-in\"><span>login</span></i></a>\n    <a href=\"#/register\" class=\"signup\"><i class=\"fa\">sign up</i></a>\n  </div>\n";
+  return "  <div class=\"left-nav\">\n    <a href=\"#/search\" class=\"home-link\">\n      <i class=\"fa fa-search\">\n        <span>search events</span>\n      </i>\n    </a>\n  </div>\n  <div class=\"right-nav\">\n    <a href=\"#/login\" class=\"login\"><i class=\"fa fa-sign-in\"><span>login</span></i></a>\n    <a href=\"#/register\" class=\"signup\">\n      <i class=\"fa fa-plus-square-o\">\n      <span>sign up</span>\n    </i></a>\n  </div>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(4, data),"data":data});
@@ -1448,8 +1449,11 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
   DanceCard.Views.Header = DanceCard.Views.Base.extend({
     tagName: 'header',
     render: function() {
-      var urlString = '#/dancers/' + Parse.User.current().get('urlId');
-      this.$el.append('<h1><a href="'+urlString+'">Dance Card</a></h1>');
+      var urlString;
+      if (Parse.User.current()) {
+        urlString = '/dancers/' + Parse.User.current().get('urlId');
+      }
+      this.$el.append('<h1><a href=#"'+urlString+'">Dance Card</a></h1>');
       this.$el.append('<span class="tag-line">Do you want to dance?</span>');
       this.navView = new DanceCard.Views.Nav({
         $container: this.$el,
@@ -3590,10 +3594,13 @@ DanceCard.Models.User = Parse.Object.extend({
   },
 
   setTemplateData: function() {
-    var owner = Parse.User.current().get('urlId') === window.location.hash.split('/')[2],
-        templateData = {
-          user: this.toJSON(),
-          owner: owner};
+    var templateData = {
+      user: this.toJSON(),
+    };
+    if (this.loggedIn()) {
+      var owner = Parse.User.current().get('urlId') === window.location.hash.split('/')[2];
+      templateData.owner = owner;
+    }     
     return templateData;
   }
 });
