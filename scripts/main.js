@@ -722,7 +722,7 @@ this["DanceCard"]["templates"]["_eventList"] = Handlebars.template({"1":function
 },"5":function(depth0,helpers,partials,data) {
   return "    Please try again.\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "<h3>\n";
+  var stack1, buffer = "<h3 class=\"search-result-count\">\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.one : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
   stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.results : depth0), {"name":"unless","hash":{},"fn":this.program(5, data),"inverse":this.noop,"data":data});
@@ -1234,7 +1234,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["createEvent"] = Handlebars.templa
   return "";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["email"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<form>\n  <label name=\"subject\">Subject</label>\n  <input name=\"subject\" class=\"email-subject\" type=\"textbox\" placeholder=\"subject\">\n  <label name=\"body\">Body</label>\n  <textarea name=\"body\" class=\"email-body\" rows=\"8\" cols=\"40\"></textarea>\n  <input class=\"send-email\" type=\"submit\" value=\"Send Email\">\n  <a href=\"#\" class=\"cancel-email\">cancel</a>\n</form>\n";
+  return "<div class=\"modal-view\">\n  <form class=\"email\">\n    <a href=\"#\" class=\"close-modal\">\n      <span class=\"fa-stack\">\n        <i class=\"fa fa-times fa-stack-1x\" ></i>\n        <i class=\"fa fa-circle-o fa-stack-2x\"></i>\n      </span>\n    </a>\n    <label name=\"subject\">Subject</label>\n    <input name=\"subject\" class=\"email-subject\" type=\"textbox\" placeholder=\"subject\">\n    <label name=\"body\">Body</label>\n    <textarea name=\"body\" class=\"email-body\" rows=\"8\" cols=\"40\"></textarea>\n    <input class=\"send-email\" type=\"submit\" value=\"Send Email\">\n    <a href=\"#\" class=\"cancel-email\">cancel</a>\n  </form>\n</div>\n";
   },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["event"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   return "<span>sorry, you don't have permission to manage this event</span>\n\n";
@@ -1376,7 +1376,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["index"] = Handlebars.template({"c
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "<h2>"
     + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
-    + " Events</h2>\n";
+    + " Events</h2>\n<div class=\"content\"></div>\n";
 },"useData":true});
 this["DanceCard"]["templates"]["orgs"]["org"]["manage"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<h2>My Events</h2>\n<div class=\"content\">\n  <h3>Recurring Events</h3>\n  <ul class=\"recurring-event-list\">\n  </ul>\n  <h3>One Time Events</h3>\n</div>\n";
@@ -1554,8 +1554,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
             DanceCard.router.navigate('search', {trigger: true});
           }
         }, error: function() {
-          self.$el.append('<div class="invalid-form-warning invalid"></div>');
-          $('.invalid-form-warning').html('username or password was not found');
+          $('.login-form').append('<div class="invalid-form-warning invalid"></div>');
+          $('.invalid-form-warning').html('<p>username or password was not found</p>');
         }
       });
     }
@@ -1705,7 +1705,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
         });
       } else {
         $('#map-canvas').remove();
-        this.$el.prepend('<div class="map-loading"><img class="spinner" src="../images/spinner.gif"/></div>');
+        this.$el.prepend('<div class="map-loading"><img class="spinner" src="images/spinner.gif"/></div>');
         navigator.geolocation.getCurrentPosition(_.bind(this.userLocSearchResults, this));
       }
     },
@@ -1974,8 +1974,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
         self.model.setPassword(attrs.newPassword);
         self.model.save(null, {
           success: function() {
-            $('.password-change')[0].reset();
-            $('.password-change').append('<div class="password-success">Your password was successfully changed</div>');
+            $('.change-account')[0].reset();
+            $('.password-section').append('<div class="password-success">Your password was successfully changed</div>');
             window.setTimeout(function(){
               $('.password-success').remove();
             }, 4000);
@@ -2009,19 +2009,20 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
         this.model.save(null, {
           success: function() {
             self.render();
-            $('.email-settings').prepend('<div class="email-success">Your email was successfully changed</div>');
+            $('.email-section').append('<div class="email-success">Your email was successfully changed</div>');
             window.setTimeout(function(){
               $('.email-success').remove();
             }, 4000);
           },
           error: function() {
             if (arguments[1].code === 203) {
-              $('.email-settings').prepend('<div class="email-error">Sorry, that email is already registered with another user</div>');
+              $('label[name=email]').append('<div class="email-error">Sorry, that email is already registered with another user</div>');
+              $('.new-email').focus();
               window.setTimeout(function(){
                 $('.email-error').remove();
               }, 4000);
             } else {
-              $('.email-settings').prepend('<div class="email-error">Something went wrong, please try again</div>');
+              $('label[name=email]').append('<div class="email-error">Something went wrong, please try again</div>');
               window.setTimeout(function(){
                 $('.email-error').remove();
               }, 4000);
@@ -2124,9 +2125,9 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
         });
       } else {
         if (this.templateData.owner) {
-          self.$el.append("<p>You have not RSVP'd to any events yet.</p>");
+          $('.content').append("<p>You have not RSVP'd to any events yet.</p>");
         } else {
-          self.$el.append("<p>" + this.model.get('name') + " has not RSVP'd to any events yet.</p>");
+          $('.content').append("<p>" + this.model.get('name') + " has not RSVP'd to any events yet.</p>");
         }
       }
     },
@@ -2159,7 +2160,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
 
     renderChildren: function(collection) {
       this.children.push(new DanceCard.Views.OnetimeEventList({
-        $container: this.$el,
+        $container: $('.content'),
         collection: collection,
         name: this.model.get('name'),
         owner: this.model.authenticated()
@@ -2962,7 +2963,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
     },
     events: {
       'click .send-email'   : 'sendEmail',
-      'click .cancel-email' : 'cancelEmail'
+      'click .cancel-email' : 'cancelEmail',
+      'click .close-modal'  : 'cancelEmail'
     },
 
     cancelEmail: function(e) {
