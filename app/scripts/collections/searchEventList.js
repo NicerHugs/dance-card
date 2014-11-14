@@ -4,6 +4,7 @@
   DanceCard.Collections.SearchEventList = Parse.Collection.extend({
     initialize: function(options){
       this.query = new Parse.Query('Event')
+        .ascending('startDate')
         .greaterThanOrEqualTo('startDate', options.startDate)
         .lessThanOrEqualTo('endDate', options.endDate)
         .withinMiles('point', options.location, options.distance);

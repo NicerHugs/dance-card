@@ -29,6 +29,8 @@
 
     rpt: function() {
       this.model.set('recurring', true);
+      this.model.set('weeklyRpt', '1');
+      this.model.set('weeklyRptName', 'Monday');
       $('.event-form').html(DanceCard.templates.orgs.org._recurringForm(this.model.toJSON()));
       $('.choose-dates').html(DanceCard.templates.orgs.org.chooseWkMo(this.model.toJSON()));
       if (this.startCal) {
@@ -36,7 +38,7 @@
       }
       if ($('.chooseRpt:checked').val() === "true") {
         this.model.set('recurMonthly', true);
-        this.model.set('weeklyRpt', 1);
+        this.model.set('weeklyRpt', '1');
         this.model.set('weeklyRptName', "Monday");
         $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model.toJSON()));
       } else {
@@ -153,6 +155,7 @@
           day = this.model.get('weeklyRpt'),
           startDate = DanceCard.Utility.nextDateOfWeek(new Date(), day),
           endDate = DanceCard.Utility.addYear(startDate);
+      console.log(this.model.get('weeklyRpt'));
       this.model.set({
         name: name,
         type: type,
@@ -214,7 +217,7 @@
       } else {
         endDate = new Date(moment(startDate).format());
       }
-      console.log(endDate)
+      console.log(endDate);
       if (preRegReq) {
         regLimit = $('.reg-limit-input').val();
         genderBal = $('.gender-bal-input').prop('checked');
