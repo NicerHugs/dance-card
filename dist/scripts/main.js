@@ -2350,6 +2350,8 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
 
     rpt: function() {
       this.model.set('recurring', true);
+      this.model.set('weeklyRpt', '1');
+      this.model.set('weeklyRptName', 'Monday');
       $('.event-form').html(DanceCard.templates.orgs.org._recurringForm(this.model.toJSON()));
       $('.choose-dates').html(DanceCard.templates.orgs.org.chooseWkMo(this.model.toJSON()));
       if (this.startCal) {
@@ -2357,7 +2359,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
       }
       if ($('.chooseRpt:checked').val() === "true") {
         this.model.set('recurMonthly', true);
-        this.model.set('weeklyRpt', 1);
+        this.model.set('weeklyRpt', '1');
         this.model.set('weeklyRptName', "Monday");
         $('.choose-monthly-rpt').html(DanceCard.templates.orgs.org.chooseMoRpt(this.model.toJSON()));
       } else {
@@ -2474,6 +2476,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
           day = this.model.get('weeklyRpt'),
           startDate = DanceCard.Utility.nextDateOfWeek(new Date(), day),
           endDate = DanceCard.Utility.addYear(startDate);
+      console.log(this.model.get('weeklyRpt'));
       this.model.set({
         name: name,
         type: type,
@@ -2535,7 +2538,7 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
       } else {
         endDate = new Date(moment(startDate).format());
       }
-      console.log(endDate)
+      console.log(endDate);
       if (preRegReq) {
         regLimit = $('.reg-limit-input').val();
         genderBal = $('.gender-bal-input').prop('checked');
@@ -3684,6 +3687,7 @@ DanceCard.Models.User = Parse.Object.extend({
   DanceCard.Collections.SearchEventList = Parse.Collection.extend({
     initialize: function(options){
       this.query = new Parse.Query('Event')
+        .ascending('startDate')
         .greaterThanOrEqualTo('startDate', options.startDate)
         .lessThanOrEqualTo('endDate', options.endDate)
         .withinMiles('point', options.location, options.distance);
