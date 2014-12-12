@@ -32,7 +32,7 @@
       geocoder.geocode({'address': address}, function(results, status) {
         if (results && results[0]) {
           var lat = results[0].geometry.location.k,
-              lng = results[0].geometry.location.B,
+              lng = results[0].geometry.location.D,
               location = {
                 addressParts: results[0].address_components,
                 fullAddress: results[0].formatted_address,

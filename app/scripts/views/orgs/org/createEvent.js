@@ -103,7 +103,6 @@
     },
 
     validateEvent: function() {
-      console.log('validating event');
       $('.invalid-form-warning').remove();
       $('.invalid').removeClass('invalid');
       if (!this.model.get('name')) {
@@ -155,7 +154,6 @@
           day = this.model.get('weeklyRpt'),
           startDate = DanceCard.Utility.nextDateOfWeek(new Date(), day),
           endDate = DanceCard.Utility.addYear(startDate);
-      console.log(this.model.get('weeklyRpt'));
       this.model.set({
         name: name,
         type: type,
@@ -169,9 +167,10 @@
         endDate: endDate
       });
       if ($('.event-address-input').val()) {
+        this.getLocation();
         this.model.set('venue', {
           name: venueName,
-          addressParts: this.model.attributes.venue.addressParts,
+          // addressParts: this.model.attributes.venue.addressParts,
           fullAddress: this.model.attributes.venue.fullAddress,
           zipcode: this.model.attributes.venue.zipcode
         });
