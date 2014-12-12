@@ -93,7 +93,7 @@
       geocoder.geocode({'address': address}, function(results, status) {
         if (results && results[0]) {
           var lat = results[0].geometry.location.k,
-              lng = results[0].geometry.location.B,
+              lng = results[0].geometry.location.D,
               location = {
                 addressParts: results[0].address_components,
                 fullAddress: results[0].formatted_address,
@@ -2424,7 +2424,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
     },
 
     validateEvent: function() {
-      console.log('validating event');
       $('.invalid-form-warning').remove();
       $('.invalid').removeClass('invalid');
       if (!this.model.get('name')) {
@@ -2476,7 +2475,6 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
           day = this.model.get('weeklyRpt'),
           startDate = DanceCard.Utility.nextDateOfWeek(new Date(), day),
           endDate = DanceCard.Utility.addYear(startDate);
-      console.log(this.model.get('weeklyRpt'));
       this.model.set({
         name: name,
         type: type,
@@ -2490,9 +2488,10 @@ this["DanceCard"]["templates"]["orgs"]["org"]["newEvent"] = Handlebars.template(
         endDate: endDate
       });
       if ($('.event-address-input').val()) {
+        this.getLocation();
         this.model.set('venue', {
           name: venueName,
-          addressParts: this.model.attributes.venue.addressParts,
+          // addressParts: this.model.attributes.venue.addressParts,
           fullAddress: this.model.attributes.venue.fullAddress,
           zipcode: this.model.attributes.venue.zipcode
         });
